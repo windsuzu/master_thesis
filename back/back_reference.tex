@@ -1,0 +1,12 @@
+\newpage
+\phantomsection % for hyperref to register this
+\addcontentsline{toc}{chapter}{References}
+\renewcommand{\bibname}{\protect\makebox[5cm][s]{REFERENCES}}
+%  \makebox{} is fragile; need protect
+\bibliographystyle{apalike}
+% \bibliographystyle{IEEEtranS}  % 使用 IEEE Trans 期刊格式
+
+%% References with bibTeX database:
+\bibliography{back/ncku_thesis_bib}
+\baselineskip=18pt
+

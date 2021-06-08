@@ -1,0 +1,63 @@
+\hspace{24pt}
+
+Over the past few years, the field of neural machine translation (NMT) between Chinese and Japanese is still an unresolved problem. Recent studies in Chinese-Japanese NMT have used specific methods such as sub-character level features to improve the translation quality. This is due to the lack of parallel corpus and the difference between logogram (a character or symbol that represents a word) and alphabet (a set of letters used when writing in a language) writing systems. This research explores phonetic information as an additional feature for improving the quality of Chinese-Japanese NMT systems.
+
+\section{Background} \label{sec:background}
+
+NMT is a popular area of natural language processing (NLP), has been proposed by using an end-to-end model which transforms a source sentence into a latent space and decodes it directly into a target sentence \cite{sutskever2014sequence, cho2014learning}. The model is called the encoder-decoder model or sequence-to-sequence model, and they are widely used by large technology companies such as Google, Facebook, Microsoft, and DeepL.
+
+\subsection{Progress of Neural Machine Translation} \label{sec:nmt}
+
+The progress of NMT and NLP are inseparable. The development of models, tokenization methods, embeddings, and the solutions to less or no parallel data, all involved in the progress of NMT.
+
+In the development of models, recurrent neural network (RNN) was first applied in NMT research \cite{sutskever2014sequence, cho2014learning}. After that, \cite{bahdanau2014neural} designed a mechanism called attention, which is based on RNN to address the problem of insufficient information in the latent space between encoder and decoder. The structure of the Transformer was later proposed by \cite{NIPS2017_3f5ee243}, which replace the RNN structure with a full attention mechanism (i.e., self-attention) to achieve better results and was widely used in NMT tasks. This paper will use both attention-based RNN model and Transformer \cite{bahdanau2014neural,NIPS2017_3f5ee243} as the baseline system in the experiment.
+
+Tokenization is one of the most important parts of any NLP task. It determines how a sentence will be tokenized, and it will generate different meanings to a sentence with different algorithms. Besides word-level and character-level tokenization, several subword-level tokenization algorithms had become the mainstream. For example: Byte-Pair Encoding (BPE) \cite{sennrich_neural_2016}, Unigram Language Model \cite{kudo-2018-subword}, WordPiece \cite{6289079}, and SentencePiece \cite{kudo-richardson-2018-sentencepiece}. This paper will utilize BPE, SentencePiece \cite{sennrich_neural_2016, kudo-richardson-2018-sentencepiece} and two word-level tokenizer (\textit{Jieba}\footnote{https://github.com/fxsjy/jieba} and \textit{Janome}\footnote{https://mocobeta.github.io/janome}) as tokenization methods.
+
+The concept of embeddings, also known as distributed representations, was first proposed by \cite{hinton1986learning, bengio2003neural}, but was difficult to implement due to hardware limitations. With the development of parallel computing and GPU, many embedding implementations have been proposed, such as Word2Vec \cite{mikolov2013distributed}, GloVe \cite{pennington2014glove}, and fastText \cite{bojanowski2017enriching}. The contextualized word embedding is another concept that obtains context-dependent word embedding from the whole sentence, meaning that the same word with different position can obtain different embedding through the model. The representative ones are ELMo \cite{peters-etal-2018-deep} and BERT \cite{devlin-etal-2019-bert}. This paper will select Word2Vec \cite{mikolov2013distributed} as the tool for creating word embeddings because of its simplicity, rapidity, and convenience of analysis.
+
+Several fields have been studied to solve the problems like low-resources and noisy parallel data in NMT tasks. Back-translation \cite{sennrich-etal-2016-improving} is a data augmentation method that uses monolingual data of the target language to generate source data and offset the imbalance between encoder and decoder. Parallel corpus filtering was examined for a large number of NMT tasks \cite{koehn2018findings}, using pre-filtering rules and scoring functions to retain good sentence pairs can effectively reduce the corpus size and obtained better translation results. This paper will practice corpus filtering to retain quality training data and reduce corpus size to increase experimental efficiency.
+
+\subsection{Chinese-Japanese Neural Machine Translation}
+
+NMT system has gained a lot of improvement in translating between English and other languages by utilizing the techniques described in section \ref{sec:nmt}. However, the improvement in translating between Chinese and Japanese is limited. The main reasons are the inadequacy of the corpus and the differences in the writing systems of Chinese, Japanese, and Western languages.
+
+Many studies have focused on improving the Chinese-Japanese (zh-ja) NMT system. In addition to using the methods \cite{imamura2018enhancement, chu2017empirical, zhang2020parallel} described in section \ref{sec:nmt}, many feature engineering techniques have been proposed to utilize the features in Chinese Characters (\textit{Hanzi}) and Japanese \textit{Kanji}. For example, a character-level zh-ja NMT system had been improved by using radicals as character feature information \cite{8300572}. Furthermore, the use of decomposed sub-character level information such as ideographs and strokes of Chinese characters, also improved the results \cite{zhang-komachi-2018-neural}.
+
+\subsection{Phonetic Information}
+
+Phonetic information is another feature that had been applied to NMT systems. \cite{khan2019diversity} had suggested that a phonetic representation usually corresponds to semantically distinct characters or words. \cite{liu-etal-2019-robust} had pointed out that phonetic information can effectively resist the homophone noises generated by typographical mistakes in Chinese sentences. Both papers had improved the performance of the NMT system between Chinese and other Western languages.
+
+This paper attempts to use \textit{Bopomofo} and \textit{Hiragana} as Chinese and Japanese phonetic information to improve the performance of the zh-ja NMT system. Bopomofo also named \textit{Zhuyin} (注音), is located in the Unicode block in the range U+3100–U+312F. It consists of 37 characters and 4 tone marks to transcribe all possible Chinese characters. Although it is the main component of Mandarin Chinese, it usually does not appear in Chinese sentences. That is, the machine loses some of the phonetic information when reading Chinese sentences. \begin{CJK}{UTF8}{song}
+Hiragana (平仮名, ひらがな) is a component of Japanese, along with \textit{Katakana} and Kanji. It consists of 46 base characters and is located in the Unicode block in the range U+3040–U+309F. Compared to Bopomofo, Hiragana is often found in Japanese sentences with Katakana and Kanji, forming mixed writing of Kanji and Kana (仮名交じり文). However, Hiragana disappears after forming Kanji, just like Bopomofo forms Hanzi. Therefore, the machine cannot obtain the phonetic information directly from Japanese sentences.
+\end{CJK}
+
+
+\section{Objective} \label{sec:objective}
+
+% objective 提出我們將針對小問題做出什麼做法，在這篇論文會有什麼東西?
+
+% 在本論文我們想探討語音用於中日文翻譯的實用性有多少?
+
+% 單純基於小語料庫訓練出來的 embedding 能否起到作用?
+
+% 以 semantic-only, phonetic-only, joint 三種 embedding 下去翻譯實驗，看結果如何
+
+% joint embedding 和一般傳統的 embedding 有怎麼樣的差別，想用四種分析檢驗。
+% Moreover, we will examine the importance of two phonetic information in NMT tasks and the difference between general semantic information and phonetic information.
+
+% 本論文使用語音於兩個語言，實作 NMT 並探討語音重要性。
+
+
+\section{Related Work} \label{sec:related_work}
+% related work 仔細探討能應用於中日文翻譯相關的技術，和我們提出的做法差異性?
+
+% 在這邊，要細部探討對中日文特徵以及 embedding 的擷取。
+
+% homophone https://github.com/windsuzu/phonetics-in-chinese-japanese-machine-translation/blob/master/approaches/homophone_noise.md
+% phonetic https://github.com/windsuzu/phonetics-in-chinese-japanese-machine-translation/blob/master/approaches/phonetics.md
+
+% Radical embedding https://arxiv.org/pdf/1404.4714.pdf
+% CWE https://arxiv.org/ftp/arxiv/papers/1508/1508.06669.pdf
+% MGE https://www.aclweb.org/anthology/D16-1100.pdf
+% JWE https://www.aclweb.org/anthology/D17-1027.pdf

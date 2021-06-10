@@ -10,11 +10,11 @@ NMT is a popular area of natural language processing (NLP), has been proposed by
 
 The progress of NMT and NLP are inseparable. The development of models, tokenization methods, embeddings, and the solutions to less or no parallel data, all involved in the progress of NMT.
 
-In the development of models, recurrent neural network (RNN) was first applied in NMT research \cite{sutskever2014sequence, cho2014learning}. After that, \cite{bahdanau2014neural} designed a mechanism called attention and addressed the problem of insufficient information in the latent space between encoder and decoder based on RNN. The structure of the Transformer was later proposed by \cite{NIPS2017_3f5ee243}, which replace the RNN structure with a full attention mechanism (i.e., self-attention) to achieve better results and was widely used in NMT tasks. This paper will use the attention-based RNN model and Transformer \cite{bahdanau2014neural,NIPS2017_3f5ee243} as the baseline system for the experiment.
+Recurrent neural networks (RNNs), attention mechanisms, and transformers have been proposed sequentially throughout the progress of encoder-decoder models. RNN that recursively passes states in its networks was first applied in the encoder-decoder model. Attention-mechanism had addressed the problem of insufficient information in the latent space between encoder and decoder based on RNN. Transformers had replaced the RNN structure with full attention-mechanism (i.e., self-attention) to achieve better results and used widely in NMT tasks. 
 
 Tokenization is one of the most important parts of any NLP task. It determines how a sentence will be tokenized, and it will generate different meanings to a sentence with different algorithms. Besides word-level and character-level tokenization, several subword-level tokenization algorithms had become the mainstream. For example: Byte-Pair Encoding (BPE) \cite{sennrich_neural_2016}, Unigram Language Model \cite{kudo-2018-subword}, WordPiece \cite{6289079}, and SentencePiece \cite{kudo-richardson-2018-sentencepiece}. This paper will utilize BPE, SentencePiece \cite{sennrich_neural_2016, kudo-richardson-2018-sentencepiece} and two word-level tokenizer (\textit{Jieba}\footnote{https://github.com/fxsjy/jieba} and \textit{Janome}\footnote{https://mocobeta.github.io/janome}) as tokenization methods.
 
-The concept of embeddings, also known as distributed representations, was first proposed by \cite{hinton1986learning, bengio2003neural}, but was difficult to implement due to hardware limitations. With the development of parallel computing and GPU, many embedding implementations have been proposed, such as Word2Vec \cite{mikolov2013distributed}, GloVe \cite{pennington2014glove}, and fastText \cite{bojanowski2017enriching}. The contextualized word embedding is another concept that obtains context-dependent word embedding from the whole sentence, meaning that the same word with different position can obtain different embedding through the model. The representative ones are ELMo \cite{peters-etal-2018-deep} and BERT \cite{devlin-etal-2019-bert}. This paper will select Word2Vec \cite{mikolov2013distributed} as the tool for creating word embeddings because of its simplicity, rapidity, and convenience of analysis.
+The concept of embeddings, also known as distributed representations, was first proposed by \cite{hinton1986learning, bengio2003neural}, but was difficult to implement due to hardware limitations. With the development of parallel computing and GPU, many embedding implementations have been proposed, such as Word2Vec \cite{mikolov2013distributed}, GloVe \cite{pennington2014glove}, and fastText \cite{bojanowski2017enriching}. The contextualized word embedding is another concept that obtains context-dependent word embedding from the whole sentence, meaning that the same word with a different position can obtain different embedding through the model. The representative ones are ELMo \cite{peters-etal-2018-deep} and BERT \cite{devlin-etal-2019-bert}. This paper will select Word2Vec \cite{mikolov2013distributed} as the tool for creating word embeddings because of its simplicity, rapidity, and convenience of analysis.
 
 Several fields have been studied to solve the problems like low-resources and noisy parallel data in NMT tasks. Back-translation \cite{sennrich-etal-2016-improving} is a data augmentation method that uses monolingual data of the target language to generate source data and offset the imbalance between encoder and decoder. Parallel corpus filtering was examined for a large number of NMT tasks \cite{koehn2018findings}, using pre-filtering rules and scoring functions to retain good sentence pairs can effectively reduce the corpus size and obtained better translation results. This paper will practice corpus filtering to retain quality training data and reduce corpus size to increase experimental efficiency.
 
@@ -68,7 +68,7 @@ L(w_i) = \sum_{k=1}^3\log P(w_i\mid h_{ik})
 
 \subsubsection{cw2vec Model}
 
-Inspired by fastText \cite{bojanowski2017enriching}, The authors of cw2vec \cite{cao2018cw2vec} proposed an n-gram feature based on the strokes of Chinese characters. They first split and transformed the text into stroke information, and mapped the strokes into 5 corresponding stroke ids, then merge the ids and generate n-gram features from these stroke ids. The diagram in the paper (Figure \ref{fig:cw2vec1}) shows the complete process.
+Inspired by fastText \cite{bojanowski2017enriching}, the authors of cw2vec \cite{cao2018cw2vec} proposed an n-gram feature based on the strokes of Chinese characters. They first split and transformed the text into stroke information, and mapped the strokes into 5 corresponding stroke ids, then merge the ids and generate n-gram features from these stroke ids. The diagram in the paper (Figure \ref{fig:cw2vec1}) shows the complete process.
 
 \begin{figure}[h]
 	\centering
@@ -86,7 +86,7 @@ The authors used Skip-Gram, a second method other than CBOW proposed by Word2Vec
 	\label{fig:cw2vec2}
 \end{figure}
 
-These word embeddings designed for Chinese all utilized the radicals or strokes in Chinese characters. No research has so far used phonetic information extracted from Chinese or Japanese as features.
+These word embeddings designed for Chinese all utilized the radicals or strokes in Chinese characters. No research in Chinese word embeddings has so far used phonetic information extracted from Chinese or Japanese as features.
 
 \subsection{Phonetic Word Embedding} \label{sec:rw_pwe}
 
@@ -94,7 +94,7 @@ We will review studies that use phonetic information to construct word embedding
 
 \subsubsection{Phonetic Encoding}
 
-The study \cite{khan2019diversity} extracted sentences from Chinese or Western languages into phonetic encodings \footnote{The logogram encoding is also used as a feature but is not explained here. Random clustering is used for comparison purposes.}, which used \textit{Soundex}, \textit{NYSIIS}, \textit{Metaphone}, and \textit{Hanyu Pinyin} as the extraction algorithm. After that, they applied BPE \cite{sennrich_neural_2016} to tokenize the sentences and encodings, and trained seperate embeddings from the sentences and each encodings (empty boxes in Figure \ref{fig:phonetic1}). Lastly, they concatenated the embeddings and fed into NMT system. 
+The study \cite{khan2019diversity} extracted sentences from Chinese or Western languages into phonetic encodings \footnote{The logogram encoding is also used as a feature but is not explained here. Random clustering is used for comparison purposes.}, which used \textit{Soundex}, \textit{NYSIIS}, \textit{Metaphone}, and \textit{Hanyu Pinyin} as the extraction algorithm. After that, they applied BPE \cite{sennrich_neural_2016} to tokenize the sentences and encodings, and trained separate embeddings from the sentences and each encoding (empty boxes in Figure \ref{fig:phonetic1}). Lastly, they concatenated the embeddings and fed them into the NMT system. 
 
 \begin{figure}[h]
 	\centering
@@ -103,7 +103,7 @@ The study \cite{khan2019diversity} extracted sentences from Chinese or Western l
 	\label{fig:phonetic1}
 \end{figure}
 
-This paper did not explain in detail how to implement phonetic information in embedding, but they had presented a hypothesis and verified it. That is, phonetics is a function that groups semantically distinct words. The words with the same pronunciation and spelling are usually distinguished by the different contexts.
+This paper did not explain the implementation of phonetic information in detail, but they had presented a hypothesis and verified it. That is, phonetics is a function that groups semantically distinct words. The words with the same pronunciation and spelling are usually distinguished by the different contexts.
 
 \newpage
 
@@ -111,7 +111,7 @@ This paper did not explain in detail how to implement phonetic information in em
 
 This paper \cite{liu-etal-2019-robust} focused on using phonetic embedding to adjust the homophone noise problem, which is a frequent problem in a parallel corpus. For instance, when a single word in the source sentence is misplanted as a corresponding homophone (e.g., 有 (yǒu, to have) is wrongly replaced with 友 (yǒu, friend)), the model will read the wrong embedding and training in a wrong direction. The phonetic embedding can be seen as a feature to offset the errors that occur in semantic embeddings with homophone noise.
 
-The paper showed that they trained the text (denoted by $a$) as semantic embedding (denoted by $\pi(a)$) and phonetic embedding (denoted by $\psi(a)$) respectively, and then combined two embeddings with a configurable parameter (denoted by $\beta$) as follows:
+The paper trained the text (denoted by $a$) as semantic embedding (denoted by $\pi(a)$) and phonetic embedding (denoted by $\psi(a)$), and combined two embeddings with a configurable parameter (denoted by $\beta$) as follows:
 
 \begin{equation}
 	\pi([a, \psi(a)]) = (1-\beta) \times \pi(a) + \beta \times \pi(\psi(a)) 
@@ -119,4 +119,4 @@ The paper showed that they trained the text (denoted by $a$) as semantic embeddi
 
 This study did not give the details of constructing embeddings, but they had mentioned that the best result occurs when the $\beta$ is $0.95$. That is, when they used 5\% of semantic embedding and 95\% of phonetic embedding, they obtained the best performance in their NMT system.
 
-To summarize the findings in these related works. The phonetic encodings can emphasize the difference between semantically diverse sentences. The joint semantic-phonetic embedding also shows the robustness to noise in parallel corpora. All of these features can help improve the performance of the NMT system. However, the methods of using phonetic information as embeddings had been explored mainly in Chinese and Western languages. They also used \textit{Pinyin} instead of Bopomofo as the component to decompose Chinese characters. According to our study, no research has proposed to apply and analyze phonetic information as an additional feature in Chinese and Japanese NMT systems.
+To summarize the findings in these related works. The phonetic encodings can emphasize the difference between semantically diverse sentences. The joint semantic-phonetic embedding also shows the robustness to noise in parallel corpora. All of these features can help improve the performance of the NMT system. However, the methods of using phonetic information as embeddings had been explored mainly in Chinese and Western languages. They also used \textit{Pinyin} instead of Bopomofo as the component to decompose Chinese characters. According to our study, no research has been proposed to apply and analyze phonetic information as an additional feature in Chinese and Japanese NMT systems.

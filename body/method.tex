@@ -1,17 +1,156 @@
 \hspace{24pt}
 
-method.
+This paper attempts to improve the zh-ja NMT system by utilizing the phonetic information hidden in the sentences. Section~\ref{sec:tokenization} explains which tokenization methods we use to deconstruct sentences. Section~\ref{sec:phonetic_data} explains which phonetic extraction methods we use to transform plain sentences into phonetic encodings. Section~\ref{sec:embedding} shows how we use Word2Vec as our algorithm to build and combine semantic and phonetic embeddings. Section~\ref{sec:corpus_filtering} shows how we process data from the corpus to eliminate as much noise and reduce the size of the corpus as possible. Section~\ref{sec:nmt_model} explains the details of two NMT models, which are the Attention-based GRU encoder-decoder Model and Transformer. Section~\ref{sec:embedding_analysis} describes the methods we use to analyze the difference between semantic embeddings and joint semantic-phonetic embeddings.
 
 \section{Tokenization} \label{sec:tokenization}
-\subsection{Tokenizers} \label{sec:tokenizers}
+
+We use the \textit{tokenizers} \footnote{https://github.com/huggingface/tokenizers} library from the \textit{huggingface} team as our main framework for tokenization. SentencePiece \footnote{https://github.com/google/sentencepiece}, Jieba \footnote{https://github.com/fxsjy/jieba}, and Janome \footnote{https://mocobeta.github.io/janome} can be implemented as pre-tokenizers in Huggingface Tokenizers.
+
+\subsection{Huggingface Tokenizers} \label{sec:tokenizers}
+
+Huggingface Tokenizers has 5 components that allow users to customize their tokenization methods. These five components are normalizers, pre-tokenizers, models, post-processors, and decoders. Normalizers process an input string such as lower cases or remove spaces and symbols to make it normalized. Pre-tokenizers split an input string according to a set of rules, and pre-tokenizers are where we apply SentencePiece, Jieba, and Janome. Models are responsible for converting text into ids by using the rules learned in the corpus (e.g., WordPiece, BPE, Unigram). Post-processors help us to insert special tokens into the sentence, such as the start token \textit{[BOS]} and the end token \text{[EOS]} in NMT tasks. Lastly, the job of Decoders is to reverse the ids to the original sentence.
+
+\subsection{Byte-Pair Encoding (BPE)} \label{sec:bpe}
+
+We use BPE as the model for merging Chinese and Japanese tokens. BPE builds a dictionary of all the words in the corpus and merges the most frequent words to generate new tokens until the maximum number of our dictionary is reached. We demonstrate the basic flow of BPE applied to Chinese through Table \ref{tab:bpe1} and \ref{tab:bpe2}.  
+
+\vspace{0.5cm}
+\begin{CJK}{UTF8}{gbsn}
+\begin{table}[h]
+    \centering
+    \begin{tabularx}{.9\textwidth}{sbb}\toprule
+        Frequency & Vocabulary & Dictionary \\
+        5 & 区\enspace\_ & \_,\enspace区,\enspace地,\enspace经,\enspace济 \\
+        7 & 地\enspace区\enspace\_& \\
+        3 & 地\enspace区\enspace经\enspace济\enspace\_ & \\
+        6 & 经\enspace济\enspace\_ & \\
+        \bottomrule
+    \end{tabularx}
+    \caption{A simple dataset for demonstrating BPE tokenization}
+    \label{tab:bpe1}
+\end{table}
+\end{CJK}
+
+Words are first tokenized by pre-tokenizers and loaded into the BPE vocabulary, with the underscore (\_) representing the end of the words.
+
+\vspace{0.5cm}
+\begin{CJK}{UTF8}{gbsn}
+    \begin{table}[h]
+        \centering
+        \begin{tabularx}{.9\textwidth}{ssb}\toprule
+            Total Frequency & Merge & New Dictionary \\
+            12 & (区,\enspace\_) & \_,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\_ \\
+            9  & (济,\enspace\_) & \_,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\_,\enspace济\_ \\
+            9  & (经,\enspace济\_) & \_,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\_,\enspace济\_,\enspace经济\_ \\
+            7  & (地,\enspace区\_) & \_,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\_,\enspace济\_,\enspace经济\_,\enspace地区\_ \\
+            \bottomrule
+        \end{tabularx}
+        \caption{The process of merging tokens in BPE tokenization}
+        \label{tab:bpe2}
+    \end{table}
+\end{CJK}
+
+\begin{CJK}{UTF8}{gbsn}
+The merge begins with 区 and \_, which appear most frequently in the vocabulary. After merging, 区\_ will be added to the final dictionary and replaces (区\enspace\_) in the vocabulary. This process continues until the final dictionary reaches its maximum size.
+\end{CJK}
+
 \subsection{SentencePiece} \label{sec:sentencepiece}
+
+SentencePiece treats all text in the same Unicode format. It will escape the white space with a meta symbol `\_' (U+2581). Therefore, the sentences in Chinese, Japanese, and English are considered to be in the same format, which achieving language independence. 
+
+SentencePiece is a purely data-driven method, which means it relies on the corpus to learn the tokenization. It is simple to implement SentencePiece in Huggingface Tokenizers. First, Normalization Form Compatibility Composition (NFKC) normalizes the sentence, for example, by converting a symbol or text in the full-width form to a normalized form. Second, Metaspace pre-tokenizer splits the sentence by white space and converts the white space into the `\_' symbol. Last, BPE with dropout is applied to train with the corpus file. The dropout method will improve the robustness and accuracy.
+
+\vspace{0.5cm}
+
+\begin{python}
+from tokenizers.normalizers import NFKC
+from tokenizers import Tokenizer, pre_tokenizers, decoders, trainers
+
+tokenizer = Tokenizer(BPE(dropout=dropout, unk_token="[UNK]"))
+tokenizer.normalizer = NFKC()
+tokenizer.pre_tokenizer = pre_tokenizers.Metaspace(replacement="_", add_prefix_space=True)
+tokenizer.decoder = decoders.Metaspace(replacement="_", add_prefix_space=True)
+
+trainer = trainers.BpeTrainer(vocab_size=vocab_size)
+tokenizer.train(corpus, trainer=trainer)
+\end{python}
+
 \subsection{Jieba} \label{sec:jieba}
+
+Jieba is a famous Chinese tokenization Python library that has more than 26,000 stars on Github currently. Jieba uses a prefix dictionary to store the words and calculates the longest path from the Directed Acyclic Graph (DAG) created by the sentences and dictionary to return the most likely tokenized words. In addition, Jieba uses Hidden Markov Model (HMM) and Viterbi algorithm to tokenized the unknown words in the prefix dictionary. There are four states (B, M, E, S) in the HMM model, which represent the beginning, middle, end, and single (the character can represent a word) of a character. The Viterbi algorithm takes all the words as observation and outputs the states of each character from the input sentence. 
+
+A single line of code \pythoninline{jieba.tokenize(sentence_str)} can obtain the tokenized words from Jieba. We inserted it into Huggingface Tokenizers as a pre-tokenizer and trained the Chinese dictionary using BPE.
+
+\vspace{0.5cm}
+
+\begin{python}
+    class JiebaPreTokenizer:
+    def jieba_split(self, i: int, normalized_string: NormalizedString) -> List[NormalizedString]:
+        splits = []
+        for _, start, stop in jieba.tokenize(str(normalized_string)):
+            splits.append(normalized_string[start:stop])
+        return splits
+    
+    def pre_tokenize(self, pretok: PreTokenizedString):
+         pretok.split(self.jieba_split)
+\end{python}
+
+\newpage
+
 \subsection{Janome} \label{sec:janome}
+
+Janome is a Japanese tokenization Python library that currently has 600 stars on Github. It applied the Japanese dictionary of another famous tokenization library, mecab \footnote{https://github.com/taku910/mecab}. For the methodology, Janome used the Minimal Acyclic Subsequential Transducer (MAST) as the internal dictionary data structure and the Viterbi algorithm to calculate the probability of tokenized words.
+
+We inserted the Janome tokenizer as a pre-tokenizer to Huggingface Tokenizers and trained the Japanese dictionary using BPE.
+
+\vspace{0.3cm}
+
+\begin{python}
+ja_tokenizer = janome.tokenizer.Tokenizer()
+
+class JanomePreTokenizer:
+    def janome_split(self, i: int, normalized_string: NormalizedString) -> List[NormalizedString]:
+        splits = []
+        i = 0
+        for token in ja_tokenizer.tokenize(str(normalized_string).strip(), wakati=True):
+            splits.append(normalized_string[i: i+len(token)])
+            i += len(token)
+        return splits
+    
+    def pre_tokenize(self, pretok: PreTokenizedString):
+        pretok.split(self.janome_split)
+
+\end{python}
+
+\subsection{Comparison of Tokenizers} \label{sec:compare_tokenizers}
+
+A sample of tokenized sentences using three tokenizers is listed in Table~\ref{tab:tokenized_sentences}. Jieba and Janome can tokenize the words more precisely than SentencePiece. The better performance of Jieba and Janome over SentencePiece can be considered to be due to the small size and domain specificity of the corpus.
+
+\vspace{0.4cm}
+\begin{CJK}{UTF8}{gbsn}
+    \begin{table}[h]
+        \centering
+        \begin{tabularx}{\textwidth}{lb}\toprule
+            Input (Chinese) & 平成１５年进行的研究内容如下。\\
+            SentencePiece & [\_平成, \_15, \_年, 进行的研究, 内容, 如下, \_。] \\
+            Jieba & [平成, 15, 年, 进行, 的, 研究, 内容, 如下, 。] \\\midrule
+            Input (Japanese) & 平成１５年度に行なった研究内容は次の通りである。 \\
+            SentencePiece & [\_平成, \_15, \_年度, に行, なった, 研究, 内容, は次の通りである, \_。] \\
+            Janome & [平成, 15, 年度, に, 行なっ, た, 研究, 内容, は, 次, の, 通り, で, ある, 。] \\
+            \bottomrule
+        \end{tabularx}
+        \caption{Tokenized sentences using three tokenizers}
+        \label{tab:tokenized_sentences}
+    \end{table}
+\end{CJK}
+
+\newpage
 
 \section{Phonetic Data Extraction} \label{sec:phonetic_data}
 \subsection{dragonmapper} \label{sec:dragonmapper}
 \subsection{pykakasi} \label{sec:pykakasi}
 
+% https://bamtercelboo.github.io/2018/03/24/word2vec/
 \section{Embedding} \label{sec:embedding}
 \subsection{Word2Vec} \label{sec:word2vec}
 \subsection{Phonetic Embedding} \label{sec:phonetic_embedding}

@@ -30,7 +30,6 @@
 \usepackage{amsmath} % 各式 AMS 數學功能
 \usepackage{amssymb} % 各式 AMS 數學符號
 \usepackage{mathrsfs} %草寫體數學符號，在數學模式裡用 \mathscr{E} 得草寫 E
-\usepackage{listings} % 程式列表套件
 \usepackage{subfigure}
 \usepackage{graphicx} \graphicspath{{images/}}
 \usepackage{psfrag} % text replacement in figure
@@ -50,23 +49,67 @@ urlcolor=blue%
 \usepackage{threeparttable} % table note
 \usepackage{multirow} % newline on the tabular of a table.
 \usepackage{tabularx}
+\newcolumntype{b}{X}
+\newcolumntype{s}{>{\hsize=.5\hsize}X}
+
 \usepackage{url}
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{pgf}
 \usepackage{tikz}
 % \usetikzlibrary{arrows,automata,positioning}
-\usetikzlibrary{arrows,shapes}
+\usetikzlibrary{arrows, shapes}
 
+% How to hightlight python code in lstlisting
+% https://tex.stackexchange.com/questions/83882/how-to-highlight-python-syntax-in-latex-listings-lstinputlistings-command
+\usepackage{listings} % 程式列表套件
 % listing setting
-\lstset{
-breaklines=true,% 過長的程式行可斷行
-extendedchars=false,% 中文處理不需要 extendedchars
-texcl=true,% 中文註解需要有 TeX 處理過的 comment line, 所以設成 true
-comment=[l]\%\%,% 以雙「百分號」做為程式中文註解的起頭標記，配合 MATLAB
-basicstyle=\small,% 小號字體, 約 10 pt 大小
-commentstyle=\upshape,% 預設是斜體字，會影響註解裏的英文，改用正體
-%language=Octave % 會將一些 octave 指令以粗體顯示
+% Default fixed font does not support bold face
+\usepackage[utf8]{inputenc}
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{10} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{10}  % for normal
+
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\small\ttfamily\bfseries,
+otherkeywords={self},
+tabsize=1,
+keywordstyle=\ttb\color{deepblue},
+emph={__init__, JiebaPreTokenizer, jieba_split, pre_tokenize, JanomePreTokenizer, janome_split},
+emphstyle=\ttb\color{deepred},
+stringstyle=\ttb\color{deepgreen},
+frame=single,
+showstringspaces=false,
+float=htpb,
+% numbers=left,
+captionpos=b,
+numbersep=5pt,
+linewidth=\linewidth,
+xleftmargin=0.1\linewidth,
+breaklines=true
+breakwhitespace=false,
+}}
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
 }
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
 
 \usepackage{url} % 在文稿中引用網址，可以用 \url{http://www.yzu.edu.tw} 方式
 

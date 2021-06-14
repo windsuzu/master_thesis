@@ -418,7 +418,7 @@ We sampled some sentence pairs corresponding to alignment scores in Table~\ref{t
     \end{CJK}
     \begin{CJK}{UTF8}{gbsn}
         \begin{tabularx}{\textwidth}{lb}
-            Score & -254 \\
+            Score & -338 \\
             {Chinese } & ('关于葛根、黄苓、黄连汤之证,在『伤寒论』34条中叙述:“太阳病,桂枝证,医反下之,利遂不止,脉促者,表未解也,喘而汗出者,葛根黄芩黄连汤主之”。 \\
         \end{tabularx}
     \end{CJK}
@@ -432,41 +432,181 @@ We sampled some sentence pairs corresponding to alignment scores in Table~\ref{t
     \label{tab:alignment_samples}
 \end{table}
 
-
-% -52 残留性化学物质的物质循环模型的构建和再利用·废弃物政策评价的应用\n',
-%    '残留性化学物質の物質循環モデルの構築とリサイクル・廃棄物政策評価への応用
-
-% -151 使用传统的轴组装工法的2层木制住宅,进行了室内甲醛浓度的测量,同时也研讨了上下楼层的甲醛浓度和换气量的关系。\n',
-%    '在来軸組工法木造2階建住宅を用いて,室内ホルムアルデヒド濃度の測定を行うとともに,上下階のホルムアルデヒド濃度と換気量の関係も検討した。
-
-% -254 当我尽快编写了PID控制程序并运行后发现,不仅温度不能很好地稳定,还出现了“不规则振荡”现象(重复出现大幅度偏离控制值的振动),控制彻底失败了。\n',
-%    '早速,PID制御のプログラムを書いて実行したところ,うまく温度が安定化しないどころかいわゆる“ハンチング”現象(制御値から大きく外れた振動を繰り返す)を起こしてしまい,見事,制御に失敗した
-
-
-% -338 ('关于葛根、黄苓、黄连汤之证,在『伤寒论』34条中叙述:“太阳病,桂枝证,医反下之,利遂不止,脉促者,表未解也,喘而汗出者,葛根黄芩黄连汤主之”。\n',
-% '葛根黄苓黄連湯証について,『傷寒論』34条に,「太陽病,桂枝の証,医反ってこれを下し,利遂に止まず,脈促のものは,表いまだ解せざるなり,ぜんして汗出づるものは,葛根黄苓黄連湯これを主る」という。\n')),
-
-% 越長的句子通常會對應越低的分數
-
-% 我們列出一些 alignment score 對應的句子對，
-
-
-
 \section{NMT Model} \label{sec:nmt_model}
 
-% 我們使用兩種模型來訓練 NMT 任務。分別是基於某論文提的。以及某某論文提起。模型的參數在哪裡提，模型的評分在哪裡提。模型的結果在哪裡提。關於翻譯的句子 case study 會在哪裡提。
+We will train and evaluate the NMT tasks in two classical models, the attention-based RNN model proposed by \cite{bahdanau2014neural}, and the Transformer model proposed by \cite{NIPS2017_3f5ee243}. We will explain the structure of models in this section. Furthermore, The use of parameters is presented in Section~\ref{sec:parameter}, the metric is explained in Section~\ref{sec:metric}, the results are listed in Section~\ref{sec:result}, and the case study is conducted in Section~\ref{sec:case_study}.
+
+The two models and the following illustrative diagrams are derived from \textit{bentrevett/pytorch-seq2seq} \footnote{https://github.com/bentrevett/pytorch-seq2seq}. We utilize the source code and optimize the details, such as accelerating the decoding efficiency of the decoder.
 
 \subsection{Attention-based GRU encoder-decoder Model} \label{sec:rnn}
 
-% 先講所有架構。
+This model (Seq2Seq) has three main components, namely Encoder, Attention, and Decoder. We used the \pythoninline{nn.Module} provided by PyTorch to implement three components and PyTorchLightning to combine and train the entire model.
 
-% 分別講每個架構。每個架構的圖，公式。
+\subsubsection{Encoder}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{../images/bi_encoder.png}
+    \caption{The Encoder of Seq2Seq Model}
+	\label{fig:seq2seq_encoder}
+\end{figure}
+
+The structure of the encoder (Figure~\ref{fig:seq2seq_encoder}) can be represented by the following equations. In eq. \ref{eq:eq1}, we enter the embedded tokens into the bi-directional GRU model to calculate the forward and backward hidden states $h$. 
+
+\begin{equation}
+    h_{\overrightarrow{t}} = \overrightarrow{\text{EncoderGRU}}(\text{emb}(x_{\overrightarrow{t}}), h_{\overrightarrow{t-1}}), 
+    h_{\overleftarrow{t}} = \overleftarrow{\text{EncoderGRU}}(\text{emb}(x_{\overleftarrow{t}}), h_{\overleftarrow{t-1}})
+    \label{eq:eq1}
+\end{equation}
+
+The output $H$ (in eq. \ref{eq:eq2}) represents the combination of hidden states in the last layer of the model and will be used to calculate the attention. 
+
+\begin{equation}
+    \text{outputs} (H) = \left\{h_1, h_2, \cdots, h_T\right\}, h_i = [h_{\overrightarrow{i}}; h_{\overleftarrow{i}}] \text{ for } i \in \{1,\cdots T\}
+    \label{eq:eq2}
+\end{equation}
+
+The obtained hidden states $\overrightarrow{z}$ and $\overleftarrow{z}$ (in eq. \ref{eq:eq3}) will be used as the initial hidden states of the decoder. 
+
+\begin{equation}
+    \overrightarrow{z} = h_{\overrightarrow{T}},
+    \overleftarrow{z} = h_{\overleftarrow{T}}
+    \label{eq:eq3}
+\end{equation}
+
+Since the decoder is not bidirectional, we enter the hidden states $\overrightarrow{z}$ and $\overleftarrow{z}$ into a linear layer $g$ and a activation function $tanh$ (in eq. \ref{eq:eq4}) to get the condensed context vector $z$, also called $s_0$.
+
+\begin{equation}
+    z = \tanh(g(\text{cat}(\overrightarrow{z}, \overleftarrow{z}))) = s_0
+    \label{eq:eq4}
+\end{equation}
+
+\subsubsection{Attention}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{../images/seq2seq_encoder_attention.png}
+    \caption{The Attention of Seq2Seq Model}
+	\label{fig:seq2seq_attention}
+\end{figure}
+
+The attention layer (Figure~\ref{fig:seq2seq_attention}) generates an array of the same length as the source sentence, representing how much attention was given to each token in the source sentence when predicting the next token $\hat{y}_{t+1}$. The attention layer is a linear layer, and each time it takes the previous hidden state $s_{t-1}$ of the decoder (the first time is the $z$ or $s_0$ from encoder), and the output $H$ from encoder to compute an energy value $E_t$ with $tanh$ activation function (in eq. \ref{eq:eq5}).
+
+\begin{equation}
+    E_t = \tanh(\text{attn}(s_{t-1}, H)) \label{eq:eq5}
+\end{equation}
+
+Because the shape of the energy value $E_t$ is (\textit{src\_len} \footnote{The length of source sentence}, \textit{hid\_dim} \footnote{The dimension of hidden layer}), it will enter into a linear layer $v$ with the shape (\textit{hid\_dim}, 1) (in eq. \ref{eq:eq6}) to get the attention sequence $\hat{a}_t$ with the shape (\textit{src\_len}). The parameters learned in the linear layer $v$ can be imagined as the weight of the energy value $E_t$ for each token in the source sentence.
+
+\begin{equation}
+     \hat{a}_t = v(E_t) \label{eq:eq6}
+\end{equation}
+
+The attention sequence $\hat{a}_t$ will be passed to the softmax layer (in eq. \ref{eq:eq7}) so that all the attention values add up to 1. The process combines with the mask to zero out the attention of the [PAD] tokens. 
+
+\begin{equation}
+a_t = \text{softmax}(\hat{a}_t) \label{eq:eq7}
+\end{equation}
+
+\subsubsection{Decoder}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{../images/seq2seq_decoder_attention.png}
+    \caption{The Decoder of Seq2Seq Model}
+	\label{fig:seq2seq_decoder}
+\end{figure}
+
+The decoder (Figure~\ref{fig:seq2seq_decoder}) first uses the previous hidden state $s_{t-1}$ and the encoder output $H$ to compute the attention vector $a_t$ for the current time-step $t$. The attention vector $a_t$ will perform a matrix multiplication with $H$ (in eq. \ref{eq:eq8}) to produce the weighted sum $w_t$ that represents the attention to each token in the source sentence.
+
+\begin{equation}
+    w_t = a_tH \label{eq:eq8}
+\end{equation}
+
+The decoder then takes the embedded target token $d(y_t)$, the weighted source vector $w_t$, and the previous hidden state $s_{t-1}$ into the one-directional GRU model to compute the current hidden state $s_t$ (in eq. \ref{eq:eq9}).
+
+\begin{equation}
+    s_t = \text{DecoderGRU}(d(y_t), w_t, s_{t-1}) \label{eq:eq9}
+\end{equation}
+
+Finally, the decoder uses $d(y_t)$, $w_t$, $s_t$ and a linear layer $f$ to predict the next token $\hat{y}_{t+1}$ (in eq. \ref{eq:eq10}). We will apply the teacher forcing technique, which has a 0.5\% chance of using the predicted token and a 0.5\% chance of using the ground truth token as the next target input token.
+
+\begin{equation}
+    \hat{y}_{t+1} = f(d(y_t), w_t, s_t) \label{eq:eq10}
+\end{equation}
 
 \subsection{Transformer} \label{sec:transformer}
 
-% 先講所有架構。
+The Transformer is an attention-driven model that uses the attention mechanism to process data in either encoder or decoder. We first describe the attention mechanism and then introduce it to the encoder and decoder.
 
-% 分別講每個架構。每個架構的圖，公式。
+\subsubsection{Attention}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../images/transformer-attention.png}
+        \caption{Scaled Dot-Product Attention}
+        \label{fig:transformer_attention1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../images/transformer-multihead-attention.png}
+        \caption{Multi-Head Attention}
+        \label{fig:transformer_attention2}
+    \end{subfigure}
+
+    \caption{The Multi-head Attention of Tranformer}
+	\label{fig:transformer_attention}
+\end{figure}
+
+In the Transformer, Attention layer requires three elements, namely query ($Q$), key ($K$), and value ($V$), as shown in Figure~\ref{fig:transformer_attention1}. To begin with, the energy value is generated by taking the dot product between query $Q$ and key $K$. It is then scaling by the square root of \textit{head\_dim} \footnote{The hidden state dimension of each head in Multi-Head Attention} ($\sqrt{d_k}$) to avoid gradient vanishing. After that, the energy value is fed into the softmax layer to get the attention sequence and finally multiplied with the value $V$ to get the weighted sum (in eq. \ref{eq:eq11}).
+
+\begin{equation}
+\text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V \label{eq:eq11}
+\end{equation}
+
+The Transformer model splits query $Q$, key $K$, and value $V$ into multiple heads with smaller dimensions and trains them separately (Figure~\ref{fig:transformer_attention2}). They are divided into heads by the linear layers ($W_i^Q, W_i^K, W_i^V$). Each has the size that equals the dimension of the hidden state divided by the number of heads. 
+
+\begin{equation}
+\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V) \label{eq:eq12}
+\end{equation}
+
+After all the heads pass through the attention layer (in eq \ref{eq:eq12}), they are re-concatenated and pass through the last linear layer $W^O$ to get the final weighted sum (in eq \ref{eq:eq13}).
+
+\begin{equation}
+\text{MultiHeadAttention}(Q, K, V) = \text{Concat}(\text{head}_1, \cdots, \text{head}_h)W^O
+\label{eq:eq13}
+\end{equation}
+
+\subsubsection{Encoder and Encoder Layers}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{../images/transformer-encoder.png}
+    \caption{The Encoder of Transformer}
+	\label{fig:transformer_encoder}
+\end{figure}
+
+Unlike the RNN model, the input tokens will generate the corresponding number of context vectors directly after passing through the encoder. For example, if the input has 5 tokens $X = (x_1, x_2, x_3, x_4, x_5)$, the encoder will generate 5 context vectors $Z = (z_1, z_2, z_3, z_4, z_5)$ for the decoder to predict.
+
+The tokens are passed to the word embedding and retrieved the position information by the positional embedding. The size of the positional embedding is equal to the length of the sentence; if the sentence length is 100, then the size of the positional embedding will be 100. The word embedding is added to the positional embedding to obtain the text and position information. However, the word embedding is multiplied by a scaling factor $\sqrt{d_\text{model}}$, which is used to reduce the variance of the embedding.
+
+An encoder will have multiple encoder layers. Each of them contains an attention layer and a position-wise feedforward layer (which can be considered as a large linear layer). In addition to these two components, there are also residual connection and layer normalization, which aim to generalize all parameters and prevent gradients from disappearing, making it easier to train networks with a large number of parameters. Because the attention is calculated from the source sentence and itself, it is also called self-attention. 
+
+\subsubsection{Decoder and Decoder Layers}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics{../images/transformer-decoder.png}
+    \caption{The Decoder of Transformer}
+	\label{fig:transformer_decoder}
+\end{figure}
+
+The architecture of the decoder is almost identical to that of the encoder. The decoder feeds the embedded-target-tokens into several decoder layers, and predicts the next target token $\hat{y}$ with source context vector $Z$. Following this, it computes the loss by the predict token $\hat{y}$ and the answer token $y$, and updates all the weights of the network.
+
+There are three main components in a decoder layer. First, the decoder has a masked multi-head attention layer, in which the target sentence will perform self-attention with itself and a special mask to prevent the decoder from seeing the future words in advance. Second, the multi-head attention layer is calculated with the context vector from the masked multi-head attention layer as the query $Q$ and the encoder context vector as the key $K$ and value $V$. Third, the last position-wise feedforward layer receives the results of the previous layer and outputs the final context vector to predict the next token $\hat{y}$.
 
 % https://bamtercelboo.github.io/2018/05/12/embedding_evaluation/
 \section{Embedding Analysis} \label{sec:embedding_analysis}

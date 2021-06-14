@@ -1,15 +1,37 @@
 \hspace{24pt}
 
-experiment and result.
+% 方法加個圖吧
 
-\section{Environment} \label{sec:environment}
-\subsection{PyTorch Lightning} \label{sec:lightning}
-\subsection{wandb} \label{sec:wandb}
+% 講解整個實驗的流程。用什麼資料集。用什麼環境展開實驗。模型中用什麼參數。用什麼評分翻譯系統。所有翻譯系統的評分結果。
 
 \section{Dataset} \label{sec:dataset}
 
+% 講解 Dataset 的來源。內容。架構。
+
+\section{Environment} \label{sec:environment}
+
+% 講解執行 NMT 實驗會用到的架構和 logger。
+
+\subsection{PyTorch Lightning} \label{sec:lightning}
+
+% lightning 的理念，核心，好處。
+
+\subsection{wandb} \label{sec:wandb}
+
+% wandb 的理念，核心，好處。
+
 \section{Parameter} \label{sec:parameter}
+
+% 分別在兩種模型的一般參數使用哪些數值。以及 hyperparameter。還有 embedding 解凍。
 
 \section{Metric} \label{sec:metric}
 
+% 我們用 BLEU 做為評分標準。BLEU 是什麼，怎麼算。常見的分數解釋。
+
 \section{Result} \label{sec:result}
+
+% 我們以 WAT 2020 做為標準。什麼是 WAT 2020。他們同樣使用 ASPEC。分別用什麼分詞。分數為多少。
+
+% RNN 的結果，SENTENCEPIECE 結果，LOSS，BLEU。JIEBA JANOME 結果，LOSS，BLEU。
+
+% TRANSFORMER 的結果，SENTENCEPIECE 結果，LOSS，BLEU。JIEBA JANOME 結果，LOSS，BLEU。

@@ -337,19 +337,120 @@ Several ways have been proposed to combine multiple embeddings, such as concaten
 
 \section{Corpus Filtering} \label{sec:corpus_filtering}
 
-% 為了是減少噪音以及 nmt 訓練時的資源負擔
-
-% 用了哪些方法
+We define custom rules and apply alignment scores from \textit{fast\_align} \cite{dyer2013simple} to perform corpus filtering to reduce noise, dataset size, and resource burden during training in the NMT system. The original dataset had 672,315 sentence pairs, which were reduced to 557,685 using rules and 462,582 using alignment scores.
 
 \subsection{Pre-filtering rules}
 
-% 列出並解釋每個方法
+We apply the following rules to exclude the pairs of sentences that do not match:
+
+\begin{enumerate}
+    \item Removing sentences that are too large in proportion to their length.
+    \item Removing sentences that are too short or too long.
+    \item Removing identical sentences.
+    \item Removing sentences that cannot be correctly identified as Chinese or Japanese by the fastText identification model.
+    \item Removing sentences with more English and numeric characters than Chinese and Japanese.
+    \item Removing sentences that have more than one counterpart.
+\end{enumerate}
 
 \subsection{Scoring functions}
 
-% align 打分數
+fast\_align is a tool based on \textit{IBM alignment model 2} for training statistical machine translation and alignment model. The score is the probability of the source sentence given the target sentence and its alignment. The algorithm iteratively estimates the probability of being each other translation for source-target pairs and optimal alignment given the word-to-word translation probabilities. 
 
-% 最終剩下多少句子
+In theory, the score should correlate with the degree of parallelism of the sentences. We remove the sentence pairs that are below a certain probability score threshold as shown in Table~\ref{tab:alignment_scores}. 
+
+\newpage
+
+\begin{table}[h]
+    \centering
+    \begin{tabularx}{.7\textwidth}{ss}\toprule
+        Alignment Score Range & Number of sentence pairs \\\midrule
+        $[-3, -81]$ & 173,100 \\
+        $[-81, -160]$ & 287,882 \\\midrule
+        $[-160, -238]$ & 93,134 \\
+        $[-238, -317]$ & 3,540 \\
+        $[-317, -395]$ & 29 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Distribution of Sentence Pair Alignment Scores}
+    \label{tab:alignment_scores}
+\end{table}
+
+We sampled some sentence pairs corresponding to alignment scores in Table~\ref{tab:alignment_samples}. The findings were that the lower the score, the longer the sentences tended to be, the more words were not translated, and the higher the proportion of proper nouns became.
+
+\vspace{0.3cm}
+\begin{table}[h]
+    \centering
+    \begin{CJK}{UTF8}{gbsn}
+        \begin{tabularx}{\textwidth}{lb}\toprule
+            Score & -52 \\
+            {Chinese } & 残留性化学物质的物质循环模型的构建和再利用·废弃物政策评价的应用 \\
+        \end{tabularx}
+    \end{CJK}
+    \begin{CJK}{UTF8}{long}
+        \begin{tabularx}{\textwidth}{lb}
+            Japanese & 残留性化学物質の物質循環モデルの構築とリサイクル・廃棄物政策評価への応用 \\
+            \midrule
+        \end{tabularx}
+    \end{CJK}
+    \begin{CJK}{UTF8}{gbsn}
+        \begin{tabularx}{\textwidth}{lb}
+            Score & -151 \\
+            {Chinese } & 使用传统的轴组装工法的2层木制住宅,进行了室内甲醛浓度的测量,同时也研讨了上下楼层的甲醛浓度和换气量的关系。 \\
+        \end{tabularx}
+    \end{CJK}
+    \begin{CJK}{UTF8}{long}
+        \begin{tabularx}{\textwidth}{lb}
+            Japanese & 在来軸組工法木造2階建住宅を用いて,室内ホルムアルデヒド濃度の測定を行うとともに,上下階のホルムアルデヒド濃度と換気量の関係も検討した。 \\
+            \midrule
+        \end{tabularx}
+    \end{CJK}
+    \begin{CJK}{UTF8}{gbsn}
+        \begin{tabularx}{\textwidth}{lb}
+            Score & -254 \\
+            {Chinese } & 当我尽快编写了PID控制程序并运行后发现,不仅温度不能很好地稳定,还出现了“不规则振荡”现象(重复出现大幅度偏离控制值的振动),控制彻底失败了。 \\
+        \end{tabularx}
+    \end{CJK}
+    \begin{CJK}{UTF8}{long}
+        \begin{tabularx}{\textwidth}{lb}
+            Japanese & 早速,PID制御のプログラムを書いて実行したところ,うまく温度が安定化しないどころかいわゆる“ハンチング”現象(制御値から大きく外れた振動を繰り返す)を起こしてしまい,見事,制御に失敗した \\
+            \midrule
+        \end{tabularx}
+    \end{CJK}
+    \begin{CJK}{UTF8}{gbsn}
+        \begin{tabularx}{\textwidth}{lb}
+            Score & -254 \\
+            {Chinese } & ('关于葛根、黄苓、黄连汤之证,在『伤寒论』34条中叙述:“太阳病,桂枝证,医反下之,利遂不止,脉促者,表未解也,喘而汗出者,葛根黄芩黄连汤主之”。 \\
+        \end{tabularx}
+    \end{CJK}
+    \begin{CJK}{UTF8}{long}
+        \begin{tabularx}{\textwidth}{lb}
+            Japanese & '葛根黄苓黄連湯証について,『傷寒論』34条に,「太陽病,桂枝の証,医反ってこれを下し,利遂に止まず,脈促のものは,表いまだ解せざるなり,ぜんして汗出づるものは,葛根黄苓黄連湯これを主る」という。 \\
+            \midrule
+        \end{tabularx}
+    \end{CJK}
+    \caption{Samples of Sentence Pairs with Alignment Scores}
+    \label{tab:alignment_samples}
+\end{table}
+
+
+% -52 残留性化学物质的物质循环模型的构建和再利用·废弃物政策评价的应用\n',
+%    '残留性化学物質の物質循環モデルの構築とリサイクル・廃棄物政策評価への応用
+
+% -151 使用传统的轴组装工法的2层木制住宅,进行了室内甲醛浓度的测量,同时也研讨了上下楼层的甲醛浓度和换气量的关系。\n',
+%    '在来軸組工法木造2階建住宅を用いて,室内ホルムアルデヒド濃度の測定を行うとともに,上下階のホルムアルデヒド濃度と換気量の関係も検討した。
+
+% -254 当我尽快编写了PID控制程序并运行后发现,不仅温度不能很好地稳定,还出现了“不规则振荡”现象(重复出现大幅度偏离控制值的振动),控制彻底失败了。\n',
+%    '早速,PID制御のプログラムを書いて実行したところ,うまく温度が安定化しないどころかいわゆる“ハンチング”現象(制御値から大きく外れた振動を繰り返す)を起こしてしまい,見事,制御に失敗した
+
+
+% -338 ('关于葛根、黄苓、黄连汤之证,在『伤寒论』34条中叙述:“太阳病,桂枝证,医反下之,利遂不止,脉促者,表未解也,喘而汗出者,葛根黄芩黄连汤主之”。\n',
+% '葛根黄苓黄連湯証について,『傷寒論』34条に,「太陽病,桂枝の証,医反ってこれを下し,利遂に止まず,脈促のものは,表いまだ解せざるなり,ぜんして汗出づるものは,葛根黄苓黄連湯これを主る」という。\n')),
+
+% 越長的句子通常會對應越低的分數
+
+% 我們列出一些 alignment score 對應的句子對，
+
+
 
 \section{NMT Model} \label{sec:nmt_model}
 

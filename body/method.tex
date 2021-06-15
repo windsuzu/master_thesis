@@ -1,6 +1,15 @@
 \hspace{24pt}
 
-This paper attempts to improve the zh-ja NMT system by utilizing the phonetic information hidden in the sentences. Section~\ref{sec:tokenization} explains which tokenization methods we use to deconstruct sentences. Section~\ref{sec:phonetic_data} explains which phonetic extraction methods we use to transform plain sentences into phonetic encodings. Section~\ref{sec:embedding} shows how we use Word2Vec as our algorithm to build and combine semantic and phonetic embeddings. Section~\ref{sec:corpus_filtering} shows how we process data from the corpus to eliminate as much noise and reduce the size of the corpus as possible. Section~\ref{sec:nmt_model} explains the details of two NMT models, which are the Attention-based GRU encoder-decoder Model and Transformer. Section~\ref{sec:embedding_analysis} describes the methods we use to analyze the difference between semantic embeddings and joint semantic-phonetic embeddings.
+This paper attempts to improve the zh-ja NMT system by utilizing the phonetic information hidden in the sentences. The complete structure of this paper is shown in Figure~\ref{fig:structure}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.6]{../images/structure.png}
+    \caption{The Complete Structure of This Paper}
+	\label{fig:structure}
+\end{figure}
+
+Section~\ref{sec:tokenization} explains which tokenization methods we use to deconstruct sentences. Section~\ref{sec:phonetic_data} explains which phonetic extraction methods we use to transform plain sentences into phonetic encodings. Section~\ref{sec:embedding} shows how we use Word2Vec as our algorithm to build and combine semantic and phonetic embeddings. Section~\ref{sec:corpus_filtering} shows how we process data from the corpus to eliminate as much noise and reduce the size of the corpus as possible. Section~\ref{sec:nmt_model} explains the details of two NMT models, which are the Attention-based GRU encoder-decoder Model and Transformer. Section~\ref{sec:embedding_analysis} describes the methods we use to analyze the difference between semantic embeddings and joint semantic-phonetic embeddings.
 
 \section{Tokenization} \label{sec:tokenization}
 

@@ -608,23 +608,34 @@ The architecture of the decoder is almost identical to that of the encoder. The 
 
 There are three main components in a decoder layer. First, the decoder has a masked multi-head attention layer, in which the target sentence will perform self-attention with itself and a special mask to prevent the decoder from seeing the future words in advance. Second, the multi-head attention layer is calculated with the context vector from the masked multi-head attention layer as the query $Q$ and the encoder context vector as the key $K$ and value $V$. Third, the last position-wise feedforward layer receives the results of the previous layer and outputs the final context vector to predict the next token $\hat{y}$.
 
-% https://bamtercelboo.github.io/2018/05/12/embedding_evaluation/
 \section{Embedding Analysis} \label{sec:embedding_analysis}
 
-% 我們使用四種方法驗證有效性。希望XX能保留效果，希望能加強 4。我們用 gensim 來實作這四個驗證。驗證結果會在 discussion 討論。
-
-\subsection{Analogy Reasoning} \label{sec:analogy}
-
-% 講解這個東西在幹嘛的。怎麼算。怎麼用 gensim 跑。
-
-\subsection{Outlier Detection} \label{sec:outlier}
+We will examine the effectiveness of joint semantic-phonetic embedding using four methods implemented in gensim. We expect joint semantic-phonetic embedding to retain the word similarity, analogical reasoning, and outlier detection capabilities that semantic embedding possesses. We are also interested in whether the joint embedding can enhance the impact on homonyms and heteronyms. All examination findings will be discussed in Section~\ref{sec:analysis}.
 
 % 講解這個東西在幹嘛的。怎麼算。怎麼用 gensim 跑。
 
 \subsection{Word Similarity} \label{sec:similarity}
 
-% 講解這個東西在幹嘛的。怎麼算。怎麼用 gensim 跑。
+The purpose of word similarity is to evaluate the closeness and relatedness of any two words in the given embedding. This paper measures the word similarity by calculating the cosine distance, which is equal to 1 - cosine similarity; the higher the similarity, the shorter the distance. The cosine similarity estimates the relatedness between two vectors by measuring the cosine of the angle between them (in eq. \ref{eq:eq14}). The cosine similarity of two vectors with the same direction is 1, the angle of 90° is 0, and the opposite direction is -1.
+
+\begin{equation}
+    \text { similarity }=\cos (\theta)=\frac{A \cdot B}{\|A\|\|B\|}=\frac{\sum_{i=1}^{n} A_{i} \times B_{i}}{\sqrt{\sum_{i=1}^{n}\left(A_{i}\right)^{2}} \times \sqrt{\sum_{i=1}^{n}\left(B_{i}\right)^{2}}} \label{eq:eq14}
+\end{equation}
+
+This paper uses similarity distance to compare the distance of synonyms under different embeddings to examine whether joint embedding can preserve the semantic properties.
+
+\subsection{Analogical Reasoning} \label{sec:analogy}
+
+Analogical reasoning is to evaluate the ability of embeddings to apply arithmetic operations to reasoning. Given a set of three words, $a$, $a*$ and $b$, the task requires identifying the word $b*$, i.e., the relation $b$:$b*$ is the same as the relation $a$:$a*$. For example, when $a=\text{Tokyo}$, $a*=\text{Japan}$, $b=\text{Taipei}$, the embedding need to be able to predict $b*=\text{Taiwan}$. The analogical reasoning can be shown as the following eq. \ref{eq:eq15}.
+
+\begin{equation}
+    a - a* + b = b* \label{eq:eq15}
+\end{equation}
+
+\subsection{Outlier Detection} \label{sec:outlier}
+
+Outlier Detection tests the ability of embeddings to perform the task of word categorization. The embeddings are required to identify the semantically anomalous word from a defined word cluster. For example, when the word cluster contains ``apple, bird, cat, dog'', the embedding needs to predict the target word as ``apple''.
 
 \subsection{Homonym and Heteronym} \label{sec:homonym_heteronym}
 
-% 講解這個東西在幹嘛的。怎麼算。怎麼用 gensim 跑。
+This task is an extension of word similarity tasks. We expect the joint embedding with additional phonetic information reduces the impact of possible noise on the NMT system (i.e. the impact of homonyms). Homonyms refer to the words that have the same pronunciation and spelling but different meanings. The evaluation method is to ensure that the distance between homonyms is as short as possible. At the same time, we expect that phonetic information will help the joint embedding to increase the distance between heteronyms. Heteronyms refer to words that have identical writing but different pronunciation, spelling, and meaning. Increasing the distance between heteronyms means strengthening the semantics between words.

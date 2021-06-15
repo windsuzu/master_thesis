@@ -1,22 +1,37 @@
 \hspace{24pt}
 
-% 方法加個圖吧
-
-% 講解整個實驗的流程。用什麼資料集。用什麼環境展開實驗。模型中用什麼參數。用什麼評分翻譯系統。所有翻譯系統的評分結果。
+This chapter explains the details of the experiments. It includes the use of datasets (Section~\ref{sec:dataset}), the experimental environment (Section~\ref{sec:environment}), the parameters of the NMT model (Section~\ref{sec:parameter}), and the metrics (BLEU score) of the NMT model (Section~\ref{sec:metric}). Lastly, the BLEU scores of the translation system based on different tokenizations and word embeddings are shown in Section~\ref{sec:result}.
 
 \section{Dataset} \label{sec:dataset}
 
-% 講解 Dataset 的來源。內容。架構。
+Our datasets are acquired from the Asian Scientific Paper Excerpt Corpus (ASPEC) \cite{nakazawa-etal-2016-aspec} provided by the Japan Science and Technology Agency (JST) and the National Institute of Information and Communications Technology (NICT). ASPEC consists of a Japanese-English corpus (ASPEC-JE) with 3 million parallel sentences and a Japanese-Chinese corpus (ASPEC-JC) with 680,000 pairs.
+
+We have selected ASPEC-JC as the dataset for our zh-ja NMT system, and the structure of the dataset is shown in Table~\ref{tab:aspec-jc}. ASPEC-JC is constructed by manually translating the excerpts of Japanese scientific papers into Chinese. Papers used for translation are derived from the Japan Science and Technology Agency (JST) or the Japan Science and Technology Information Aggregator, Electronic (​J-STAGE).
+
+\vspace{0.4cm}
+\begin{table}[h]
+    \centering
+    \begin{tabularx}{0.7\textwidth}{bbb}\toprule
+        Data Type & File Name & Number of sentences \\\midrule
+        Train & train.txt & 672,315 \\
+        Validation & dev.txt & 2,090 \\
+        Validation-Test & devtest.txt & 2,148 \\
+        Test & test.txt & 2,107 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{ASPEC-JC dataset}
+    \label{tab:aspec-jc}
+\end{table}
 
 \section{Environment} \label{sec:environment}
 
-% 講解執行 NMT 實驗會用到的架構和 logger。
+We use PyTorch and PyTorch Lightning as the main framework for constructing the entire NMT model (Section~\ref{sec:lightning}), as well as Weights \& Bias for logging models, metrics, and dataflow (Section~\ref{sec:wandb}).
 
-\subsection{PyTorch Lightning} \label{sec:lightning}
+\subsection{PyTorch and PyTorch Lightning} \label{sec:lightning}
 
 % lightning 的理念，核心，好處。
 
-\subsection{wandb} \label{sec:wandb}
+\subsection{Weights and Bias (wandb)} \label{sec:wandb}
 
 % wandb 的理念，核心，好處。
 
@@ -35,3 +50,43 @@
 % RNN 的結果，SENTENCEPIECE 結果，LOSS，BLEU。JIEBA JANOME 結果，LOSS，BLEU。
 
 % TRANSFORMER 的結果，SENTENCEPIECE 結果，LOSS，BLEU。JIEBA JANOME 結果，LOSS，BLEU。
+
+
+% Sample
+% \begin{center}\vspace{0.3cm}
+%     \begin{tabular}%
+%       {l%
+%        P{6cm}%
+%        P{6cm}%
+%        P{6cm}%
+%        P{6cm}} \toprule
+%     & \multicolumn{2}{c}{Sentencepiece} & \multicolumn{2}{c}{Jieba \& Janome}
+%     \\\cmidrule(l){2-3}\cmidrule(l){4-5}
+%     & RNN & Transformer & RNN & Transformer\\\midrule
+%     w/o Pre-trained emb  & 21.63 & 24.32 & 25.16 & 29.31 \\ \midrule
+%     w/ Semantic emb  & 21.66 & 25.72 & 26.71 & 31.23  \\ \midrule
+%     w/ Phonetic emb & 21.32 & 23.48 & 26.18 & 30.9 \\\midrule
+%     w/ Joint emb & \textbf{22.33} & \textbf{26.44} & \textbf{27.05} & \textbf{32.48}\\
+%     \bottomrule
+%     \end{tabular}
+%     \captionof{table}{\color{Green}BLEU Scores on Sampled Data}
+%     \label{table:bleu_sample}
+% \end{center}
+    
+
+% WAT
+% \begin{center}\vspace{0.3cm}
+% \begin{tabular}%
+%     {l%
+%   P{4cm}%
+%   P{7cm}%
+%   P{4.5cm}%
+%   P{4.5cm}%
+%   P{4.5cm}} \toprule
+%   &WAT2020 & w/o Pre-trained & w/ Semantic & w/ Phonetic & w/ Joint \\\midrule
+%   Baseline & 47.00 &&& \\
+%   Our Best Model && 52.78 & 52.83 & 53.04 & \textbf{53.13}\\
+% \end{tabular}
+% \captionof{table}{\color{Green}BLEU Scores on Full Well-Filtered Dataset}
+% \label{table:bleu_full}
+% \end{center}

@@ -7,22 +7,130 @@
 
 % 列個 5 種吧。講解哪些詞翻較好。哪些地方比較成功。用聲音資訊來解釋佳。
 
+% \begin{center}
+%     \begin{CJK*}{UTF8}{gbsn}
+%     \begin{tabular}{p{7.3cm}p{27.5cm}} \toprule
+%       Source & 微小粒子测量装置的比较试验\\\midrule
+%     \end{tabular}
+%     \end{CJK*}
+%     \begin{CJK}{UTF8}{min}
+%     \begin{tabular}{p{7.3cm}p{27.5cm}}
+%       Target & 微小粒子測定装置の比較試験\\
+%       Semantic & 微小粒子計測装置の比較実験 \\
+%       Semantic + Phonetic & 微小粒子測定装置の比較試験\\
+%     \end{tabular}
+%     \end{CJK}
+%     \begin{CJK*}{UTF8}{gbsn}
+%     \begin{tabular}{p{7.3cm}p{27.5cm}} \toprule
+%       Source & 从背景知识B和观测结果O中获得行动规则的集合Y的集合H。\\\midrule
+%     \end{tabular}
+%     \end{CJK*}
+%     \begin{CJK}{UTF8}{min}
+%     \begin{tabular}{p{7.3cm}p{27.5cm}}
+%       Target & 背景知識Bと観測結果Oより行動規則の集合Yの集合を獲得する.\\
+%       Semantic & 背景背景知識Bと観測結果Oから行動ルールの集合Yの集合H獲得する. \\
+%       Semantic + Phonetic & 背景知識Bと観測結果Oから行動規則の集合Yの集合H獲得する.\\\bottomrule
+%     \end{tabular}
+%     \end{CJK}
+%     \captionof{table}{\color{Green}Case Study}
+%     \label{table:case_study}
+%     \end{center}
+
 \section{Embedding Analysis} \label{sec:analysis}
 
 % 以四種方式來探討 joint embedding 的優點，與 semantic 的差異。
 
 \subsection{Analogical Reasoning} \label{sec:analysis_analogy}
 
-% 我們希望怎樣，放上結果，講差別，優點
+% 放上結果，講差別，不只保留字義，且超過，優點
+
+% \begin{center}\vspace{0.3cm}
+%     \begin{CJK*}{UTF8}{bsmi}
+%         \begin{tabular}{P{3.5cm} P{8cm} P{8cm} P{8cm}}
+%             \toprule
+%             \multirow{2.5}{*}{Language} & \multirow{2.5}{*}{Input ($a:A=b:$)} & \multicolumn{2}{c}{Output ($B$)} 
+%             \\\cmidrule{3-4}
+%             & & Semantic Only & Semantic + Phonetic \\\midrule
+%             Chinese & 東京:日本$=$北京: & 中國 \ ($p=0.49$) & 中國 \ ($p=0.53$) \\
+%             {} & 長期:三年$=$短期: & 一年 \ ($p=0.38$) & 兩周 \ ($p=0.39$) \\
+%             {} & 進口:買入$=$出口: & 賣出 \ ($p=0.36$) & 賣出 \ ($p=0.44$) \\\midrule
+%         \end{tabular}
+%     \end{CJK*}
+    
+%     \begin{CJK}{UTF8}{min}
+%         \begin{tabular}{P{3.5cm} P{8cm} P{8cm} P{8cm}}
+%             Japanese & 男性:女性$=$父親: & 母親 \ ($p=0.49$) & 母親 \ ($p=0.51$) \\
+%             & 長期:年$=$短期: & 月 \ ($p=0.55$) & 月 \ ($p=0.57$) \\
+%             & 左右:前後$=$水平: & 垂直 ($p=0.43$) & 垂直 ($p=0.40$) \\
+%             \bottomrule
+%         \end{tabular}
+%     \end{CJK}
+    
+%     \captionof{table}{\color{Green}Analogy Test}
+%     \label{table:analogy_test}
+% \end{center}
+
 
 \subsection{Outlier Detection} \label{sec:analysis_outlier}
 
-% 我們希望怎樣，放上結果，講差別，優點
+% 放上結果，講差別，優點
+
+% \begin{center}\vspace{0.3cm}
+%     \begin{CJK*}{UTF8}{bsmi}
+%         \begin{tabular}{P{3.5cm} P{12cm} P{6cm} P{8cm}}
+%             \toprule
+%             \multirow{2.5}{*}{Language} & \multirow{2.5}{*}{Input} & \multicolumn{2}{c}{Output (Outlier)} 
+%             \\\cmidrule{3-4}
+%             & & Semantic Only & Semantic + Phonetic \\\midrule
+            
+%             Chinese & 維持, 保持, 堅持, 建設  & 建設 & 建設 \\
+%             {} & 可行, 不行, 可以, 行 & 可以 & 不行 \\\midrule
+            
+%         \end{tabular}
+%     \end{CJK*}
+    
+%     \begin{CJK}{UTF8}{min}
+%         \begin{tabular}{P{3.5cm} P{12cm} P{6cm} P{8cm}}
+%         Japanese & 生み, 創造, 作る, 破壊 & 破壊 & 破壊\\
+%         & 普通, 一般, 通常, 異常 & 異常 & 異常\\
+%         \bottomrule
+%         \end{tabular}
+%     \end{CJK}
+    
+%     \captionof{table}{\color{Green}Outlier Detection}
+%     \label{table:outlier_detection}
+% \end{center}
+
 
 \subsection{Word Similarity} \label{sec:analysis_similarity}
 
-% 我們希望怎樣，放上結果，講差別，優點
+% 放上結果，講差別，優點
 
 \subsection{Homonym and Heteronym} \label{sec:analysis_homonym_heteronym}
 
-% 我們希望怎樣，放上結果，講差別，優點
+% 放上結果，講差別，優點
+
+
+
+% \begin{center}\vspace{0.3cm}
+%     \begin{CJK*}{UTF8}{bsmi}
+%         \begin{tabular}{P{3.5cm} P{12cm} P{6cm} P{8cm}}
+%             \toprule
+%             \multirow{2.5}{*}{Language} & \multirow{2.5}{*}{Input} & \multicolumn{2}{c}{Distance} 
+%             \\\cmidrule{3-4}
+%             & & Semantic Only & Semantic + Phonetic \\\midrule
+%             Chinese & 長(ㄔㄤˊ)度, 長(ㄓㄤˇ)大  & 0.826 & \textbf{0.853} \\
+%             {} & 樂(ㄌㄜˋ)趣, 音樂(ㄩㄝˋ) & 0.636 & \textbf{0.682} \\
+%             {} & 中(ㄓㄨㄥ)午, 中(ㄓㄨㄥˋ)毒 & 0.841 & \textbf{0.866}\\\midrule
+%         \end{tabular}
+%     \end{CJK*}
+%     \begin{CJK}{UTF8}{min}
+%         \begin{tabular}{P{3.5cm} P{12cm} P{6cm} P{8cm}}
+%                 Japanese & 生(なま), 一生(しょう)  & 0.879 & \textbf{0.889} \\
+%                 {} & 生(なま), 生(き)地 & 0.769 & \textbf{0.867} \\
+%                 {} & 生(なま), 生(う)む & 0.829 & \textbf{0.839} \\\bottomrule
+%         \end{tabular}
+%     \end{CJK}
+%     \captionof{table}{\color{Green}Similarity Distances Between Heteronyms}
+%     \label{table:noise_heteronym}
+% \end{center}

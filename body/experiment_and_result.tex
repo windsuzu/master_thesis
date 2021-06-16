@@ -11,7 +11,7 @@ We have selected ASPEC-JC as the dataset for our zh-ja NMT system, and the struc
 \vspace{0.4cm}
 \begin{table}[h]
     \centering
-    \begin{tabularx}{0.7\textwidth}{bbb}\toprule
+    \begin{tabularx}{\textwidth}{bbb}\toprule
         Data Type & File Name & Number of sentences \\\midrule
         Train & train.txt & 672,315 \\
         Validation & dev.txt & 2,090 \\
@@ -39,11 +39,65 @@ Wandb, similar to Tensorboard, is a powerful tool for logging model training and
 
 \section{Parameter} \label{sec:parameter}
 
-% 分別在兩種模型的一般參數使用哪些數值。以及 hyperparameter。還有 embedding 解凍。
+We implement eight (two-by-four) experiments for RNN and Transformer experiments. The experiment uses two different methods for tokenization. one is to use SentencePiece for both Chinese and Japanese, and the other is to use Jieba and Janome for Chinese and Japanese. Every experiment validates four scenarios, which are the model without any pre-trained embedding (i.e., the baseline), the model using only semantic embedding, the model using only phonetic embedding, and the model using joint semantic-phonetic embedding.
+
+Some parameters are identical in all experiments. The dataset is 50,000 sentence pairs which filtered (described in Section~\ref{sec:corpus_filtering}) and sampled by Python \pythoninline{random} module. The dictionary size for tokenizer and embedding is fixed to 32,000 and the dimension of embedding is fixed to 300. The other hyperparameters are listed in Table~\ref{tab:hyperparameters}.
+
+\vspace{0.4cm}
+\begin{table}[h]
+    \centering
+    \begin{tabularx}{\textwidth}{bbb}\toprule
+        Hyperparameters & RNN & Transformer \\\midrule
+        dropout & 0.1 & 0.1 \\
+        hidden\_dim (pf\_dim) & 512 & 512 \\
+        learning rate & 7e-4 & 5e-4 \\
+        precision & 16 & 32 \\
+        attention heads & - & 6 \\
+        layers & 1 & 3 \\ 
+        \bottomrule
+    \end{tabularx}
+    \caption{The hyperparameters}
+    \label{tab:hyperparameters}
+\end{table}
+
+Catastrophic forgetting \cite{kirkpatrick2017overcoming} may occur during training with pre-trained embedding. In other words, the gradients in the first few batches will drastically change the embeddings and lose the initial meaning from vectors completely. We overcome the problem by freezing the weights of embeddings in the first $n$ epochs, and fine-tuning the embeddings in the subsequent epochs. Therefore, $n$ is also a hyperparameter of RNN and Transformer models. We apply $n=3$ to RNN and $n=1$ to Transformer to achieve the best results.
 
 \section{Metric} \label{sec:metric}
 
-% 我們用 BLEU 做為評分標準。BLEU 是什麼，怎麼算。常見的分數解釋。
+We evaluated our zh-ja NMT system using the BLEU (Bilingual Evaluation Understudy) score \cite{papineni2002bleu}. The BLEU score is a number from 0 to 100 that measures the similarity between translated sentences from model and high-quality reference translations. A score of 0 means there is no overlap between machine translation and reference translation, and a score of 100 means a complete overlap between the two. A common interpretation of the BLEU score can be referred to Table~\ref{tab:bleu_score_interpretation}.
+
+\newpage
+
+\vspace{0.4cm}
+\begin{table}[h]
+    \centering
+    \begin{tabularx}{\textwidth}{p{3cm}b}\toprule
+        BLEU Score & Interpretation \\\midrule
+        $< 10$ & Almost useless \\
+        $10 - 19$ & Hard to get the gist \\
+        $20 - 29$ & The gist is clear, but has significant grammatical errors \\
+        $30 - 40$ & Understandable to good translations \\
+        $40 - 50$ & High quality translations \\
+        $50 - 60$ & Very high quality, adequate, and fluent translations \\
+        $> 60$ & Quality often better than human \\
+    \end{tabularx}
+    \caption[Interpretation of the BLEU score]{Interpretation of the BLEU score\protect\footnotemark}
+    \label{tab:bleu_score_interpretation}
+\end{table}
+
+\footnotetext{Source: https://www.cs.cmu.edu/~alavie/Presentations/MT-Evaluation-MT-Summit-Tutorial-19Sep11.pdf}
+
+Mathematically, the BLEU score is defined as eq. \ref{eq:eq16} and eq. \ref{eq:eq17}. The formula consists of two parts: the brevity penalty and the n-gram overlap. The brevity penalty penalizes the sentences that were translated too short, which were easier to score higher because of the lower denominator (in eq. \ref{eq:eq17}) calculated by n-gram. The n-gram overlap counts the number of overlaps between the translated sentences and the corresponding unigrams, bigrams, trigrams, and four-grams in the reference translation ($\text{Count}_\text{clip}$). Unigrams account for the adequacy and longer n-grams account for the fluency of the translation.
+
+\begin{equation}
+    \mathrm{BLEU}=\underbrace{\min \left(1, \exp \left(1-\frac{\text { reference-length }}{\text { output-length }}\right)\right)}_{\text {brevity penalty }} \underbrace{\left(\prod_{i=1}^{4} \text { precision }_{i}\right)^{1 / 4}}_{\text {n-gram overlap }} \label{eq:eq16}
+\end{equation}
+
+\begin{equation}
+    \text { precision }_{n} = \frac{\sum_{ \text {n-gram} \in C} \text {Count}_{\text {clip}}(\text {n-gram})}{\sum_{\text{n-gram}^{\prime} \in C^{\prime}} \operatorname{Count}\left(\text{n-gram}^{\prime}\right)} \label{eq:eq17}
+\end{equation}
+
+Here are several considerations for evaluating translation models using the BLEU score. First, BLEU is a corpus-based metric that requires evaluating multiple sentences (corpus) at once; the score for individual sentences will lose some meanings; in other words, statistics are accumulated across the sentences when computing the score. Second, BLEU cannot distinguish the errors between the function words and the content words; the dropped function words such as ``a, the, of'' carry the same penalties as important content words that are mistranslated or lost. Last, BLEU is not good at capturing the meaning and grammaticality of sentences; namely, the single word that can change the semantics such as ``not'' or the long-range dependencies that are greater than the length of the n-gram will be underestimated.
 
 \section{Result} \label{sec:result}
 

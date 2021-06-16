@@ -25,15 +25,17 @@ We have selected ASPEC-JC as the dataset for our zh-ja NMT system, and the struc
 
 \section{Environment} \label{sec:environment}
 
-We use PyTorch and PyTorch Lightning as the main framework for constructing the entire NMT model (Section~\ref{sec:lightning}), as well as Weights \& Bias for logging models, metrics, and dataflow (Section~\ref{sec:wandb}).
+We use PyTorch \footnote{https://pytorch.org/} and PyTorch Lightning \footnote{https://www.pytorchlightning.ai/} \cite{falcon2019pytorch}  as the main framework for constructing the entire NMT model (Section~\ref{sec:lightning}), as well as Weights \& Biases (wandb) \footnote{https://wandb.ai/site} \cite{wandb} for logging models, metrics, and dataflow (Section~\ref{sec:wandb}).
 
 \subsection{PyTorch and PyTorch Lightning} \label{sec:lightning}
 
-% lightning 的理念，核心，好處。
+PyTorch has been widely used in academic research and production. We use PyTorch as a framework for processing data and designing the components (i.e., encoder, attention, decoder) of RNN and Transformer.
 
-\subsection{Weights and Bias (wandb)} \label{sec:wandb}
+PyTorch-Lightning offers many advantages as a wrapper for PyTorch: Dataflow can be integrated more efficiently in \pythoninline{LightningDataModule}; the main source code, including the components designed by PyTorch, can be integrated into \pythoninline{LightningModule}; using \pythoninline{Trainer} can directly utilize the \pythoninline{LightningDataModule} and \pythoninline{LightningModule}, and help us use the correct engineering code such as gradient update, data transfer between CPU and GPU. In addition, PyTorch-Lightning provides a lot of plugins to simplify research, such as multi-GPU or TPU training, checkpointing and logging of models, implementing 16-bit precision, early stopping, finding learning rate and batch size, etc.
 
-% wandb 的理念，核心，好處。
+\subsection{Weights and Biases (wandb)} \label{sec:wandb}
+
+Wandb, similar to Tensorboard, is a powerful tool for logging model training and is used by OpenAI \footnote{https://wandb.ai/site/articles/why-experiment-tracking-is-crucial-to-openai}, the company designed GPT-3. Wandb can visualize all training metrics and system performance, record hyperparameters used in the experiments for easy replicating, integrate dataset in the cloud to facilitate the advantages of cross-platform. In the experiments, we use the \pythoninline{WandbLogger} provided by PyTorch-Lightning to integrate wandb and record the experimental results of all models, which will be presented in Section~\ref{sec:result}.
 
 \section{Parameter} \label{sec:parameter}
 

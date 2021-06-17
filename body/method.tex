@@ -9,7 +9,7 @@ This paper attempts to improve the zh-ja NMT system by utilizing the phonetic in
 	\label{fig:structure}
 \end{figure}
 
-Section~\ref{sec:tokenization} explains which tokenization methods we use to deconstruct sentences. Section~\ref{sec:phonetic_data} explains which phonetic extraction methods we use to transform plain sentences into phonetic encodings. Section~\ref{sec:embedding} shows how we use Word2Vec as our algorithm to build and combine semantic and phonetic embeddings. Section~\ref{sec:corpus_filtering} shows how we process data from the corpus to eliminate as much noise and reduce the size of the corpus as possible. Section~\ref{sec:nmt_model} explains the details of two NMT models, which are the Attention-based GRU encoder-decoder Model and Transformer. Section~\ref{sec:embedding_analysis} describes the methods we use to analyze the difference between semantic embeddings and joint semantic-phonetic embeddings.
+Section~\ref{sec:tokenization} explains which tokenization methods we use to deconstruct sentences. Section~\ref{sec:phonetic_data} explains which phonetic extraction methods we use to transform plain sentences into phonetic encodings. Section~\ref{sec:embedding} shows how we use Word2Vec as our algorithm to build and combine semantic and phonetic embeddings. Section~\ref{sec:corpus_filtering} shows how we process data from the corpus to eliminate as much noise and reduce the size of the corpus as possible. Section~\ref{sec:nmt_model} explains the details of two NMT models, which are the Attention-based Bi-GRU encoder-decoder Model and Transformer. Section~\ref{sec:embedding_analysis} describes the methods we use to analyze the difference between semantic embeddings and joint semantic-phonetic embeddings.
 
 \section{Tokenization} \label{sec:tokenization}
 
@@ -443,20 +443,20 @@ We sampled some sentence pairs corresponding to alignment scores in Table~\ref{t
 
 \section{NMT Model} \label{sec:nmt_model}
 
-We will train and evaluate the NMT tasks in two classical models, the attention-based RNN model proposed by \cite{bahdanau2014neural}, and the Transformer model proposed by \cite{NIPS2017_3f5ee243}. We will explain the structure of models in this section. Furthermore, The use of parameters is presented in Section~\ref{sec:parameter}, the metric is explained in Section~\ref{sec:metric}, the results are listed in Section~\ref{sec:result}, and the case study is conducted in Section~\ref{sec:case_study}.
+We will train and evaluate the NMT tasks in two classical models, the attention-based Bi-GRU model proposed by \cite{bahdanau2014neural}, and the Transformer model proposed by \cite{NIPS2017_3f5ee243}. We will explain the structure of models in this section. Furthermore, The use of parameters is presented in Section~\ref{sec:parameter}, the metric is explained in Section~\ref{sec:metric}, the results are listed in Section~\ref{sec:result}, and the case study is conducted in Section~\ref{sec:case_study}.
 
 The two models and the following illustrative diagrams are derived from \textit{bentrevett/pytorch-seq2seq} \footnote{https://github.com/bentrevett/pytorch-seq2seq}. We utilize the source code and optimize the details, such as accelerating the decoding efficiency of the decoder.
 
-\subsection{Attention-based GRU encoder-decoder Model} \label{sec:rnn}
+\subsection{Attention-based Bi-GRU encoder-decoder Model} \label{sec:rnn}
 
-This model (Seq2Seq) has three main components, namely Encoder, Attention, and Decoder. We used the \pythoninline{nn.Module} provided by PyTorch to implement three components and PyTorchLightning to combine and train the entire model.
+This model has three main components, namely Encoder, Attention, and Decoder. We used the \pythoninline{nn.Module} provided by PyTorch to implement three components and PyTorchLightning to combine and train the entire model.
 
 \subsubsection{Encoder}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.7]{../images/bi_encoder.png}
-    \caption{The Encoder of Seq2Seq Model}
+    \caption{The Encoder of Attention-based Bi-GRU Model}
 	\label{fig:seq2seq_encoder}
 \end{figure}
 
@@ -483,7 +483,7 @@ The obtained hidden states $\overrightarrow{z}$ and $\overleftarrow{z}$ (in eq. 
     \label{eq:eq3}
 \end{equation}
 
-Since the decoder is not bidirectional, we enter the hidden states $\overrightarrow{z}$ and $\overleftarrow{z}$ into a linear layer $g$ and a activation function $tanh$ (in eq. \ref{eq:eq4}) to get the condensed context vector $z$, also called $s_0$.
+Since the decoder is not bi-directional, we enter the hidden states $\overrightarrow{z}$ and $\overleftarrow{z}$ into a linear layer $g$ and a activation function $tanh$ (in eq. \ref{eq:eq4}) to get the condensed context vector $z$, also called $s_0$.
 
 \begin{equation}
     z = \tanh(g(\text{cat}(\overrightarrow{z}, \overleftarrow{z}))) = s_0
@@ -495,7 +495,7 @@ Since the decoder is not bidirectional, we enter the hidden states $\overrightar
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.7]{../images/seq2seq_encoder_attention.png}
-    \caption{The Attention of Seq2Seq Model}
+    \caption{The Attention of Attention-based Bi-GRU Model}
 	\label{fig:seq2seq_attention}
 \end{figure}
 
@@ -522,7 +522,7 @@ a_t = \text{softmax}(\hat{a}_t) \label{eq:eq7}
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.7]{../images/seq2seq_decoder_attention.png}
-    \caption{The Decoder of Seq2Seq Model}
+    \caption{The Decoder of Attention-based Bi-GRU Model}
 	\label{fig:seq2seq_decoder}
 \end{figure}
 
@@ -598,7 +598,7 @@ After all the heads pass through the attention layer (in eq \ref{eq:eq12}), they
 	\label{fig:transformer_encoder}
 \end{figure}
 
-Unlike the RNN model, the input tokens will generate the corresponding number of context vectors directly after passing through the encoder. For example, if the input has 5 tokens $X = (x_1, x_2, x_3, x_4, x_5)$, the encoder will generate 5 context vectors $Z = (z_1, z_2, z_3, z_4, z_5)$ for the decoder to predict.
+Unlike the Attention-based Bi-GRU model, the input tokens will generate the corresponding number of context vectors directly after passing through the encoder. For example, if the input has 5 tokens $X = (x_1, x_2, x_3, x_4, x_5)$, the encoder will generate 5 context vectors $Z = (z_1, z_2, z_3, z_4, z_5)$ for the decoder to predict.
 
 The tokens are passed to the word embedding and retrieved the position information by the positional embedding. The size of the positional embedding is equal to the length of the sentence; if the sentence length is 100, then the size of the positional embedding will be 100. The word embedding is added to the positional embedding to obtain the text and position information. However, the word embedding is multiplied by a scaling factor $\sqrt{d_\text{model}}$, which is used to reduce the variance of the embedding.
 

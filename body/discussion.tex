@@ -5,36 +5,65 @@
 
 \section{Case Study} \label{sec:case_study}
 
-% 列個 5 種吧。講解哪些詞翻較好。哪些地方比較成功。用聲音資訊來解釋佳。
 
-% \begin{center}
-%     \begin{CJK*}{UTF8}{gbsn}
-%     \begin{tabular}{p{7.3cm}p{27.5cm}} \toprule
-%       Source & 微小粒子测量装置的比较试验\\\midrule
-%     \end{tabular}
-%     \end{CJK*}
-%     \begin{CJK}{UTF8}{min}
-%     \begin{tabular}{p{7.3cm}p{27.5cm}}
-%       Target & 微小粒子測定装置の比較試験\\
-%       Semantic & 微小粒子計測装置の比較実験 \\
-%       Semantic + Phonetic & 微小粒子測定装置の比較試験\\
-%     \end{tabular}
-%     \end{CJK}
-%     \begin{CJK*}{UTF8}{gbsn}
-%     \begin{tabular}{p{7.3cm}p{27.5cm}} \toprule
-%       Source & 从背景知识B和观测结果O中获得行动规则的集合Y的集合H。\\\midrule
-%     \end{tabular}
-%     \end{CJK*}
-%     \begin{CJK}{UTF8}{min}
-%     \begin{tabular}{p{7.3cm}p{27.5cm}}
-%       Target & 背景知識Bと観測結果Oより行動規則の集合Yの集合を獲得する.\\
-%       Semantic & 背景背景知識Bと観測結果Oから行動ルールの集合Yの集合H獲得する. \\
-%       Semantic + Phonetic & 背景知識Bと観測結果Oから行動規則の集合Yの集合H獲得する.\\\bottomrule
-%     \end{tabular}
-%     \end{CJK}
-%     \captionof{table}{\color{Green}Case Study}
-%     \label{table:case_study}
-%     \end{center}
+% Case Study - Preservation of correct words
+% ['使用有机溶剂的溶剂提取法作为物质的分离手段被广泛利用。\n']
+% ['有機溶媒を用いた溶媒抽出法は物質の分離手段として広く利用されている。']
+% 有機溶媒を用いた溶媒抽出法は物質の分離手段として広く用いされている。
+% 有機溶媒を用いた溶媒抽出法は物質の分離手段として広く利用されている。
+
+% ['在本章中,将分布式组件间进行通信的中间件与Dragon进行比较。\n']
+% ['本章では,分散コンポーネント間通信を行うミドルウェアとDragonを比較する.']
+% 本章では,分散コンポーネント間でを行うミドルウェアとDragonを比較する.
+% 本章では,分散コンポーネント間通信を行うミドルウェアとDragonを比較する.
+
+% ['LearnAR从背景知识B和观测结果O中获得行动规则的集合γ的集合H。\n']
+% ['LearnARは,背景知識Bと観測結果Oより行動規則の集合γの集合を獲得する.']
+% LearnARは背景背景知識Bと観測結果Oから行動ルールの集合γの集合H獲得する.
+% LearnARは,背景知識Bと観測結果Oから行動規則の集合γの集合H獲得する.
+
+% Case Study - Preservation of Katakana 
+% ['构成这些乐曲时在可能范围里保证变化丰富。\n']
+% ['これらの楽曲は,可能な範囲でバリエーションが豊かになるように構成されている.']
+% これらの楽曲を,豊かな範囲で変化が豊かになる.にしされている.
+% これらの楽曲を,可能な範囲でバリエーションが豊かになるように構成されている.
+
+% ['铝焊接烟气的特性\n']
+% ['アルミニウム溶接ヒュームの物性']
+% アルミニウム溶接煙の特性
+% アルミニウム溶接ヒュームの特性
+
+% ['C&D循环利用技术\n']
+% ['C&Dリサイクリング技術']
+% C&Dリサイクル技術
+% C&Dリサイクリング技術
+
+% Case Study - Preservation of English words 
+% ['RMCPRGIGCenter和RMCPRGIGTransceiver使用C语言安装,在二者间的通信中和RemoteGIG同样使用TCP/IP上的RMCP。\n']
+% ['RMCPRGIGCenterとRMCPRGIGTransceiverはC言語で実装し,両者間の通信にはRemoteGIGと同様にTCP/IP上のRMCPを用いた.']
+% RMCPRGIGCenterとRMCPRGIGTransceiはC言語を実装し,両者間通信通信でTCPTCPと同様にTCP/IPででRMCPを用いるて.
+% RMCPRGIGCenterとRMCPRGIGTransceiverをC言語を実装し,両者間の通信においてはRemoteGIGと同様にTCP/IP上でRMCPを用いた.
+
+% ['另一方面,GUIServer和GUIClient是用Java语言进行安装。\n']
+% ['一方,GUIServerとGUIClientはJava言語で実装した.']
+% 一方,GUISververやGUIIClientはJava言語で実装した.
+% 一方,GUIServerとGUIClientはJava言語で実装した.
+
+% Case Study - Improvements of word selection
+% ['微小粒子测量装置的比较试验\n']
+% ['微小粒子測定装置の比較試験']
+% 微小粒子計測装置の比較実験
+% 微小粒子測定装置の比較試験
+
+% ['胃运动机能和NERD的病状的关连性的相关讨论\n']
+% ['胃運動機能とNERDの病態との関連性に関する検討']
+% 胃運動機能とNERDの病態のの関連性に関する議論
+% 胃運動機能とNERDの病態との関連性に関する検討
+
+% ['此外,用100对属性数进行了均等化。\n']
+% ['また,属性数を100で均一化した.']
+% また,属性数を100で均等化した.
+% また,属性数を100で均一化した.
 
 \section{Embedding Analysis} \label{sec:analysis}
 
@@ -44,93 +73,90 @@
 
 % 放上結果，講差別，不只保留字義，且超過，優點
 
-% \begin{center}\vspace{0.3cm}
-%     \begin{CJK*}{UTF8}{bsmi}
-%         \begin{tabular}{P{3.5cm} P{8cm} P{8cm} P{8cm}}
-%             \toprule
-%             \multirow{2.5}{*}{Language} & \multirow{2.5}{*}{Input ($a:A=b:$)} & \multicolumn{2}{c}{Output ($B$)} 
-%             \\\cmidrule{3-4}
-%             & & Semantic Only & Semantic + Phonetic \\\midrule
-%             Chinese & 東京:日本$=$北京: & 中國 \ ($p=0.49$) & 中國 \ ($p=0.53$) \\
-%             {} & 長期:三年$=$短期: & 一年 \ ($p=0.38$) & 兩周 \ ($p=0.39$) \\
-%             {} & 進口:買入$=$出口: & 賣出 \ ($p=0.36$) & 賣出 \ ($p=0.44$) \\\midrule
-%         \end{tabular}
-%     \end{CJK*}
-    
-%     \begin{CJK}{UTF8}{min}
-%         \begin{tabular}{P{3.5cm} P{8cm} P{8cm} P{8cm}}
-%             Japanese & 男性:女性$=$父親: & 母親 \ ($p=0.49$) & 母親 \ ($p=0.51$) \\
-%             & 長期:年$=$短期: & 月 \ ($p=0.55$) & 月 \ ($p=0.57$) \\
-%             & 左右:前後$=$水平: & 垂直 ($p=0.43$) & 垂直 ($p=0.40$) \\
-%             \bottomrule
-%         \end{tabular}
-%     \end{CJK}
-    
-%     \captionof{table}{\color{Green}Analogy Test}
-%     \label{table:analogy_test}
-% \end{center}
+% "東京", "日本", "北京"
+% semantic	(中国, 0.4918120205402374)	(香港, 0.4542633593082428)	(欧洲, 0.447649210691452)
+% joint	(中国, 0.530601978302002)	(欧洲, 0.4985966086387634)	(美国, 0.4914376139640808)
 
+% "長期", "三年", "短期"
+% semantic	(一年, 0.3793664276599884)	(入学, 0.373923122882843)	(威特, 0.373820960521698)
+% joint	(两周, 0.38714638352394104)	(黑龙江, 0.3845103085041046)	(六个, 0.3709550201892853)
+
+% "進口", "買入", "出口"
+% semantic	(卖出, 0.3636208176612854)	(入口, 0.34043172001838684)	(收取, 0.320338636636734)
+% joint	(卖出, 0.44192928075790405)	(入口, 0.4030747711658478)	(投标人, 0.3964996337890625)
+
+
+
+% "男性", "女性", "父親"
+% semantic	(母親, 0.4868825674057007)	(赤ちゃん, 0.4835638403892517)	(父母, 0.4637010097503662)
+% joint	(母親, 0.5082985162734985)	(赤ちゃん, 0.4885145425796509)	(夫婦, 0.4501483142375946)
+
+% "長期", "年", "短期"
+% semantic	(月, 0.5500056743621826)	(2006, 0.520151674747467)	(2005, 0.509982168674469)
+% joint	(月, 0.569668173789978)	(2005, 0.5362728834152222)	(2006, 0.4921896755695343)
+
+% "左右", "前後", "水平"
+% semantic	(垂直, 0.4324204623699188)	(鉛直, 0.3152925670146942)	(短冊, 0.31343212723731995)
+% joint	(垂直, 0.40165072679519653)	(後, 0.363545686006546)	(以内, 0.3538738489151001)
 
 \subsection{Outlier Detection} \label{sec:analysis_outlier}
 
 % 放上結果，講差別，優點
 
-% \begin{center}\vspace{0.3cm}
-%     \begin{CJK*}{UTF8}{bsmi}
-%         \begin{tabular}{P{3.5cm} P{12cm} P{6cm} P{8cm}}
-%             \toprule
-%             \multirow{2.5}{*}{Language} & \multirow{2.5}{*}{Input} & \multicolumn{2}{c}{Output (Outlier)} 
-%             \\\cmidrule{3-4}
-%             & & Semantic Only & Semantic + Phonetic \\\midrule
-            
-%             Chinese & 維持, 保持, 堅持, 建設  & 建設 & 建設 \\
-%             {} & 可行, 不行, 可以, 行 & 可以 & 不行 \\\midrule
-            
-%         \end{tabular}
-%     \end{CJK*}
-    
-%     \begin{CJK}{UTF8}{min}
-%         \begin{tabular}{P{3.5cm} P{12cm} P{6cm} P{8cm}}
-%         Japanese & 生み, 創造, 作る, 破壊 & 破壊 & 破壊\\
-%         & 普通, 一般, 通常, 異常 & 異常 & 異常\\
-%         \bottomrule
-%         \end{tabular}
-%     \end{CJK}
-    
-%     \captionof{table}{\color{Green}Outlier Detection}
-%     \label{table:outlier_detection}
-% \end{center}
+
+% group	outlier
+% semantic	[鸟, 狗, 猫]	花
+% joint	[鸟, 狗, 猫]	花
+
+% group	outlier
+% semantic	[可行, 不行, 行]	可以
+% joint	[可行, 可以, 行]	不行
+
+% group	outlier
+% semantic	[广岛, 名古屋, 爱知]	上海
+% joint	[广岛, 名古屋, 爱知]	上海
+
+
+% group	outlier
+% semantic	[生み, 創造, 作る]	破壊
+% joint	[生み, 創造, 作る]	破壊
+
+% group	outlier
+% semantic	[普通, 一般, 通常]	異常
+% joint	[普通, 一般, 通常]	異常
+
+% 	group	outlier
+% semantic	[平成, 昭和, 大正, 明治]	京都
+% joint	[平成, 昭和, 大正, 明治]	京都
 
 
 \subsection{Word Similarity} \label{sec:analysis_similarity}
 
 % 放上結果，講差別，優點
 
+
+
 \subsection{Homonym and Heteronym} \label{sec:analysis_homonym_heteronym}
 
-% 放上結果，講差別，優點
+
+% "長度", "長大"
+% [0.82614785] [0.85324013]
+% "樂趣", "音樂"
+% [0.6362442] [0.6823282]
+% "中午", "中毒"
+% [0.84151924] [0.8660332]
+
+% "生", "一生" 
+% [0.87939054] [0.88945603]
+% "生", "生む" 
+% [0.82956004] [0.8388028]
+% "生", "生地"
+% [0.768724] [0.86652976]
 
 
-
-% \begin{center}\vspace{0.3cm}
-%     \begin{CJK*}{UTF8}{bsmi}
-%         \begin{tabular}{P{3.5cm} P{12cm} P{6cm} P{8cm}}
-%             \toprule
-%             \multirow{2.5}{*}{Language} & \multirow{2.5}{*}{Input} & \multicolumn{2}{c}{Distance} 
-%             \\\cmidrule{3-4}
-%             & & Semantic Only & Semantic + Phonetic \\\midrule
-%             Chinese & 長(ㄔㄤˊ)度, 長(ㄓㄤˇ)大  & 0.826 & \textbf{0.853} \\
-%             {} & 樂(ㄌㄜˋ)趣, 音樂(ㄩㄝˋ) & 0.636 & \textbf{0.682} \\
-%             {} & 中(ㄓㄨㄥ)午, 中(ㄓㄨㄥˋ)毒 & 0.841 & \textbf{0.866}\\\midrule
-%         \end{tabular}
-%     \end{CJK*}
-%     \begin{CJK}{UTF8}{min}
-%         \begin{tabular}{P{3.5cm} P{12cm} P{6cm} P{8cm}}
-%                 Japanese & 生(なま), 一生(しょう)  & 0.879 & \textbf{0.889} \\
-%                 {} & 生(なま), 生(き)地 & 0.769 & \textbf{0.867} \\
-%                 {} & 生(なま), 生(う)む & 0.829 & \textbf{0.839} \\\bottomrule
-%         \end{tabular}
-%     \end{CJK}
-%     \captionof{table}{\color{Green}Similarity Distances Between Heteronyms}
-%     \label{table:noise_heteronym}
-% \end{center}
+% "土", "土地"
+% [0.7193829] [0.6723646]
+% "海", "深海"
+% [0.70660716] [0.6373409]
+% "時", "時間"
+% [0.57789356] [0.497795]

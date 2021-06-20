@@ -2,16 +2,22 @@
 
 % 我們將總結整個論文所做的假設、方法、貢獻。講出本論文能進步、加強的地方。
 
+% 這個章節首先將在a總結論文所提出的假設，方法，及貢獻。接著在b提出一系列可以深入研究或改進的地方，作為我們的未來規劃。
+
 \section{Conclusion} \label{sec:conclusion}
 
 % 假設、方法、貢獻
 
+% 本篇論文嘗試使用聲音資訊作為文字的額外特徵，並將該特徵應用於中文與日文之間的神經機器翻譯系統當中，旨在透過常規以外的方法如 back translation 或 model ensembling ,以 feature engineering 的方式來加強翻譯系統。 我們提出使用三種不同的分詞方法，以 dragonmapper 及 pykakasi 分別產生中文及日文的聲音資訊，並搭配 word2vec 訓練出兩個單純帶有語意和音意的詞嵌入。我們合併兩者產生帶有語意及音意的合併詞嵌入，並將其投入至兩種知名的 NMT 模型進行訓練與fine-tune。結果表明所有使用了合併詞嵌入進行訓練與fine-tune的模型，其獲得的 BLEU 分數都比其他方法還要更高。我們透過對最好模型的結果進行 case study 發現使用合併詞嵌入翻譯的結果保留了四種property。我們透過對合併詞嵌入與單純包含詞義的嵌入進行分析，結果也表明在四種任務下皆保留原有效果，甚至能超越詞義嵌入，獲得非常正面的反饋。總結，該論文提出的方法能有效提升nmt效能，而且僅使用小型語料庫。對於翻譯結果與詞嵌入我們也展示一系列的分析，得知該詞嵌入確實對於中日文翻譯有明顯的幫助。
+
 \section{Future Work} \label{sec:future_work}
 
-% 跑 embedding 測試。
+% 本論文有許多能夠深入研究的方向，我們在此列出幾個方法，這些方法有的或許能進一步分析現有表現，有的或許有機會能進一步提高表現。
 
-% 採用 chinese embedding 模式。
+% 改善產生聲音資訊的方法，例如使用其他的插件來產生並比較優劣，舉例
 
-% 採用 ELMO、BERT 當作 embedding 架構。
+% 採用在 related work 中提到訓練 embedding 的模式，將聲音資訊與中文字、及各種 subcharacter feature 例如筆畫、部首來一起訓練一個 embedding。
 
-% 試用 CONVS2S 當作模型架構。
+% 採用 ELMO、BERT 當作基礎的 embedding 架構。由於他們兩者都是屬於需要綁定模型的 embedding，所以可以考慮訓練一個 semantic model 和一個 phonetic model 並將兩者結合起來。
+
+% 最新研究展示 cnn 用於 NLP 領域強於 transformer。所以我們也可以試用 CONVS2S 當作模型架構，。

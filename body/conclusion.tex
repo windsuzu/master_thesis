@@ -14,12 +14,10 @@ The success of translation task and embedding analysis revealed that the joint s
 
 \section{Future Work} \label{sec:future_work}
 
-% 本論文有許多能夠深入研究的方向，我們在此列出幾個方法，這些方法有的或許能進一步分析現有表現，有的或許有機會能進一步提高表現。
+A variety of research can be further investigated based on the method of this paper. We are going to list a few techniques and approaches that may further improve the existing performance.
 
-% 改善產生聲音資訊的方法，例如使用其他的插件來產生並比較優劣，舉例
-
-% 採用在 related work 中提到訓練 embedding 的模式，將聲音資訊與中文字、及各種 subcharacter feature 例如筆畫、部首來一起訓練一個 embedding。
-
-% 採用 ELMO、BERT 當作基礎的 embedding 架構。由於他們兩者都是屬於需要綁定模型的 embedding，所以可以考慮訓練一個 semantic model 和一個 phonetic model 並將兩者結合起來。
-
-% 最新研究展示 cnn 用於 NLP 領域強於 transformer。所以我們也可以試用 CONVS2S 當作模型架構，。
+\begin{itemize}
+    \item Using any basic attempts to refine the research. For instance, using other tokenization methods, phonetic extraction methods, NMT models, and embedding training methods.
+    \item Referring to the model for training Chinese word embedding as described in Section~\ref{sec:rw_cwe}. Training an embedding by combining phonetic information with Chinese characters and various sub-character features such as strokes and radicals.
+    \item Using ELMO or BERT as the base embedding framework. Since they are both embeddings that require a binding model, it is possible to consider training a semantic model and a phonetic model and combining the two.
+\end{itemize}

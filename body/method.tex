@@ -5,23 +5,23 @@ This paper attempts to improve the zh-ja NMT system by utilizing the phonetic in
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.6]{../images/structure.png}
-    \caption{The Complete Structure of This Paper}
+    \caption{Structure of this paper.}
 	\label{fig:structure}
 \end{figure}
 
-Section~\ref{sec:tokenization} explains which tokenization methods we use to deconstruct sentences. Section~\ref{sec:phonetic_data} explains which phonetic extraction methods we use to transform plain sentences into phonetic encodings. Section~\ref{sec:embedding} shows how we use Word2Vec as our algorithm to build and combine semantic and phonetic embeddings. Section~\ref{sec:corpus_filtering} shows how we process data from the corpus to eliminate as much noise and reduce the size of the corpus as possible. Section~\ref{sec:nmt_model} explains the details of two NMT models, which are the Attention-based Bi-GRU encoder-decoder Model and Transformer. Section~\ref{sec:embedding_analysis} describes the methods we use to analyze the difference between semantic embeddings and joint semantic-phonetic embeddings.
+Section~\ref{sec:tokenization} explains the tokenization methods we use to deconstruct sentences. Section~\ref{sec:phonetic_data} explains which phonetic extraction methods we use to transform plain sentences into phonetic encodings. Section~\ref{sec:embedding} shows how we use Word2Vec as our algorithm to build and combine semantic and phonetic embeddings. Section~\ref{sec:corpus_filtering} shows how we process data from the corpus to eliminate as much noise and reduce the size of the corpus as possible. Section~\ref{sec:nmt_model} explains the details of two NMT models, which are the Attention-based Bi-GRU encoder-decoder Model and Transformer. Section~\ref{sec:embedding_analysis} describes the methods we use to analyze the difference between semantic embeddings and joint semantic-phonetic embeddings.
 
 \section{Tokenization} \label{sec:tokenization}
 
-This paper will examine the effectiveness of phonetic information under different tokenization methods. We use the \textit{tokenizers} \footnote{https://github.com/huggingface/tokenizers} library from the \textit{huggingface} team as our main framework for tokenization. SentencePiece \footnote{https://github.com/google/sentencepiece}, Jieba, and Janome can be implemented as pre-tokenizers in Huggingface Tokenizers.
+This paper will examine the effectiveness of phonetic information under different tokenization methods. We use the \texttt{tokenizers} \footnote{https://github.com/huggingface/tokenizers} library from the \texttt{HuggingFace} team as our main framework for tokenization. \texttt{SentencePiece} \footnote{https://github.com/google/sentencepiece}, \texttt{Jieba}, and \texttt{Janome} can be implemented as pre-tokenizers in \texttt{HuggingFace Tokenizers}.
 
-\subsection{Huggingface Tokenizers} \label{sec:tokenizers}
+\subsection{HuggingFace Tokenizers} \label{sec:tokenizers}
 
-Huggingface Tokenizers has 5 components that allow users to customize their tokenization methods. These five components are normalizers, pre-tokenizers, models, post-processors, and decoders. Normalizers process an input string such as lower cases or remove spaces and symbols to make it normalized. Pre-tokenizers split an input string according to a set of rules, and pre-tokenizers are where we apply SentencePiece, Jieba, and Janome. Models are responsible for converting text into ids by using the rules learned in the corpus (e.g., WordPiece, BPE, Unigram). Post-processors help us to insert special tokens into the sentence, such as the start token \textit{[BOS]} and the end token \text{[EOS]} in NMT tasks. Lastly, the job of Decoders is to reverse the ids to the original sentence.
+The \texttt{HuggingFace Tokenizers} library has 5 components that allow users to customize their tokenization methods. Namely, normalizers, pre-tokenizers, models, post-processors, and decoders. Normalizers process an input string, performing tasks such as mapping to lower case and removal of spaces and symbols to normalize the text. Pre-tokenizers split an input string according to a set of rules, and this is the stage where we apply \texttt{SentencePiece}, \texttt{Jieba}, and \texttt{Janome}. Models are responsible for converting text into ids by using the rules learned in the corpus (e.g., WordPiece, BPE, Unigram). Post-processors help us to insert special tokens into the sentence, such as the start token \textit{[BOS]} and the end token \text{[EOS]} in NMT tasks. Lastly, the job of Decoders is to reverse the ids to the original sentence.
 
 \subsection{Byte-Pair Encoding (BPE)} \label{sec:bpe}
 
-We use BPE as the model for merging Chinese and Japanese tokens. BPE builds a dictionary of all the words in the corpus and merges the most frequent words to generate new tokens until the maximum number of our dictionary is reached. We demonstrate the basic flow of BPE applied to Chinese through Table \ref{tab:bpe1} and \ref{tab:bpe2}.  
+We use BPE as the model for merging Chinese and Japanese tokens. BPE builds a dictionary of all the words in the corpus and merges the most frequent words to generate new tokens until the maximum number of our dictionary is reached. We demonstrate the basic flow of BPE applied to Chinese in Tables \ref{tab:bpe1} and \ref{tab:bpe2}.
 
 \vspace{0.5cm}
 \begin{CJK}{UTF8}{gbsn}
@@ -29,10 +29,10 @@ We use BPE as the model for merging Chinese and Japanese tokens. BPE builds a di
     \centering
     \begin{tabularx}{.9\textwidth}{sbb}\toprule
         Frequency & Vocabulary & Dictionary \\
-        5 & 区\enspace\_ & \_,\enspace区,\enspace地,\enspace经,\enspace济 \\
-        7 & 地\enspace区\enspace\_& \\
-        3 & 地\enspace区\enspace经\enspace济\enspace\_ & \\
-        6 & 经\enspace济\enspace\_ & \\
+        5 & 区\enspace\UL & \UL,\enspace区,\enspace地,\enspace经,\enspace济 \\
+        7 & 地\enspace区\enspace\UL& \\
+        3 & 地\enspace区\enspace经\enspace济\enspace\UL & \\
+        6 & 经\enspace济\enspace\UL & \\
         \bottomrule
     \end{tabularx}
     \caption{A simple dataset for demonstrating BPE tokenization}
@@ -40,7 +40,7 @@ We use BPE as the model for merging Chinese and Japanese tokens. BPE builds a di
 \end{table}
 \end{CJK}
 
-Words are first tokenized by pre-tokenizers and loaded into the BPE vocabulary, with the underscore (\_) representing the end of the words.
+Words are first tokenized by pre-tokenizers and loaded into the BPE vocabulary, with the underscore (\UL) representing the end of the words.
 
 \vspace{0.5cm}
 \begin{CJK}{UTF8}{gbsn}
@@ -48,10 +48,10 @@ Words are first tokenized by pre-tokenizers and loaded into the BPE vocabulary, 
         \centering
         \begin{tabularx}{.9\textwidth}{ssb}\toprule
             Total Frequency & Merge & New Dictionary \\
-            12 & (区,\enspace\_) & \_,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\_ \\
-            9  & (济,\enspace\_) & \_,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\_,\enspace济\_ \\
-            9  & (经,\enspace济\_) & \_,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\_,\enspace济\_,\enspace经济\_ \\
-            7  & (地,\enspace区\_) & \_,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\_,\enspace济\_,\enspace经济\_,\enspace地区\_ \\
+            12 & (区,\enspace\UL) & \UL,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\UL \\
+            9  & (济,\enspace\UL) & \UL,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\UL,\enspace济\UL \\
+            9  & (经,\enspace济\UL) & \UL,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\UL,\enspace济\UL,\enspace经济\UL \\
+            7  & (地,\enspace区\UL) & \UL,\enspace区,\enspace地,\enspace经,\enspace济,\enspace区\UL,\enspace济\UL,\enspace经济\UL,\enspace地区\UL \\
             \bottomrule
         \end{tabularx}
         \caption{The process of merging tokens in BPE tokenization}
@@ -60,14 +60,14 @@ Words are first tokenized by pre-tokenizers and loaded into the BPE vocabulary, 
 \end{CJK}
 
 \begin{CJK}{UTF8}{gbsn}
-The merge begins with 区 and \_, which appear most frequently in the vocabulary. After merging, 区\_ will be added to the final dictionary and replaces (区\enspace\_) in the vocabulary. This process continues until the final dictionary reaches its maximum size.
+The merge begins with 区 and \UL, which appear most frequently in the vocabulary. After merging, 区\UL will be added to the final dictionary and replaces (区\enspace\UL) in the vocabulary. This process continues until the final dictionary reaches its maximum size.
 \end{CJK}
 
 \subsection{SentencePiece} \label{sec:sentencepiece}
 
-SentencePiece treats all text in the same Unicode format. It will escape the white space with a meta symbol `\_' (U+2581). Therefore, the sentences in Chinese, Japanese, and English are considered to be in the same format, which achieving language independence. 
+\texttt{SentencePiece} treats all text in the same Unicode format. It will escape the white space with a meta symbol `\UL' (U+2581). Therefore, the sentences in Chinese, Japanese, and English are considered to be in the same format, which achieving language independence. 
 
-SentencePiece is a purely data-driven method, which means it relies on the corpus to learn the tokenization. It is simple to implement SentencePiece in Huggingface Tokenizers. First, Normalization Form Compatibility Composition (NFKC) normalizes the sentence, for example, by converting a symbol or text in the full-width form to a normalized form. Second, Metaspace pre-tokenizer splits the sentence by white space and converts the white space into the `\_' symbol. Last, BPE with dropout is applied to train with the corpus file. The dropout method will improve the robustness and accuracy.
+\texttt{SentencePiece} is a purely data-driven method, which means it relies on the corpus to learn the tokenization. It is simple to implement \texttt{SentencePiece} in HuggingFace Tokenizers. First, Normalization Form Compatibility Composition (NFKC) normalizes the sentence, for example, by converting a symbol or text in the full-width form to a normalized form. Second, Metaspace pre-tokenizer splits the sentence by white space and converts the white space into the `\UL' symbol. Last, BPE with dropout is applied to train with the corpus file. The dropout method will improve the robustness and accuracy.
 
 \vspace{0.5cm}
 
@@ -86,9 +86,9 @@ tokenizer.train(corpus, trainer=trainer)
 
 \subsection{Jieba} \label{sec:jieba}
 
-Jieba is a famous Chinese tokenization Python library that has more than 26,000 stars on Github currently. Jieba uses a prefix dictionary to store the words and calculates the longest path from the Directed Acyclic Graph (DAG) created by the sentences and dictionary to return the most likely tokenized words. In addition, Jieba uses Hidden Markov Model (HMM) and Viterbi algorithm to tokenized the unknown words in the prefix dictionary. There are four states (B, M, E, S) in the HMM model, which represent the beginning, middle, end, and single (the character can represent a word) of a character. The Viterbi algorithm takes all the words as observation and outputs the states of each character from the input sentence. 
+\texttt{Jieba} is a famous Chinese tokenization Python library that has more than 26,000 stars on Github currently. \texttt{Jieba} uses a prefix dictionary to store the words and calculates the longest path from the Directed Acyclic Graph (DAG) created by the sentences and dictionary to return the most likely tokenized words. In addition, \texttt{Jieba} uses Hidden Markov Model (HMM) and Viterbi algorithm to tokenized the unknown words in the prefix dictionary. There are four states (B, M, E, S) in the HMM model, which represent the beginning, middle, end, and single (the character can represent a word) of a character. The Viterbi algorithm takes all the words as observation and outputs the states of each character from the input sentence. 
 
-A single line of code \pythoninline{jieba.tokenize(sentence_str)} can obtain the tokenized words from Jieba. We inserted it into Huggingface Tokenizers as a pre-tokenizer and trained the Chinese dictionary using BPE.
+A single line of code \pythoninline{jieba.tokenize(sentence_str)} can obtain the tokenized words from \texttt{Jieba}. We inserted it into Huggingface Tokenizers as a pre-tokenizer and trained the Chinese dictionary using BPE.
 
 \vspace{0.5cm}
 
@@ -108,9 +108,9 @@ A single line of code \pythoninline{jieba.tokenize(sentence_str)} can obtain the
 
 \subsection{Janome} \label{sec:janome}
 
-Janome is a Japanese tokenization Python library that currently has 600 stars on Github. It applied the Japanese dictionary of another famous tokenization library, mecab \footnote{https://github.com/taku910/mecab}. For the methodology, Janome used the Minimal Acyclic Subsequential Transducer (MAST) as the internal dictionary data structure and the Viterbi algorithm to calculate the probability of tokenized words.
+\texttt{Janome} is a Japanese tokenization Python library that currently has 600 stars on Github. It applies the Japanese dictionary of another famous tokenization library, mecab \footnote{https://github.com/taku910/mecab}. For the methodology, \texttt{Janome} used the Minimal Acyclic Subsequential Transducer (MAST) as the internal dictionary data structure and the Viterbi algorithm to calculate the probability of tokenized words.
 
-We inserted the Janome tokenizer as a pre-tokenizer to Huggingface Tokenizers and trained the Japanese dictionary using BPE.
+We inserted the \texttt{Janome} tokenizer as a pre-tokenizer to \texttt{Huggingface Tokenizers} and trained the Japanese dictionary using BPE.
 
 \vspace{0.3cm}
 
@@ -133,7 +133,7 @@ class JanomePreTokenizer:
 
 \subsection{Comparison of Tokenizers} \label{sec:compare_tokenizers}
 
-A sample of tokenized sentences using three tokenizers is listed in Table~\ref{tab:tokenized_sentences}. Jieba and Janome can tokenize the words more precisely than SentencePiece. The better performance of Jieba and Janome over SentencePiece can be considered to be due to the small size and domain specificity of the corpus.
+A sample of tokenized sentences using three tokenizers is listed in Table~\ref{tab:tokenized_sentences}. \texttt{Jieba} and \texttt{Janome} can tokenize the words more precisely than SentencePiece. The better performance of \texttt{Jieba} and \texttt{Janome} over SentencePiece can be considered to be due to the small size and domain specificity of the corpus.
 
 \vspace{0.4cm}
 \begin{CJK}{UTF8}{gbsn}
@@ -141,10 +141,10 @@ A sample of tokenized sentences using three tokenizers is listed in Table~\ref{t
         \centering
         \begin{tabularx}{\textwidth}{lb}\toprule
             Input (Chinese) & 平成１５年进行的研究内容如下。\\
-            SentencePiece & [\_平成, \_15, \_年, 进行的研究, 内容, 如下, \_。] \\
+            SentencePiece & [\UL平成, \UL15, \UL年, 进行的研究, 内容, 如下, \UL。] \\
             Jieba & [平成, 15, 年, 进行, 的, 研究, 内容, 如下, 。] \\\midrule
             Input (Japanese) & 平成１５年度に行なった研究内容は次の通りである。 \\
-            SentencePiece & [\_平成, \_15, \_年度, に行, なった, 研究, 内容, は次の通りである, \_。] \\
+            SentencePiece & [\UL平成, \UL15, \UL年度, に行, なった, 研究, 内容, は次の通りである, \UL。] \\
             Janome & [平成, 15, 年度, に, 行なっ, た, 研究, 内容, は, 次, の, 通り, で, ある, 。] \\
             \bottomrule
         \end{tabularx}
@@ -157,11 +157,11 @@ A sample of tokenized sentences using three tokenizers is listed in Table~\ref{t
 
 \section{Phonetic Data Extraction} \label{sec:phonetic_data}
 
-Dragonmapper \footnote{https://github.com/tsroten/dragonmapper} is used to extract information from Chinese sentences. Pykakasi \footnote{https://github.com/miurahr/pykakasi} is used to extract information from Japanese sentences.
+\texttt{Dragonmapper} \footnote{https://github.com/tsroten/dragonmapper} is used to extract information from Chinese sentences. \texttt{Pykakasi} \footnote{https://github.com/miurahr/pykakasi} is used to extract information from Japanese sentences.
 
 \subsection{Dragonmapper} \label{sec:dragonmapper}
 
-Dragonmapper is a Python library that can convert between Chinese characters, Bopomofo, Pinyin, and International Phonetic Alphabet (IPA). When we call \pythoninline{dragonmapper.hanzi.to_pinyin(chinese_str)}, it will convert the Chinese sentence to Bopomofo tokens based on \textit{CC-CEDICT} \footnote{https://cc-cedict.org/wiki/} and \textit{Unihan} \footnote{http://www.unicode.org/charts/unihan.html} database. Table \ref{tab:dragonmapper} shows the result of phonetic extraction in Chinese sentences. The extraction will be applied to the tokenized sentences to achieve better accuracy.
+\texttt{Dragonmapper} is a Python library that can convert between Chinese characters, Bopomofo, Pinyin, and International Phonetic Alphabet (IPA). When we call \pythoninline{dragonmapper.hanzi.to_pinyin(chinese_str)}, it will convert the Chinese sentence to Bopomofo tokens based on \textit{CC-CEDICT} \footnote{https://cc-cedict.org/wiki/} and \textit{Unihan} \footnote{http://www.unicode.org/charts/unihan.html} database. Table \ref{tab:dragonmapper} shows the result of phonetic extraction in Chinese sentences. The extraction will be applied to the tokenized sentences to achieve better accuracy.
 
 \vspace{0.2cm}
 
@@ -208,17 +208,17 @@ Dragonmapper is a Python library that can convert between Chinese characters, Bo
         \end{tabular}
         \end{CJK}
 
-        \caption{Chinese Phonetic Extraction using Dragonmapper library}
+        \caption{Chinese Phonetic Extraction using \texttt{Dragonmapper} library}
         \label{tab:dragonmapper}
     \end{table}
 
 \subsection{Pykakasi} \label{sec:pykakasi}
 
-Pykakasi is a Python library that implements algorithms in \textit{kakasi} \footnote{http://kakasi.namazu.org/index.html.en} library. It is able to convert Kanji characters to Hiragana, Katakana, and Romaji through the SKK Japanese dictionary \footnote{https://github.com/skk-dev/dict} and UniDic \footnote{https://unidic.ninjal.ac.jp/}. Table \ref{tab:pykakasi} shows the result of phonetic extraction in Japanese tokenized sentences. 
+\texttt{Pykakasi} is a Python library that implements algorithms in the \texttt{kakasi} \footnote{http://kakasi.namazu.org/index.html.en} library. It is able to convert Kanji characters to Hiragana, Katakana, and Romaji through the \texttt{SKK} Japanese dictionary \footnote{https://github.com/skk-dev/dict} and \texttt{UniDic} \footnote{https://unidic.ninjal.ac.jp/}. Table \ref{tab:pykakasi} shows the result of phonetic extraction in Japanese tokenized sentences. 
 
 \vspace{0.2cm}
 
-\begin{CJK}{UTF8}{long}
+\begin{CJK}{UTF8}{ipxm}
     \begin{table}[h]
         \centering
             \begin{tabular}{p{2.3cm}p{12cm}}\toprule
@@ -235,7 +235,7 @@ Pykakasi is a Python library that implements algorithms in \textit{kakasi} \foot
                 Extracted & [いっしょう, ,, しばふ, で, なま, びーる, を, のむ] \\\bottomrule
 
             \end{tabular}
-        \caption{Japanese Phonetic Extraction using Pykakasi library}
+        \caption{Japanese Phonetic Extraction using \texttt{Pykakasi} library}
         \label{tab:pykakasi}
     \end{table}
 \end{CJK}
@@ -249,32 +249,29 @@ First, We will explore the details of Word2Vec. Second, we explain how to train 
 
 \subsection{Word2Vec} \label{sec:word2vec}
 
-Word2Vec has two classic papers. The first one \cite{mikolov2013efficient} contributes two approaches to constructing an embedding, namely CBOW and Skip-gram. The second one \cite{mikolov2013distributed} contributes the improved methods of embedding construction, such as Hierarchical Softmax and Negative Sampling. We will use Skip-gram and Negative Sampling to generate word embeddings in this paper.
+Word2Vec has two classic papers. The first one \cite{mikolov2013efficient} contributes two approaches to constructing an embedding, namely CBOW and Skip-gram. The second one \cite{mikolov2013distributed} contributes improved methods of embedding construction, such as Hierarchical Softmax and Negative Sampling. We will use Skip-gram and Negative Sampling to generate word embeddings in this paper.
 
-Skip-gram model uses a neural network with hidden layers to predict the likelihood of context words $w_{t-2}, w_{t-1}, w_{t+1}, w_{t+2}$ of an input word $w_t$. The input word and context words will be paired, such as $(w_t, w_{t-2}), (w_t, w_{t-1})$ to perform supervised training. The model can be expressed as the following equation, where $\theta$ represents hidden states of the input word $w_\text{center}$, and $w_1, w_2, \cdots, w_C$ represents the context words of $w_\text{center}$ within the window size $C$. 
-
-% The goal is to maximize the likelihood of the occurrence of context words for each word $w$ in the corpus by updating $\theta$ iteratively.
+Skip-gram model uses a neural network with hidden layers to predict the likelihood of context words $w_{t-2}, w_{t-1}, w_{t+1}, w_{t+2}$ of an input word $w_t$. The input word and context words will be paired, such as $(w_t, w_{t-2}), (w_t, w_{t-1})$ to perform supervised training. The model can be expressed as the following equation, where $\theta$ represents hidden states of the input word $w_\text{center}$, and $w_1, w_2, \cdots, w_C$ represents the context words of $w_\text{center}$ within the window size $C$. The goal is to maximize the likelihood of the occurrence of context words for each word $w$ in the corpus by updating $\theta$ iteratively.
 
 \begin{equation}
 \underset{\theta}{\operatorname{argmax}} \, p\left(w_{1}, w_{2}, \ldots, w_{C} \mid w_{\text {center}} ; \theta\right)
 \end{equation}
 
-Skip-gram uses the softmax model for context word classification. $h$ is the hidden layer word vector for the input word $w_\text{center}$ from the input embedding matrix, and $W_{\text {output}}$ is a row vector for a context word from the output embedding matrix. $W_{\text {output}_{(c)}}$ corresponds to the row vector of the context word in (input, context) pair, while $W_{\text {output}_{(i)}}$ corresponds to the row vector of each word in the corpus of size $V$.
+Skip-gram uses the softmax model to output a $V$-dimensional probability distribution for context word classification. We use the notation $p\left(w_{\text {context}} \mid w_{\text {center}}; \theta \right)$ in eq. \ref{eq:softmax1} to denote the probability (a scalar value of range $\left[0, 1\right)$) of observing a context word given a center word. $h$ is the hidden layer word vector for the input word $w_\text{center}$ from the input embedding matrix, and $W_{\text {output}}$ is a row vector for a context word from the output embedding matrix. $W_{\text {output}_{(c)}}$ corresponds to the row vector of the context word in (input, context) pair, while $W_{\text {output}_{(i)}}$ corresponds to the row vector of each word in the corpus of size $V$.
 
 \begin{equation}
-    p\left(w_{\text {context}} \mid w_{\text {center}}\right)=\frac{\exp \left(W_{\text {output}_{{(c)}}} \cdot h\right)}{\sum_{i=1}^{V} \exp \left(W_{\text {output}_{(i)}} \cdot h\right)} \in \mathbb{R}^{1}
+    p\left(w_{\text {context}} \mid w_{\text {center}}; \theta \right)=\frac{\exp \left(W_{\text {output}_{{(c)}}} \cdot h\right)}{\sum_{i=1}^{V} \exp \left(W_{\text {output}_{(i)}} \cdot h\right)} \in \mathbb{R}^{1} \label{eq:softmax1}
 \end{equation}
 
-The goal is to obtain the conditional probability distribution of each unique word observed in the corpus given an input word.
+This probability is computed $V$ times given a central word to obtain its conditional probability distribution for each unique word in the corpus. $W_\text{output}$ is the denominator in eq. \ref{eq:softmax1}.
 
 \begin{equation}
-    \left[\begin{array}{c}
-    p\left(w_{1} \mid w_{\text {input}}\right) \\
-    p\left(w_{2} \mid w_{\text {input}}\right) \\
-    p\left(w_{3} \mid w_{\text {input}}\right) \\
-    \vdots \\
-    p\left(w_{V} \mid w_{\text {input}}\right)
-    \end{array}\right]=\frac{\exp \left(W_{\text {output }_{(c)}} \cdot h\right)}{\sum_{i=1}^{V} \exp \left(W_{\text {output }_{(i)}} \cdot h\right)} \in \mathbb{R}^{V}
+    \frac{\exp \left(W_{\text {output}} \cdot h\right)}{\sum_{i=1}^{V} \exp \left(W_{\text {output}_{(i)}} \cdot h\right)} \in \mathbb{R}^{V}=\left[\begin{array}{c}
+        p\left(w_{1} \mid w_{\text {center}}\right) \\
+        p\left(w_{2} \mid w_{\text {center}}\right) \\
+        \vdots \\
+        p\left(w_{V} \mid w_{\text {center}}\right)
+        \end{array}\right]
 \end{equation}
 
 In machine learning, it is a convention to minimize the loss function. The log is added to the equation to simplify and accelerate the calculation, and the formula is rewritten as minimizing a negative log-likelihood instead of maximizing a positive log-likelihood.
@@ -296,7 +293,7 @@ Figure~\ref{fig:skip-gram} shows the Skip-gram model. we will learn word embeddi
 
 \footnotetext{Source: https://lilianweng.github.io/lil-log/2017/10/15/learning-word-embedding.html}
 
-Since the softmax model requires a lot of computational space and time, we also use negative sampling with the Skip-gram model. Negative sampling will convert the multi-classification problem that the model is designed to solve into a binary-classification problem. First, the method will randomly select $K$ negative samples from the corpus that are irrelevant to the input word. $K$ is a hyper-parameter, usually between 5 and 20. The model will update $(K+1)\times N$ parameters using the sigmoid function, where $N$ is the dimension of the hidden layer $h$, and $+1$ accounts for the positive sample.
+Since the softmax model requires a lot of computational space and time, we also use negative sampling with the Skip-gram model. Negative sampling will convert the multi-classification problem that the model is designed to solve into a binary-classification problem. First, the method will randomly select $k$ negative samples from the corpus that are irrelevant to the input word. $k$ is a hyper-parameter, usually between 5 and 20. The model will update $(k+1)\times n$ parameters using the sigmoid function, where $n$ is the dimension of the hidden layer $h$, and $+1$ accounts for the positive sample.
 
 The probability that a word ($c$) appears within the context of the input word ($w$) can be defined as the following formula. The goal is to determine whether $c$ is in the context window of $w$ ($D=1$) or not ($D=0$) based on the input-context pairs $(w, c)$.
 
@@ -306,7 +303,7 @@ p(D=1 \mid w, c ; \theta)=\frac{1}{1+\exp \left(-\bar{c}_{\text {output }_{(j)}}
 
 \subsection{Semantic Embedding}
 
-We use gensim to implement Skip-gram with negative sampling from Word2Vec. We put the tokenized sentences generated by different tokenizers into gensim to train the general word embedding with semantics. The following are the main settings of the parameters: \textit{max\_vocab\_size} is 32000, \textit{vector\_size} is 300, \textit{epoch\_number} is 13, \textit{window\_size} is 5, the number of negative samples is 5, ignoring the words with total frequency lower than 5.
+We use \texttt{Gensim} to implement Skip-gram with negative sampling from Word2Vec. We put the tokenized sentences generated by different tokenizers into \texttt{Gensim} to train the general word embedding with semantics. The following are the main settings of the parameters: \textit{max\_vocab\_size} is 32000, \textit{vector\_size} is 300, \textit{epoch\_number} is 13, \textit{window\_size} is 5, the number of negative samples is 5, ignoring the words with total frequency lower than 5.
 
 Some words may not be trained in the model, such as special tokens and low-frequency words. Therefore, the size of the trained embedding matrix and the tokenizer vocabulary is not identical, resulting in different coverage (Table~\ref{tab:semantic_coverage}). We calculate the mean and standard deviation of the whole embedding and randomly assign the empty word vectors using the normal distribution.
 
@@ -346,28 +343,26 @@ Several ways have been proposed to combine multiple embeddings, such as concaten
 
 \section{Corpus Filtering} \label{sec:corpus_filtering}
 
-We define custom rules and apply alignment scores from \textit{fast\_align} \cite{dyer2013simple} to perform corpus filtering to reduce noise, dataset size, and resource burden during training in the NMT system. The original dataset had 672,315 sentence pairs, which were reduced to 557,685 using rules and 462,582 using alignment scores.
+We define custom rules and apply alignment scores from \texttt{fast\_align} \cite{dyer2013simple} to perform corpus filtering to reduce noise, dataset size, and resource burden during training in the NMT system. The original dataset had 672,315 sentence pairs, which were reduced to 557,685 using rules and 462,582 using alignment scores.
 
 \subsection{Pre-filtering rules}
 
-We apply the following rules to exclude the pairs of sentences that do not match:
+We apply the following rules to exclude the pairs of sentences:
 
 \begin{enumerate}
-    \item Removing sentences that are too large in proportion to their length.
-    \item Removing sentences that are too short or too long.
-    \item Removing identical sentences.
-    \item Removing sentences that cannot be correctly identified as Chinese or Japanese by the fastText identification model.
-    \item Removing sentences with more English and numeric characters than Chinese and Japanese.
-    \item Removing sentences that have more than one counterpart.
+    \item Sentences that are too large in proportion to their length.
+    \item Sentences that are too short or too long.
+    \item Redundant (identical) sentences.
+    \item Sentences that cannot be correctly identified as Chinese or Japanese by the \texttt{fastText} identification model.
+    \item Sentences with more English and numeric characters than Chinese and Japanese.
+    \item Sentences that have more than one counterpart.
 \end{enumerate}
 
 \subsection{Scoring functions}
 
-fast\_align is a tool based on \textit{IBM alignment model 2} for training statistical machine translation and alignment model. The score is the probability of the source sentence given the target sentence and its alignment. The algorithm iteratively estimates the probability of being each other translation for source-target pairs and optimal alignment given the word-to-word translation probabilities. 
+\texttt{fast\_align} is a tool based on \textit{IBM alignment model 2} for training statistical machine translation and alignment model. The score is the probability of the source sentence given the target sentence and its alignment. The algorithm iteratively estimates the probability of being each other translation for source-target pairs and optimal alignment given the word-to-word translation probabilities. 
 
 In theory, the score should correlate with the degree of parallelism of the sentences. We remove the sentence pairs that are below a certain probability score threshold as shown in Table~\ref{tab:alignment_scores}. 
-
-\newpage
 
 \begin{table}[h]
     \centering
@@ -384,7 +379,7 @@ In theory, the score should correlate with the degree of parallelism of the sent
     \label{tab:alignment_scores}
 \end{table}
 
-We sampled some sentence pairs corresponding to alignment scores in Table~\ref{tab:alignment_samples}. The findings were that the lower the score, the longer the sentences tended to be, the more words were not translated, and the higher the proportion of proper nouns became.
+We sampled some sentence pairs corresponding to alignment scores in Table~\ref{tab:alignment_samples}. We found low scores to be associated with longer sentences, and higher proportions of untranslated words and proper nouns.
 
 \vspace{0.3cm}
 \begin{table}[h]
@@ -395,7 +390,7 @@ We sampled some sentence pairs corresponding to alignment scores in Table~\ref{t
             {Chinese } & 残留性化学物质的物质循环模型的构建和再利用·废弃物政策评价的应用 \\
         \end{tabularx}
     \end{CJK}
-    \begin{CJK}{UTF8}{long}
+    \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{lb}
             Japanese & 残留性化学物質の物質循環モデルの構築とリサイクル・廃棄物政策評価への応用 \\
             \midrule
@@ -407,7 +402,7 @@ We sampled some sentence pairs corresponding to alignment scores in Table~\ref{t
             {Chinese } & 使用传统的轴组装工法的2层木制住宅,进行了室内甲醛浓度的测量,同时也研讨了上下楼层的甲醛浓度和换气量的关系。 \\
         \end{tabularx}
     \end{CJK}
-    \begin{CJK}{UTF8}{long}
+    \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{lb}
             Japanese & 在来軸組工法木造2階建住宅を用いて,室内ホルムアルデヒド濃度の測定を行うとともに,上下階のホルムアルデヒド濃度と換気量の関係も検討した。 \\
             \midrule
@@ -419,7 +414,7 @@ We sampled some sentence pairs corresponding to alignment scores in Table~\ref{t
             {Chinese } & 当我尽快编写了PID控制程序并运行后发现,不仅温度不能很好地稳定,还出现了“不规则振荡”现象(重复出现大幅度偏离控制值的振动),控制彻底失败了。 \\
         \end{tabularx}
     \end{CJK}
-    \begin{CJK}{UTF8}{long}
+    \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{lb}
             Japanese & 早速,PID制御のプログラムを書いて実行したところ,うまく温度が安定化しないどころかいわゆる“ハンチング”現象(制御値から大きく外れた振動を繰り返す)を起こしてしまい,見事,制御に失敗した \\
             \midrule
@@ -431,7 +426,7 @@ We sampled some sentence pairs corresponding to alignment scores in Table~\ref{t
             {Chinese } & ('关于葛根、黄苓、黄连汤之证,在『伤寒论』34条中叙述:“太阳病,桂枝证,医反下之,利遂不止,脉促者,表未解也,喘而汗出者,葛根黄芩黄连汤主之”。 \\
         \end{tabularx}
     \end{CJK}
-    \begin{CJK}{UTF8}{long}
+    \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{lb}
             Japanese & '葛根黄苓黄連湯証について,『傷寒論』34条に,「太陽病,桂枝の証,医反ってこれを下し,利遂に止まず,脈促のものは,表いまだ解せざるなり,ぜんして汗出づるものは,葛根黄苓黄連湯これを主る」という。 \\
             \midrule
@@ -445,7 +440,7 @@ We sampled some sentence pairs corresponding to alignment scores in Table~\ref{t
 
 We will train and evaluate the NMT tasks in two classical models, the attention-based Bi-GRU model proposed by \cite{bahdanau2014neural}, and the Transformer model proposed by \cite{NIPS2017_3f5ee243}. We will explain the structure of models in this section. Furthermore, The use of parameters is presented in Section~\ref{sec:parameter}, the metric is explained in Section~\ref{sec:metric}, the results are listed in Section~\ref{sec:result}, and the case study is conducted in Section~\ref{sec:case_study}.
 
-The two models and the following illustrative diagrams are derived from \textit{bentrevett/pytorch-seq2seq} \footnote{https://github.com/bentrevett/pytorch-seq2seq}. We utilize the source code and optimize the details, such as accelerating the decoding efficiency of the decoder.
+The two models and the following illustrative diagrams are derived from \textit{bentrevett/pytorch-seq2seq} \footnote{https://github.com/bentrevett/pytorch-seq2seq}. We utilized their source code, but optimized some details, such as accelerating the decoding efficiency of the decoder.
 
 \subsection{Attention-based Bi-GRU encoder-decoder Model} \label{sec:rnn}
 
@@ -483,7 +478,7 @@ The obtained hidden states $\overrightarrow{z}$ and $\overleftarrow{z}$ (in eq. 
     \label{eq:eq3}
 \end{equation}
 
-Since the decoder is not bi-directional, we enter the hidden states $\overrightarrow{z}$ and $\overleftarrow{z}$ into a linear layer $g$ and a activation function $tanh$ (in eq. \ref{eq:eq4}) to get the condensed context vector $z$, also called $s_0$.
+Since the decoder is not bi-directional, we enter the hidden states $\overrightarrow{z}$ and $\overleftarrow{z}$ into a linear layer $g$ and activation function $tanh$ (in eq. \ref{eq:eq4}) to get the condensed context vector $z$, also called $s_0$.
 
 \begin{equation}
     z = \tanh(g(\text{cat}(\overrightarrow{z}, \overleftarrow{z}))) = s_0
@@ -505,7 +500,7 @@ The attention layer (Figure~\ref{fig:seq2seq_attention}) generates an array of t
     E_t = \tanh(\text{attn}(s_{t-1}, H)) \label{eq:eq5}
 \end{equation}
 
-Because the shape of the energy value $E_t$ is (\textit{src\_len} \footnote{The length of source sentence}, \textit{hid\_dim} \footnote{The dimension of hidden layer}), it will enter into a linear layer $v$ with the shape (\textit{hid\_dim}, 1) (in eq. \ref{eq:eq6}) to get the attention sequence $\hat{a}_t$ with the shape (\textit{src\_len}). The parameters learned in the linear layer $v$ can be imagined as the weight of the energy value $E_t$ for each token in the source sentence.
+Because the shape of the energy value $E_t$ is (\textit{src\_len} \footnote{The length of source sentence}, \textit{hid\_dim} \footnote{The dimension of hidden layer}), it will enter into a linear layer $v$ with shape (\textit{hid\_dim}, 1) (in eq. \ref{eq:eq6}) to get the attention sequence $\hat{a}_t$ with shape (\textit{src\_len}). The parameters learned in the linear layer $v$ can be imagined as the weight of the energy value $E_t$ for each token in the source sentence.
 
 \begin{equation}
      \hat{a}_t = v(E_t) \label{eq:eq6}
@@ -570,13 +565,13 @@ The Transformer is an attention-driven model that uses the attention mechanism t
 	\label{fig:transformer_attention}
 \end{figure}
 
-In the Transformer, Attention layer requires three elements, namely query ($Q$), key ($K$), and value ($V$), as shown in Figure~\ref{fig:transformer_attention1}. To begin with, the energy value is generated by taking the dot product between query $Q$ and key $K$. It is then scaling by the square root of \textit{head\_dim} \footnote{The hidden state dimension of each head in Multi-Head Attention} ($\sqrt{d_k}$) to avoid gradient vanishing. After that, the energy value is fed into the softmax layer to get the attention sequence and finally multiplied with the value $V$ to get the weighted sum (in eq. \ref{eq:eq11}).
+In the Transformer, the attention layer requires three elements, namely query ($Q$), key ($K$), and value ($V$), as shown in Figure~\ref{fig:transformer_attention1}. To begin with, the energy value is computed by taking the dot product between query $Q$ and key $K$. It is then scaled by the square root of \textit{head\_dim} \footnote{The hidden state dimension of each head in Multi-Head Attention} ($\sqrt{d_k}$) to avoid gradient vanishing. After that, the energy value is fed into the softmax layer to get the attention sequence and finally multiplied by the value $V$ to get the weighted sum (in eq. \ref{eq:eq11}).
 
 \begin{equation}
 \text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V \label{eq:eq11}
 \end{equation}
 
-The Transformer model splits query $Q$, key $K$, and value $V$ into multiple heads with smaller dimensions and trains them separately (Figure~\ref{fig:transformer_attention2}). They are divided into heads by the linear layers ($W_i^Q, W_i^K, W_i^V$). Each has the size that equals the dimension of the hidden state divided by the number of heads. 
+The Transformer model splits query $Q$, key $K$, and value $V$ into multiple heads with smaller dimensions and trains them separately (Figure~\ref{fig:transformer_attention2}). They are divided into heads by the linear layers ($W_i^Q, W_i^K, W_i^V$). Each with size equal to the dimension of the hidden state divided by the number of heads. 
 
 \begin{equation}
 \text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V) \label{eq:eq12}
@@ -598,7 +593,7 @@ After all the heads pass through the attention layer (in eq \ref{eq:eq12}), they
 	\label{fig:transformer_encoder}
 \end{figure}
 
-Unlike the Attention-based Bi-GRU model, the input tokens will generate the corresponding number of context vectors directly after passing through the encoder. For example, if the input has 5 tokens $X = (x_1, x_2, x_3, x_4, x_5)$, the encoder will generate 5 context vectors $Z = (z_1, z_2, z_3, z_4, z_5)$ for the decoder to predict.
+Unlike the attention-based Bi-GRU model, the input tokens will generate the corresponding number of context vectors directly after passing through the encoder. For example, if the input has 5 tokens $X = (x_1, x_2, x_3, x_4, x_5)$, the encoder will generate 5 context vectors $Z = (z_1, z_2, z_3, z_4, z_5)$ for the decoder to predict.
 
 The tokens are passed to the word embedding and retrieved the position information by the positional embedding. The size of the positional embedding is equal to the length of the sentence; if the sentence length is 100, then the size of the positional embedding will be 100. The word embedding is added to the positional embedding to obtain the text and position information. However, the word embedding is multiplied by a scaling factor $\sqrt{d_\text{model}}$, which is used to reduce the variance of the embedding.
 
@@ -613,15 +608,13 @@ An encoder will have multiple encoder layers. Each of them contains an attention
 	\label{fig:transformer_decoder}
 \end{figure}
 
-The architecture of the decoder is almost identical to that of the encoder. The decoder feeds the embedded-target-tokens into several decoder layers, and predicts the next target token $\hat{y}$ with source context vector $Z$. Following this, it computes the loss by the predict token $\hat{y}$ and the answer token $y$, and updates all the weights of the network.
+The architecture of the decoder is almost identical to that of the encoder. The decoder feeds the embedded-target-tokens into several decoder layers, and predicts the next target token $\hat{y}$ with source context vector $Z$. Following this, it computes the loss by the predicted token $\hat{y}$ and the answer token $y$, and updates all the weights of the network.
 
 There are three main components in a decoder layer. First, the decoder has a masked multi-head attention layer, in which the target sentence will perform self-attention with itself and a special mask to prevent the decoder from seeing the future words in advance. Second, the multi-head attention layer is calculated with the context vector from the masked multi-head attention layer as the query $Q$ and the encoder context vector as the key $K$ and value $V$. Third, the last position-wise feedforward layer receives the results of the previous layer and outputs the final context vector to predict the next token $\hat{y}$.
 
 \section{Embedding Analysis} \label{sec:embedding_analysis}
 
-We will examine the effectiveness of joint semantic-phonetic embedding using four methods implemented in gensim. We expect joint semantic-phonetic embedding to retain the word similarity, analogical reasoning, and outlier detection capabilities that semantic embedding possesses. We are also interested in whether the joint embedding can enhance the impact on homonyms and heteronyms. All examination findings will be discussed in Section~\ref{sec:analysis}.
-
-% 講解這個東西在幹嘛的。怎麼算。怎麼用 gensim 跑。
+We will examine the effectiveness of joint semantic-phonetic embedding using four methods implemented in \texttt{Gensim}. We expect joint semantic-phonetic embedding to retain the word similarity, analogical reasoning, and outlier detection capabilities that semantic embedding possesses. We are also interested in whether the joint embedding can enhance the impact on homonyms and heteronyms. All examination findings will be discussed in Section~\ref{sec:analysis}.
 
 \subsection{Word Similarity} \label{sec:similarity}
 
@@ -631,7 +624,7 @@ The purpose of word similarity is to evaluate the closeness and relatedness of a
     \text { similarity }=\cos (\theta)=\frac{A \cdot B}{\|A\|\|B\|}=\frac{\sum_{i=1}^{n} A_{i} \times B_{i}}{\sqrt{\sum_{i=1}^{n}\left(A_{i}\right)^{2}} \times \sqrt{\sum_{i=1}^{n}\left(B_{i}\right)^{2}}} \label{eq:eq14}
 \end{equation}
 
-This paper uses similarity distance to compare the distance of synonyms under different embeddings to examine whether joint embedding can preserve the semantic properties.
+This paper uses similarity distance to compare the distance of synonyms under different embeddings to examine whether joint embedding can preserve semantic properties.
 
 \subsection{Analogical Reasoning} \label{sec:analogy}
 
@@ -647,4 +640,4 @@ Outlier Detection tests the ability of embeddings to perform the task of word ca
 
 \subsection{Homonym and Heteronym} \label{sec:homonym_heteronym}
 
-This task is an extension of word similarity tasks. We expect the joint embedding with additional phonetic information reduces the impact of possible noise on the NMT system (i.e. the impact of homonyms). Homonyms refer to the words that have the same pronunciation and spelling but different meanings. The evaluation uses Pearson correlation to examine the relationship between homonyms. We expect the correlation coefficient will be higher in the joint embedding than in the semantic embedding. At the same time, we expect that phonetic information will help the joint embedding to increase the similarity distance between heteronyms. Heteronyms refer to words that have identical writing but different pronunciation, spelling, and meaning. Increasing the distance between heteronyms means strengthening the semantics between words.
+This task is an extension of word similarity tasks. We expect the joint embedding with additional phonetic information reduces the impact of possible noise on the NMT system (i.e. the impact of homonyms, easily mistyped because they share the same pronunciation). The evaluation uses Pearson correlation to examine the relationship between homonyms. We expect the correlation coefficient will be higher in the joint embedding than in the semantic embedding. At the same time, we expect that phonetic information will help the joint embedding to increase the similarity distance between heteronyms. Heteronyms refer to words that have identical writing but different pronunciation, spelling, and meaning. Increasing the distance between heteronyms means strengthening the semantics between words.

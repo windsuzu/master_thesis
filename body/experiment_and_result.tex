@@ -25,11 +25,11 @@ We have selected ASPEC-JC as the dataset for our zh-ja NMT system, and the struc
 
 \section{Environment} \label{sec:environment}
 
-We use \texttt{PyTorch} \footnote{https://pytorch.org/} and \texttt{PyTorch-Lightning} \footnote{https://www.pytorchlightning.ai/} \cite{falcon2019pytorch}  as the main framework for constructing the entire NMT model (Section~\ref{sec:lightning}), as well as Weights \& Biases (wandb) \footnote{https://wandb.ai/site} \cite{wandb} for logging models, metrics, and dataflow (Section~\ref{sec:wandb}).
+We use \texttt{PyTorch} \footnote{https://pytorch.org/} and \texttt{PyTorch-Lightning} \footnote{https://www.pytorchlightning.ai/} \cite{falcon2019pytorch}  as the main framework for constructing the entire NMT model (Section~\ref{sec:lightning}), as well as Weights \& Biases (\texttt{wandb}) \footnote{https://wandb.ai/site} \cite{wandb} for logging models, metrics, and dataflow (Section~\ref{sec:wandb}).
 
 \subsection{PyTorch and PyTorch Lightning} \label{sec:lightning}
 
-\texttt{PyTorch} has been widely used in academic research and production. We use \texttt{PyTorch} as a framework for processing data and designing the components (i.e., encoder, attention, decoder) of attention-based Bi-GRU Model and Transformer.
+\texttt{PyTorch} has been widely used in academic research and production. We use \texttt{PyTorch} as a framework for processing data and designing the components (i.e., encoder, attention, decoder) of the attention-based Bi-GRU Model and Transformer.
 
 \texttt{PyTorch-Lightning} offers many advantages as a wrapper for \texttt{PyTorch}: Dataflow can be integrated more efficiently in \pythoninline{LightningDataModule}; the main source code, including the components designed by \texttt{PyTorch}, can be integrated into \pythoninline{LightningModule}; using \pythoninline{Trainer} can directly utilize the \pythoninline{LightningDataModule} and \pythoninline{LightningModule}, and help us use the correct engineering code such as gradient update, data transfer between CPU and GPU. In addition, \texttt{PyTorch-Lightning} provides a lot of plugins to simplify research, such as multi-GPU or TPU training, checkpointing and logging of models, implementing 16-bit precision, early stopping, finding learning rate and batch size, etc.
 
@@ -98,11 +98,9 @@ Mathematically, the BLEU score is defined as eq. \ref{eq:eq16} and eq. \ref{eq:e
 
 Here are several considerations for evaluating translation models using the BLEU score. First, BLEU is a corpus-based metric that requires evaluating multiple sentences (corpus) at once; the score for individual sentences will lose some meaning; in other words, statistics are accumulated across the sentences when computing the score. Second, BLEU cannot distinguish the errors between the function words and the content words; dropped function words such as ``a'', ``the'', and ``of'' carry the same penalties as important content words that are mistranslated or lost. Third, BLEU is not good at capturing the meaning and grammaticality of sentences; namely, the impact of single words such as ``not'' that can dramatically change the semantics, and long-range dependencies of distances greater than the length of the n-gram will be underestimated.
 
-
 \section{Result} \label{sec:result}
 
-All NMT models are trained based with a dictionary size of 32,000,
-300-dimensional embedding, and sampled dataset that has 50,000 sentence pairs. We first examine the losses and BLEU scores produced by different tokenization methods and embeddings on the two models. Although there is no exact correspondence between the loss and the BLEU score, the loss is still a useful metric for evaluating the performance of models such as detecting overfitting. Finally, we look into the result using the best model and the complete, filtered dataset (462,582 sentence pairs) and compare it with other studies.
+All NMT models are trained based with a dictionary size of 32,000, 300-dimensional embedding, and sampled dataset that has 50,000 sentence pairs. We first examine the losses and BLEU scores produced by different tokenization methods and embeddings on the two models. Although there is no exact correspondence between the loss and the BLEU score, the loss is still a useful metric for evaluating the performance of models such as detecting overfitting. Finally, we look into the result using the best model and the complete, filtered dataset (462,582 sentence pairs) and compare it with other studies.
 
 \subsection{Attention-based Bi-GRU Model}
 

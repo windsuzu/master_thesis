@@ -1,53 +1,55 @@
 \hspace{24pt}
 
-Over the past few years, the field of neural machine translation (NMT) between Chinese and Japanese is still an unresolved problem. Recent studies in Chinese-Japanese NMT have used specific methods such as sub-character level features to improve the translation quality. This is due to the lack of parallel corpus and the difference between logogram (a character or symbol that represents a word) and alphabet (a set of letters used when writing in a language) writing systems. This research explores phonetic information as an additional feature for improving the quality of Chinese-Japanese NMT systems.
+The field of neural machine translation (NMT) between Chinese and Japanese is an area of active research with recent studies employing specific methods such as sub-character level features to improve the translation quality.  Nevertheless the quality of Chinese-Japanese machine translation is low compared to the high standard obtainable for language pairs such as English-French.  The difficulties include a comparative lack of parallel corpora, and less overall similarity as languages.  Another striking difference between translation between European languages versus Chinese-Japanese, is the complex orthography adopted by the latter two.  Chinese and Japanese writing both employ thousands of characters, most having semantic significance, but some mostly or purely phonetic.
+This research explores phonetic information as an additional feature for improving the quality of Chinese-Japanese NMT systems.
 
 \section{Background} \label{sec:background}
 
-NMT is a popular area of natural language processing (NLP), has been proposed by using an end-to-end model which transforms a source sentence into a latent space and decodes it directly into a target sentence \cite{sutskever2014sequence, cho2014learning}. The model is called the encoder-decoder model or sequence-to-sequence model, and they are widely used by large technology companies such as Google, Facebook, Microsoft, and DeepL.
+NMT, a popular area of natural language processing (NLP), has been proposed by using an end-to-end model which transforms a source sentence into a latent space and decodes it directly into a target sentence \cite{sutskever2014sequence, cho2014learning}. The model is called the encoder-decoder model or sequence-to-sequence model, and such models are widely used by large technology companies such as Google, Facebook, Microsoft, and DeepL.
 
 \subsection{Progress of Neural Machine Translation} \label{sec:nmt}
 
-The progress of NMT and NLP are inseparable. The development of models, tokenization methods, embeddings, and the solutions to less or no parallel data, all involved in the progress of NMT.
+The progress of NMT and NLP are inseparable. The development of models, tokenization methods, embeddings, and solutions to insufficient parallel corpora, all can help drive the progress of NMT.
 
-Recurrent neural networks (RNNs), attention mechanisms, and transformers have been proposed sequentially throughout the progress of encoder-decoder models. RNN that recursively passes states in its networks was first applied in the encoder-decoder model \cite{cho2014learning}. Attention-mechanism had addressed the problem of insufficient information in the latent space between encoder and decoder based on RNN \cite{bahdanau2014neural}. Transformers had replaced the RNN structure with full attention-mechanism (i.e., self-attention) to achieve better results and used widely in NMT tasks \cite{NIPS2017_3f5ee243}. 
+Recurrent neural networks (RNNs), attention mechanisms, and transformers have been proposed sequentially throughout the progress of encoder-decoder models.  An RNN that recursively passes states in its networks was first applied in the encoder-decoder model \cite{cho2014learning}. Attention-mechanism then addressed the problem of insufficient information in the latent space between encoder and decoder based on RNN \cite{bahdanau2014neural}.  Finally, transformers replaced the RNN structure with full attention-mechanism (i.e., self-attention) to achieve better results and used widely in NMT tasks \cite{NIPS2017_3f5ee243}. 
 
-Tokenization is one of the most important parts of any NLP task. It determines how a sentence will be tokenized, and it will generate different meanings to a sentence with different algorithms. Besides word-level and character-level tokenization, several subword-level tokenization algorithms had become the mainstream. For example: Byte-Pair Encoding (BPE) \cite{sennrich_neural_2016}, Unigram Language Model \cite{kudo-2018-subword}, WordPiece \cite{6289079}, and SentencePiece \cite{kudo-richardson-2018-sentencepiece}. This paper will utilize BPE, SentencePiece \cite{sennrich_neural_2016, kudo-richardson-2018-sentencepiece} and two word-level tokenizer (\textit{Jieba}\footnote{https://github.com/fxsjy/jieba} and \textit{Janome}\footnote{https://mocobeta.github.io/janome}) as tokenization methods.
+Tokenization is one of the most important parts of any NLP task. It determines how a sentence is decomposed, and can affect the performance of downstream processing. Besides word-level and character-level tokenization, several subword-level tokenization algorithms have become mainstream. For example: Byte-Pair Encoding (BPE) \cite{sennrich_neural_2016}, Unigram Language Model \cite{kudo-2018-subword}, WordPiece \cite{6289079}, and SentencePiece \cite{kudo-richardson-2018-sentencepiece}. This paper will utilize BPE, SentencePiece \cite{sennrich_neural_2016, kudo-richardson-2018-sentencepiece} and the two word-level tokenizers (\textit{Jieba}\footnote{https://github.com/fxsjy/jieba} and \textit{Janome}\footnote{https://mocobeta.github.io/janome}) as tokenization methods.
 
-The concept of embeddings, also known as distributed representations, was first proposed by \cite{hinton1986learning, bengio2003neural}, but was difficult to implement due to hardware limitations. With the development of parallel computing and GPU, many embedding implementations have been proposed, such as Word2Vec \cite{mikolov2013efficient}, GloVe \cite{pennington2014glove}, and fastText \cite{bojanowski2017enriching}. The contextualized word embedding is another concept that obtains context-dependent word embedding from the whole sentence, meaning that the same word with a different position can obtain different embedding through the model. The representative ones are ELMo \cite{peters-etal-2018-deep} and BERT \cite{devlin-etal-2019-bert}. This paper will select Word2Vec \cite{mikolov2013efficient} as the tool for creating word embeddings because of its simplicity, rapidity, and convenience of analysis.
+The concept of embeddings, also known as distributed representations, was first proposed by \cite{hinton1986learning, bengio2003neural}, but was difficult to implement due to hardware limitations. With the development of parallel computing and GPU, many embedding implementations have been proposed, such as Word2Vec \cite{mikolov2013efficient}, GloVe \cite{pennington2014glove}, and fastText \cite{bojanowski2017enriching}.  Contextualized word embedding is another concept that obtains context-dependent word embedding from the whole sentence, meaning that the same word with a different position can differentially represented in the model.  Well known word embedding tools include ELMo \cite{peters-etal-2018-deep} and BERT \cite{devlin-etal-2019-bert}.  Here, we select Word2Vec \cite{mikolov2013efficient} as the tool for creating word embeddings because of its simplicity, rapidity, and convenience of analysis.
 
-Several fields have been studied to solve the problems like low-resources and noisy parallel data in NMT tasks. Back-translation \cite{sennrich-etal-2016-improving} is a data augmentation method that uses monolingual data of the target language to generate source data and offset the imbalance between encoder and decoder. Parallel corpus filtering was examined for a large number of NMT tasks \cite{koehn2018findings}, using pre-filtering rules and scoring functions to retain good sentence pairs can effectively reduce the corpus size and obtained better translation results. This paper will practice corpus filtering to retain quality training data and reduce corpus size to increase experimental efficiency.
+Several techniques have been developed to solve the problems like low-resources and noisy parallel data in NMT tasks. Back-translation \cite{sennrich-etal-2016-improving} is a data augmentation method that uses monolingual data of the target language to generate source data and offset the imbalance between encoder and decoder. Parallel corpus filtering was examined for a large number of NMT tasks \cite{koehn2018findings}, using pre-filtering rules and scoring functions to retain good sentence pairs can effectively reduce the corpus size and obtained better translation results. This paper employs corpus filtering to retain quality training data and reduce corpus size to increase experimental efficiency.
 
 \subsection{Chinese-Japanese Neural Machine Translation}
 
 NMT system has gained a lot of improvement in translating between English and other languages by utilizing the techniques described in section \ref{sec:nmt}. However, the improvement in translating between Chinese and Japanese is limited. The main reasons are the inadequacy of the corpus and the differences in the writing systems of Chinese, Japanese, and Western languages.
 
-Many studies have focused on improving the Chinese-Japanese (zh-ja) NMT system. In addition to using the methods \cite{imamura2018enhancement, chu2017empirical, zhang2020parallel} described in section \ref{sec:nmt}, many feature engineering techniques have been proposed to utilize the features in Chinese Characters (\textit{Hanzi}) and Japanese \textit{Kanji}. For example, a character-level zh-ja NMT system had been improved by using radicals as character feature information \cite{8300572}. Furthermore, the use of decomposed sub-character level information such as ideographs and strokes of Chinese characters, also improved the results \cite{zhang-komachi-2018-neural}.
+Many studies have focused on improving the Chinese-Japanese (zh-ja) NMT system. In addition to using the methods \cite{imamura2018enhancement, chu2017empirical, zhang2020parallel} described in section \ref{sec:nmt}, many feature engineering techniques have been proposed to utilize the features in Chinese Characters (known as \textit{hanzi}) in Mandarin and \textit{kanji} in Japanese).  For example, a character-level zh-ja NMT system has been improved by using radicals as character feature information \cite{8300572}. Furthermore, the use of decomposed sub-character level information such as ideographs and strokes of Chinese characters, also improved the results \cite{zhang-komachi-2018-neural}.
 
 \subsection{Phonetic Information} \label{sec:phonetic}
 
 Phonetic information is another feature that had been applied to NMT systems. \cite{khan2019diversity} had suggested that a phonetic representation usually corresponds to semantically distinct characters or words. \cite{liu-etal-2019-robust} had pointed out that phonetic information can effectively resist the homophone noises generated by typographical mistakes in Chinese sentences. Both papers had improved the performance of the NMT system between Chinese and other Western languages.
 
-This paper attempts to use \textit{Bopomofo} and \textit{Hiragana} as Chinese and Japanese phonetic information to improve the performance of the zh-ja NMT system. Bopomofo also named \textit{Zhuyin} (注音), is located in the Unicode block in the range U+3100–U+312F. It consists of 37 characters and 4 tone marks to transcribe all possible Chinese characters. Although it is the main component of Mandarin Chinese, it usually does not appear in Chinese sentences. That is, the machine loses some of the phonetic information when reading Chinese sentences. \begin{CJK}{UTF8}{song}
-Hiragana (平仮名, ひらがな) is a component of Japanese, along with \textit{Katakana} and Kanji. It consists of 46 base characters and is located in the Unicode block in the range U+3040–U+309F. Compared to Bopomofo, Hiragana is often found in Japanese sentences with Katakana and Kanji, forming mixed writing of Kanji and Kana (仮名交じり文). However, Hiragana disappears after forming Kanji, just like Bopomofo forms Hanzi. Therefore, the machine cannot obtain the phonetic information directly from Japanese sentences.
+This paper attempts to use \textit{Bopomofo} and \textit{Hiragana} as Chinese and Japanese phonetic information to improve the performance of the zh-ja NMT system. Bopomofo also named \textit{Zhuyin} (注音), is located in the Unicode block in the range U+3100–U+312F. It consists of 37 characters and 4 tone marks to transcribe all possible Chinese characters. Bopomofo is specifically designed to phonetically annotate Mandarin Chinese (in dictionaries and school reading primers etc.), but is not usually used when writing Chinese sentences.  Thus phonetic information is not directly available to a machine reading normal Chinese sentences.
+\begin{CJK}{UTF8}{ipxm}
+Hiragana (平仮名, ひらがな) is a component of Japanese orthography, along with \textit{katakana} and kanji. It consists of 46 base characters and is located in the Unicode block in the range U+3040–U+309F.  Hiragana are phonetic characters, forming a complete phonetic syllabury of the Japanese language.  For each hiragana character there is a corresponding katakana character (analogous to lower and upper case latin letters).  Collectively, hiragana and katakana are called \textit{kana}.  Kana play two roles in Japanese: first they both appear in normal Japanese text (so called ``仮名交じり文'') where they complement kanji, second kana can be used to phonetically annotate kanji.  The second role is exactly analogous to the role of bopomofo in Mandarin, and like in Mandarin, a machine reading normal Japanese sentences does not have access to phonetic information regarding the kanji part of the text.
 \end{CJK}
 
 
 \section{Objective} \label{sec:objective}
 
-This paper aims to determine whether the use of phonetic information can help improve the performance of the zh-ja NMT system. We will use embedding, which is commonly used to represent semantics, to represent the features of phonetic information. The \textit{gensim} library \footnote{https://radimrehurek.com/gensim/index.html} will be utilized to implement Word2Vec \cite{mikolov2013efficient} to extract both semantic and phonetic embedding. The embeddings will be trained on a small corpus (less than 1 million lines of sentences) to see if they are useful for the subsequent NMT task.
+This paper aims to determine whether the use of phonetic information can help improve the performance of the zh-ja NMT system. We use embedding, which is commonly used to represent semantics, to represent the features of phonetic information. The \textit{gensim} library \footnote{https://radimrehurek.com/gensim/index.html} will be utilized to implement Word2Vec \cite{mikolov2013efficient} to extract both semantic and phonetic embedding. The embeddings will be trained on a small corpus (less than 1 million lines of sentences) to see if they are useful for the subsequent NMT task.
 
-Combining the findings from other studies \cite{liu-etal-2019-robust, khan2019diversity} described in section \ref{sec:phonetic}, we hypothesize that embeddings with the combination of semantics and phonetics (joint embedding) can improve the performance of the zh-ja NMT system more effectively than embeddings with only semantics or phonetics. 
+Combining the findings from other studies \cite{liu-etal-2019-robust, khan2019diversity} described in section \ref{sec:phonetic}, we hypothesized that embeddings with the combination of semantics and phonetics (joint embedding) may improve the performance of the zh-ja NMT system more effectively than embeddings with only semantics or phonetics. 
 
-We will perform a series of experiments to test the hypothesis. First, we examine whether the joint embedding can improve the results of the zh-ja NMT system with different tokenization methods. Second, we conduct NMT tasks under four conditions: without any pre-trained embedding, with pre-trained semantic embedding, with pre-trained phonetic embedding, and with joint semantic-phonetic embedding. Third, we analyze the changes that occur when phonetic information is added to the general semantic embedding. The analyses include analogical reasoning, outlier detection, word similarity, and the influence on both homonyms and heteronyms.
+Here, we perform a series of experiments to test this hypothesis. First, we examine whether the joint embedding can improve the results of the zh-ja NMT system with different tokenization methods. Second, we conduct NMT tasks under four conditions: without any pre-trained embedding, with pre-trained semantic embedding, with pre-trained phonetic embedding, and with joint semantic-phonetic embedding. Third, we analyze the changes that occur when phonetic information is added to the general semantic embedding. The analyses include analogical reasoning, outlier detection, word similarity, and the influence on both homonyms and heteronyms.
 
 \section{Related Work} \label{sec:related_work}
 
-The core technique in this paper is to enhance the ability of word embeddings by utilizing feature engineering on phonetic information. Therefore, we are going to review some studies that use additional features to improve word embeddings. The review will be carried out from two perspectives, one is to improve embedding with the features of Chinese characters such as radicals and strokes, and the other is to improve embedding with the features of phonetics. The concept of Word2Vec \cite{mikolov2013efficient} is commonly used in reviews, and we will mention it in section \ref{sec:word2vec} of Chapter \ref{ch:method}.
+The core technique in this paper is to enhance the ability of word embeddings by utilizing feature engineering on phonetic information. Therefore, we review some studies that use additional features to improve word embeddings. The review will be carried out from two perspectives, one is to improve embedding with the features of Chinese characters such as radicals and strokes, and the other is to improve embedding with the features of phonetics.  The concept of Word2Vec \cite{mikolov2013efficient} has been reviewed elsewhere, but we will mention it in section \ref{sec:word2vec} of Chapter \ref{ch:method}.
 
 \subsection{Chinese Word Embedding} \label{sec:rw_cwe}
 
-We will review some studies which suggested that the rich, decomposed information of Chinese characters can be exploited to train the word embeddings with words or characters jointly. Some of the most popular studies in this field are: \textit{CWE} \cite{chen2015joint}, \textit{MGE} \cite{yin2016multi}, \textit{JWE} \cite{yu2017joint}, and \textit{cw2vec} \cite{cao2018cw2vec}. The following sections review the approaches from JWE and cw2vec because their concepts are relatively new and their performance is better.
+We review some studies which suggested that the rich, decomposed information of Chinese characters can be exploited to train the word embeddings with words or characters jointly. Some of the most popular studies in this field are: \textit{CWE} \cite{chen2015joint}, \textit{MGE} \cite{yin2016multi}, \textit{JWE} \cite{yu2017joint}, and \textit{cw2vec} \cite{cao2018cw2vec}. The following sections review the approaches from JWE and cw2vec because their concepts are relatively new and their performance is better.
 
 \subsubsection{Joint Learning Word Embedding Model (JWE)}
 
@@ -56,24 +58,26 @@ The authors of JWE \cite{yu2017joint} proposed a model that combines word, chara
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.7]{../images/jwe_illustration.png}
-	\caption{An illustration of JWE model proposed in \cite{yu2017joint}}
+	\caption[An illustration of the JWE model (reproduced from \cite{yu2017joint})]{An illustration of the JWE model (reproduced from \cite{yu2017joint}). The symbol $w$ represents words, $w_i$ is the current word, $w_{i-1}$ and $w_{i+1}$ are the context words. The symbol $c$ represents the characters of context words, $c_{i-1}$ is the characters of $w_{i-1}$, and $c_{i+1}$ is the characters of $w_{i+1}$. The symbol $s$ represents the sub-characters of context words. $s_i$ is the sub-character components of $w_i$, and $s_{i-1}, s_{i+1}$ are the components of $w_{i-1}$ and $w_{i+1}$.}
 	\label{fig:jwe}
 \end{figure}
 
-As shown in the Figure \ref{fig:jwe} above, The JWE model is trained to predicts the present word from the context words in the same way as CBOW. The symbol $w$ represents words, $w_i$ is the current word, $w_{i-1}$ and $w_{i+1}$ are the context words. The symbol $c$ represents the characters of context words, $c_{i-1}$ is the characters of $w{i-1}$, and $c_{i+1}$ is the characters of $c_{i+1}$. The symbol $s$ represents the sub-characters of context words. $s_i$ is the sub-character components of $w_i$, and $s_{i-1}, s_{i+1}$ are the components of $w_{i-1}$ and $w_{i+1}$. For example, a word 智能 (intelligence) has two characters 智 (wisdom) and 能 (able), and each has sub-character components: 知, 日 and ㄙ, 月, 匕, 匕. The JWE model aims to maximize the sum of log-likelihoods of 3 conditional probabilities that come from the context words ($h_{i1}$), characters ($h_{i2}$), and sub-characters ($h_{i3}$).
-
-\begin{equation}
+As shown in the Figure \ref{fig:jwe} above, The JWE model is trained to predict the present word from the context words in the same way as CBOW.  For example, the Chinese word 智能 (intelligence) has two characters 智 (wisdom) and 能 (able), decomposable into sub-character components: \{知,日\} and \{ㄙ,月,匕x2\}. The JWE model aims to maximize:
+%%
+\begin{equation*}
 L(w_i) = \sum_{k=1}^3\log P(w_i\mid h_{ik})    
-\end{equation}
+\end{equation*}
+%%
+the sum of 3 conditional probabilities from the context words ($h_{i1}$), characters ($h_{i2}$), and sub-characters ($h_{i3}$) respectively.
 
 \subsubsection{cw2vec Model}
 
-Inspired by fastText \cite{bojanowski2017enriching}, the authors of cw2vec \cite{cao2018cw2vec} proposed an n-gram feature based on the strokes of Chinese characters. They first split and transformed the text into stroke information, and mapped the strokes into 5 corresponding stroke ids, then merge the ids and generate n-gram features from these stroke ids. The diagram in the paper (Figure \ref{fig:cw2vec1}) shows the complete process.
+Inspired by fastText \cite{bojanowski2017enriching}, the authors of cw2vec \cite{cao2018cw2vec} proposed an n-gram feature based on the strokes of Chinese characters. They first split and transform the text into stroke information, the map the strokes into 5 corresponding stroke ids, and finally merge the ids and generate n-gram features from these stroke ids. The diagram in the paper (Figure \ref{fig:cw2vec1}) shows the complete process.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.6]{../images/cw2vec_illustration1.png}
-	\caption{The Process of generating stroke n-grams shown in \cite{cao2018cw2vec}}
+	\caption{The Process of generating stroke n-grams in cw2vec (reproduced from \cite{cao2018cw2vec})}
 	\label{fig:cw2vec1}
 \end{figure}
 
@@ -82,7 +86,7 @@ The authors used Skip-Gram, a second method other than CBOW proposed by Word2Vec
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.6]{../images/cw2vec_illustration2.png}
-	\caption{An illustration of cw2vec model proposed in \cite{cao2018cw2vec}}
+	\caption{An illustration of the cw2vec model (reproduced from \cite{cao2018cw2vec})}
 	\label{fig:cw2vec2}
 \end{figure}
 
@@ -90,33 +94,31 @@ These word embeddings designed for Chinese all utilized the radicals or strokes 
 
 \subsection{Phonetic Word Embedding} \label{sec:rw_pwe}
 
-We will review studies that use phonetic information to construct word embeddings. These studies are closely related to our research, and we will learn from their practical differences and use them as the cornerstone for our experiments.
+Next we review studies that use phonetic information to construct word embeddings. These studies are closely related to our research, we can learn from their practical differences and use them as the cornerstone for our experiments.
 
 \subsubsection{Phonetic Encoding}
 
-The study \cite{khan2019diversity} extracted sentences from Chinese or Western languages into phonetic encodings \footnote{The logogram encoding is also used as a feature but is not explained here. Random clustering is used for comparison purposes.}, which used \textit{Soundex}, \textit{NYSIIS}, \textit{Metaphone}, and \textit{Hanyu Pinyin} as the extraction algorithm. After that, they applied BPE \cite{sennrich_neural_2016} to tokenize the sentences and encodings, and trained separate embeddings from the sentences and each encoding (empty boxes in Figure \ref{fig:phonetic1}). Lastly, they concatenated the embeddings and fed them into the NMT system. 
+\cite{khan2019diversity} extracted sentences from Chinese or Western languages into phonetic encodings \footnote{The logogram encoding is also used as a feature but is not explained here. Random clustering is used for comparison purposes.}, which used \textit{Soundex}, \textit{NYSIIS}, \textit{Metaphone}, and \textit{Hanyu Pinyin} as the extraction algorithm. After that, they applied BPE \cite{sennrich_neural_2016} to tokenize the sentences and encodings, and trained separate embeddings from the sentences and each encoding (empty boxes in Figure \ref{fig:phonetic1}). Lastly, they concatenated the embeddings and fed them into the NMT system. 
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.9]{../images/phonetic_encoding.png}
-	\caption{Implementation of phonetic encoding proposed in \cite{khan2019diversity}}
+	\caption{Implementation of phonetic encoding (reproduced from \cite{khan2019diversity})}
 	\label{fig:phonetic1}
 \end{figure}
 
-This paper did not explain the implementation of phonetic information in detail, but they had presented a hypothesis and verified it. That is, phonetics is a function that groups semantically distinct words. The words with the same pronunciation and spelling are usually distinguished by the different contexts.
-
-\newpage
+Their paper did not explain the implementation of phonetic information in detail, but they had presented a hypothesis and verified it. That is, phonetics is a function that groups semantically distinct words. The words with the same pronunciation and spelling are usually distinguished by the different contexts.
 
 \subsubsection{Joint Textual and Phonetic Embedding}
 
-This paper \cite{liu-etal-2019-robust} focused on using phonetic embedding to adjust the homophone noise problem, which is a frequent problem in a parallel corpus. For instance, when a single word in the source sentence is misplanted as a corresponding homophone (e.g., 有 (yǒu, to have) is wrongly replaced with 友 (yǒu, friend)), the model will read the wrong embedding and training in a wrong direction. The phonetic embedding can be seen as a feature to offset the errors that occur in semantic embeddings with homophone noise.
+\cite{liu-etal-2019-robust} focused on using phonetic embedding to address the homophone noise problem, which is a frequent problem in a parallel corpus. For instance, when a single word in the source sentence is replaced with a homophone (e.g., 有 (yǒu, to have) is wrongly replaced with 友 (yǒu, friend)), the model will read the wrong embedding and train in a wrong direction. The phonetic embedding can be seen as a feature to compensate for errors that occur in semantic embeddings with homophone noise.
 
-The paper trained the text (denoted by $a$) as semantic embedding (denoted by $\pi(a)$) and phonetic embedding (denoted by $\psi(a)$), and combined two embeddings with a configurable parameter (denoted by $\beta$) as follows:
+\cite{liu-etal-2019-robust} trained the text (denoted by $a$) as semantic embedding (denoted by $\pi(a)$) and phonetic embedding (denoted by $\psi(a)$), and combined two embeddings with a configurable parameter (denoted by $\beta$) as follows:
 
-\begin{equation}
+\begin{equation*}
 	\pi([a, \psi(a)]) = (1-\beta) \times \pi(a) + \beta \times \pi(\psi(a)) 
-\end{equation}
+\end{equation*}
 
-This study did not give the details of constructing embeddings, but they had mentioned that the best result occurs when the $\beta$ is $0.95$. That is, when they used 5\% of semantic embedding and 95\% of phonetic embedding, they obtained the best performance in their NMT system.
+Their paper did not give the details of constructing embeddings, but they mentioned that the best result occurs when the $\beta$ is $0.95$. That is, when they used 5\% semantic embedding and 95\% phonetic embedding, they obtained the best performance in their NMT system.
 
-To summarize the findings in these related works. The phonetic encodings can emphasize the difference between semantically diverse sentences. The joint semantic-phonetic embedding also shows the robustness to noise in parallel corpora. All of these features can help improve the performance of the NMT system. However, the methods of using phonetic information as embeddings had been explored mainly in Chinese and Western languages. They also used \textit{Pinyin} instead of Bopomofo as the component to decompose Chinese characters. According to our study, no research has been proposed to apply and analyze phonetic information as an additional feature in Chinese and Japanese NMT systems.
+To summarize the findings in these related works. The phonetic encodings can emphasize the difference between semantically diverse sentences.  Joint semantic-phonetic embedding also shows the robustness to noise in parallel corpora. All of these features can help improve the performance of the NMT system. However, the methods of using phonetic information as embeddings had been explored mainly in Chinese and Western languages. They also used \textit{Pinyin} instead of Bopomofo as the component to decompose Chinese characters. According to our study, no research has been proposed to apply and analyze phonetic information as an additional feature in Chinese and Japanese NMT systems.

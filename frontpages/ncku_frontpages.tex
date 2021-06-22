@@ -172,7 +172,7 @@
 \phantomsection % for hyperref to register this
 \addcontentsline{toc}{chapter}{\nameTocc}
 \begin{spacing}{1.5}
-\tableofcontents
+    \tableofcontents
 \end{spacing}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -185,7 +185,9 @@
 %\makebox{} is fragile; need protect
 \phantomsection % for hyperref to register this
 \addcontentsline{toc}{chapter}{\nameLotc}
-\listoftables
+\begin{spacing}{1.8}
+    \listoftables
+\end{spacing}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %       圖目錄
@@ -197,7 +199,10 @@
 %\makebox{} is fragile; need protect
 \phantomsection % for hyperref to register this
 \addcontentsline{toc}{chapter}{\nameTofc}
-\listoffigures
+\begin{spacing}{1.8}
+    \listoffigures
+\end{spacing}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %       符號說明
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -25,21 +25,22 @@ We have selected ASPEC-JC as the dataset for our zh-ja NMT system, and the struc
 
 \section{Environment} \label{sec:environment}
 
-We use PyTorch \footnote{https://pytorch.org/} and PyTorch Lightning \footnote{https://www.pytorchlightning.ai/} \cite{falcon2019pytorch}  as the main framework for constructing the entire NMT model (Section~\ref{sec:lightning}), as well as Weights \& Biases (wandb) \footnote{https://wandb.ai/site} \cite{wandb} for logging models, metrics, and dataflow (Section~\ref{sec:wandb}).
+We use \texttt{PyTorch} \footnote{https://pytorch.org/} and \texttt{PyTorch-Lightning} \footnote{https://www.pytorchlightning.ai/} \cite{falcon2019pytorch}  as the main framework for constructing the entire NMT model (Section~\ref{sec:lightning}), as well as Weights \& Biases (wandb) \footnote{https://wandb.ai/site} \cite{wandb} for logging models, metrics, and dataflow (Section~\ref{sec:wandb}).
 
 \subsection{PyTorch and PyTorch Lightning} \label{sec:lightning}
 
-PyTorch has been widely used in academic research and production. We use PyTorch as a framework for processing data and designing the components (i.e., encoder, attention, decoder) of Attention-based Bi-GRU Model and Transformer.
+\texttt{PyTorch} has been widely used in academic research and production. We use \texttt{PyTorch} as a framework for processing data and designing the components (i.e., encoder, attention, decoder) of attention-based Bi-GRU Model and Transformer.
 
-PyTorch-Lightning offers many advantages as a wrapper for PyTorch: Dataflow can be integrated more efficiently in \pythoninline{LightningDataModule}; the main source code, including the components designed by PyTorch, can be integrated into \pythoninline{LightningModule}; using \pythoninline{Trainer} can directly utilize the \pythoninline{LightningDataModule} and \pythoninline{LightningModule}, and help us use the correct engineering code such as gradient update, data transfer between CPU and GPU. In addition, PyTorch-Lightning provides a lot of plugins to simplify research, such as multi-GPU or TPU training, checkpointing and logging of models, implementing 16-bit precision, early stopping, finding learning rate and batch size, etc.
+\texttt{PyTorch-Lightning} offers many advantages as a wrapper for \texttt{PyTorch}: Dataflow can be integrated more efficiently in \pythoninline{LightningDataModule}; the main source code, including the components designed by \texttt{PyTorch}, can be integrated into \pythoninline{LightningModule}; using \pythoninline{Trainer} can directly utilize the \pythoninline{LightningDataModule} and \pythoninline{LightningModule}, and help us use the correct engineering code such as gradient update, data transfer between CPU and GPU. In addition, \texttt{PyTorch-Lightning} provides a lot of plugins to simplify research, such as multi-GPU or TPU training, checkpointing and logging of models, implementing 16-bit precision, early stopping, finding learning rate and batch size, etc.
 
 \subsection{Weights and Biases (wandb)} \label{sec:wandb}
 
-Wandb, similar to Tensorboard, is a powerful tool for logging model training and is used by OpenAI \footnote{https://wandb.ai/site/articles/why-experiment-tracking-is-crucial-to-openai}, the company designed GPT-3. Wandb can visualize all training metrics and system performance, record hyperparameters used in the experiments for easy replicating, integrate dataset in the cloud to facilitate the advantages of cross-platform. In the experiments, we use the \pythoninline{WandbLogger} provided by PyTorch-Lightning to integrate wandb and record the experimental results of all models, which will be presented in Section~\ref{sec:result}.
+\texttt{Wandb}, similar to \texttt{Tensorboard} \footnote{https://www.tensorflow.org/tensorboard}, is a powerful tool for logging model training and is used by OpenAI \footnote{https://wandb.ai/site/articles/why-experiment-tracking-is-crucial-to-openai}, the company designed GPT-3. \texttt{Wandb} can visualize all training metrics and system performance, record hyperparameters used in the experiments for easy replicating, integrate dataset in the cloud to facilitate the advantages of cross-platform. In the experiments, we use the \pythoninline{WandbLogger} provided by \texttt{PyTorch-Lightning} to integrate \texttt{wandb} and record the experimental results of all models, which will be presented in Section~\ref{sec:result}.
 
 \section{Parameter} \label{sec:parameter}
 
-We implement eight (two-by-four) experiments for Attention-based Bi-GRU Model and Transformer experiments. The experiment uses two different methods for tokenization. one is to use SentencePiece for both Chinese and Japanese, and the other is to use Jieba and Janome for Chinese and Japanese. Every experiment validates four scenarios, which are the model without any pre-trained embedding (i.e., the baseline), the model using only semantic embedding, the model using only phonetic embedding, and the model using joint semantic-phonetic embedding.
+We implement eight ($2\!\times\!4$) experiments for attention-based Bi-GRU Model and Transformer experiments.
+The experiments use two different methods for tokenization. one using SentencePiece for both Chinese and Japanese, and the other using Jieba and Janome for Chinese and Japanese respectively. Every experiment validates four scenarios, which are the model without any pre-trained embedding (i.e., the baseline), the model using only semantic embedding, the model using only phonetic embedding, and the model using joint semantic-phonetic embedding.
 
 Some parameters are identical in all experiments. The dataset has 50,000 sentence pairs which filtered (described in Section~\ref{sec:corpus_filtering}) and sampled by Python \pythoninline{random} module. The dictionary size for tokenizer and embedding is fixed to 32,000 and the dimension of embedding is fixed to 300. The other hyperparameters are listed in Table~\ref{tab:hyperparameters}.
 
@@ -60,7 +61,7 @@ Some parameters are identical in all experiments. The dataset has 50,000 sentenc
     \label{tab:hyperparameters}
 \end{table}
 
-Catastrophic forgetting \cite{kirkpatrick2017overcoming} may occur during training with pre-trained embedding. In other words, the gradients in the first few batches will drastically change the embeddings and lose the initial meaning from vectors completely. We overcome the problem by freezing the weights of embeddings in the first $n$ epochs, and fine-tuning the embeddings in the subsequent epochs. Therefore, $n$ is also a hyperparameter of Attention-based Bi-GRU Model and Transformer. We apply $n=3$ to RNN and $n=1$ to Transformer to achieve the best results.
+Catastrophic forgetting \cite{kirkpatrick2017overcoming} may occur during training with pre-trained embedding. In other words, the gradients in the first few batches will drastically change the embeddings and lose the initial meaning from vectors completely. We overcome the problem by freezing the weights of embeddings in the first $n$ epochs, and fine-tuning the embeddings in the subsequent epochs. Therefore, $n$ is also a hyperparameter of attention-based Bi-GRU Model and Transformer. We apply $n=3$ to RNN and $n=1$ to Transformer to achieve the best results.
 
 \section{Metric} \label{sec:metric}
 
@@ -95,11 +96,13 @@ Mathematically, the BLEU score is defined as eq. \ref{eq:eq16} and eq. \ref{eq:e
     \text { precision }_{n} = \frac{\sum_{ \text {n-gram} \in C} \text {Count}_{\text {clip}}(\text {n-gram})}{\sum_{\text{n-gram}^{\prime} \in C^{\prime}} \operatorname{Count}\left(\text{n-gram}^{\prime}\right)} \label{eq:eq17}
 \end{equation}
 
-Here are several considerations for evaluating translation models using the BLEU score. First, BLEU is a corpus-based metric that requires evaluating multiple sentences (corpus) at once; the score for individual sentences will lose some meanings; in other words, statistics are accumulated across the sentences when computing the score. Second, BLEU cannot distinguish the errors between the function words and the content words; the dropped function words such as ``a, the, of'' carry the same penalties as important content words that are mistranslated or lost. Third, BLEU is not good at capturing the meaning and grammaticality of sentences; namely, the single word that can change the semantics such as ``not'' or the long-range dependencies that are greater than the length of the n-gram will be underestimated.
+Here are several considerations for evaluating translation models using the BLEU score. First, BLEU is a corpus-based metric that requires evaluating multiple sentences (corpus) at once; the score for individual sentences will lose some meaning; in other words, statistics are accumulated across the sentences when computing the score. Second, BLEU cannot distinguish the errors between the function words and the content words; dropped function words such as ``a'', ``the'', and ``of'' carry the same penalties as important content words that are mistranslated or lost. Third, BLEU is not good at capturing the meaning and grammaticality of sentences; namely, the impact of single words such as ``not'' that can dramatically change the semantics, and long-range dependencies of distances greater than the length of the n-gram will be underestimated.
+
 
 \section{Result} \label{sec:result}
 
-All NMT models are trained based on 32,000 dictionary sizes, 300-dimensional embedding, and sampled dataset that has 50,000 sentence pairs. We first examine the losses and BLEU scores produced by different tokenization methods and embeddings on the two models. Although there is no absolute positive correlation between the loss and the BLEU score, the loss is still a useful metric for evaluating the performance of models such as detecting overfitting. After that, we look into the result using the best model and the complete, filtered dataset (462,582 sentence pairs) and compare it with other studies.
+All NMT models are trained based with a dictionary size of 32,000,
+300-dimensional embedding, and sampled dataset that has 50,000 sentence pairs. We first examine the losses and BLEU scores produced by different tokenization methods and embeddings on the two models. Although there is no exact correspondence between the loss and the BLEU score, the loss is still a useful metric for evaluating the performance of models such as detecting overfitting. Finally, we look into the result using the best model and the complete, filtered dataset (462,582 sentence pairs) and compare it with other studies.
 
 \subsection{Attention-based Bi-GRU Model}
 
@@ -110,21 +113,21 @@ Figure~\ref{fig:seq2seq_loss} shows the losses of using the two tokenization met
     \begin{subfigure}[b]{0.495\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../images/rnn_sp.png}
-        \caption{The results using SentencePiece}
+        \caption{Results using SentencePiece}
         \label{fig:seq2seq_loss_sp}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.495\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../images/rnn_jj.png}
-        \caption{The results using Jieba \& Janome}
+        \caption{Results using Jieba \& Janome}
         \label{fig:seq2seq_loss_jj}
     \end{subfigure}
     \caption{Train and Validation Loss of Attention-based Bi-GRU Model}
 	\label{fig:seq2seq_loss}
 \end{figure}
 
-Table~\ref{tab:seq2seq_bleu_score} shows the BLEU scores for all combinations on the attention-based Bi-GRU model. Using SentencePiece as a tokenizer scores about 4 to 5 lower than the average score of Jieba + Janome. This is reasonable because SentencePiece is a data-driven tokenizer, and the lack of data in the small corpus has largely hampered its ability to train embedding and NMT systems. The use of joint embedding successfully outperforms baseline and the other two embeddings based on both tokenization methods. Furthermore, it increases the performance of baseline by about 2 BLEU points based on Jieba and Janome. 
+Table~\ref{tab:seq2seq_bleu_score} shows the BLEU scores for all combinations on the attention-based Bi-GRU model. Using \texttt{SentencePiece} as a tokenizer scores about 4 to 5 lower than the average score of \texttt{Jieba} + \texttt{Janome}. This is reasonable because SentencePiece is a data-driven tokenizer, and the lack of data in the small corpus has largely hampered its ability to train embedding and NMT systems. The use of joint embedding successfully outperforms baseline and the other two embeddings based on both tokenization methods. Furthermore, it improves performance over baseline by about 2 BLEU points when using the \texttt{Jieba} and \texttt{Janome} tokenizers
 
 \begin{table}[t]
     \centering
@@ -159,9 +162,9 @@ Table~\ref{tab:seq2seq_bleu_score} shows the BLEU scores for all combinations on
 
 \subsection{Transformer}
 
-Figure~\ref{fig:transformer_loss} shows the losses of using the two tokenization methods on the Transformer. The addition of embeddings can resist overfitting in the Transformer as well as in the attention-based Bi-GRU Model. The semantic and joint embedding perform similarly when using SentencePiece as the tokenization method, but both are better than the embedding that only applies phonetic Information (Figure~\ref{fig:transformer_loss_sp}). On the other hand, the joint embedding is a bit better than semantic and phonetic embedding with jieba and Janome (Figure~\ref{fig:transformer_loss_jj}).
+Figure~\ref{fig:transformer_loss} shows the losses of using the two tokenization methods on the Transformer. The addition of embeddings can resist overfitting in the Transformer as well as in the attention-based Bi-GRU Model. The semantic and joint embedding perform similarly when using \texttt{SentencePiece} as the tokenization method, but both are better than the embedding that only applies phonetic information (Figure~\ref{fig:transformer_loss_sp}). On the other hand, the joint embedding is a bit better than semantic and phonetic embedding with \texttt{Jieba} and \texttt{Janome} (Figure~\ref{fig:transformer_loss_jj}).
 
-Table~\ref{tab:transformer_bleu_score} shows the BLEU scores for all combinations on the Transformer. The joint embedding obtains the highest scores with either SentencePiece or Jieba + Janome as the tokenization method. In the case of using Jieba and Janome, the joint embedding has increased 1 BLEU point and 3 BLEU points compared to the semantic embedding and the baseline system.
+Table~\ref{tab:transformer_bleu_score} shows the BLEU scores for all combinations on the Transformer. The joint embedding obtains the highest scores with either \texttt{SentencePiece} or \texttt{Jieba} + \texttt{Janome} as the tokenization method. In the case of using \texttt{Jieba} and \texttt{Janome}, the joint embedding improves performance by 1 and 3 BLEU points respectively over the semantic embedding and baseline system.
 
 \vspace{0.5cm}
 \begin{table}[h]
@@ -177,7 +180,7 @@ Table~\ref{tab:transformer_bleu_score} shows the BLEU scores for all combination
 
 \subsection{Best Model}
 
-We decided to use Jieba + Janome as the base tokenization method to train and re-evaluate the four scenarios using the complete and filtered dataset with 462,582 sentence pairs. The results are shown in Table~\ref{tab:transformer_filtered_bleu_score}. The use of joint embedding still achieves the best BLEU score, which is 0.35 higher than the baseline system.
+We decided to use \texttt{Jieba} + \texttt{Janome} as the base tokenization method to train and re-evaluate the four scenarios using the complete and filtered dataset with 462,582 sentence pairs. The results are shown in Table~\ref{tab:transformer_filtered_bleu_score}. The use of joint embedding still achieves the best BLEU score, which is 0.35 higher than the baseline system.
 
 \vspace{0.5cm}
 \begin{table}[h]
@@ -190,7 +193,7 @@ We decided to use Jieba + Janome as the base tokenization method to train and re
     \label{tab:transformer_filtered_bleu_score}
 \end{table}
 
-We also used the baseline system of Workshop on Asian Translation 2020 (WAT) \cite{nakazawa2020overview} as a benchmark for evaluation, although we did not apply its official submission system. For the ASPEC-JC task, WAT 2020 designed the baseline system using the OpenNMT \footnote{https://github.com/OpenNMT/OpenNMT}, BPE, and attention mechanisms. The BLEU score and three different tokenization methods are used for evaluating Chinese to Japanese translation. As shown in Table~\ref{tab:wat_2020}, our best model (53.13) outperforms the baseline system of WAT 2020 by about 6 BLEU points with the enhancement of tokenization, embedding, corpus filtering, etc.
+We also used the baseline system of Workshop on Asian Translation 2020 (WAT) \cite{nakazawa2020overview} as a benchmark for evaluation, although we did not apply through its official submission system. For the ASPEC-JC task, WAT 2020 designed the baseline system using \texttt{OpenNMT} \footnote{https://github.com/OpenNMT/OpenNMT}, BPE, and attention mechanisms. The BLEU score and three different tokenization methods are used for evaluating Chinese to Japanese translation. As shown in Table~\ref{tab:wat_2020}, our best model (53.13) outperforms the baseline system of WAT 2020 by about 6 BLEU points with the enhancement of tokenization, embedding, corpus filtering, etc.
 
 \vspace{0.5cm}
 \begin{table}[h]

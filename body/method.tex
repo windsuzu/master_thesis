@@ -4,7 +4,7 @@ This paper attempts to improve the zh-ja NMT system by utilizing the phonetic in
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.6]{../images/structure.png}
+	\includegraphics[scale=0.5]{../images/structure.png}
     \caption{Structure of this paper.}
 	\label{fig:structure}
 \end{figure}
@@ -13,11 +13,11 @@ Section~\ref{sec:tokenization} explains the tokenization methods we use to decon
 
 \section{Tokenization} \label{sec:tokenization}
 
-This paper will examine the effectiveness of phonetic information under different tokenization methods. We use the \texttt{tokenizers} \footnote{https://github.com/huggingface/tokenizers} library from the \texttt{HuggingFace} team as our main framework for tokenization. \texttt{SentencePiece} \footnote{https://github.com/google/sentencepiece}, \texttt{Jieba}, and \texttt{Janome} can be implemented as pre-tokenizers in \texttt{HuggingFace Tokenizers}.
+This paper will examine the effectiveness of phonetic information under different tokenization methods. We use the \texttt{tokenizers} \footnote{https://github.com/huggingface/tokenizers} library from the \texttt{HuggingFace} team as our main framework for tokenization. \texttt{SentencePiece} \footnote{https://github.com/google/sentencepiece}, \texttt{Jieba}, and \texttt{Janome} can be implemented as pre-tokenizers in the \texttt{HuggingFace Tokenizers}.
 
 \subsection{HuggingFace Tokenizers} \label{sec:tokenizers}
 
-The \texttt{HuggingFace Tokenizers} library has 5 components that allow users to customize their tokenization methods. Namely, normalizers, pre-tokenizers, models, post-processors, and decoders. Normalizers process an input string, performing tasks such as mapping to lower case and removal of spaces and symbols to normalize the text. Pre-tokenizers split an input string according to a set of rules, and this is the stage where we apply \texttt{SentencePiece}, \texttt{Jieba}, and \texttt{Janome}. Models are responsible for converting text into ids by using the rules learned in the corpus (e.g., WordPiece, BPE, Unigram). Post-processors help us to insert special tokens into the sentence, such as the start token \textit{[BOS]} and the end token \text{[EOS]} in NMT tasks. Lastly, the job of Decoders is to reverse the ids to the original sentence.
+The \texttt{HuggingFace Tokenizers} library has 5 components that allow users to customize their tokenization methods. Namely, normalizers, pre-tokenizers, models, post-processors, and decoders. Normalizers process an input string, performing tasks such as mapping to lower case and removal of spaces and symbols to normalize the text. Pre-tokenizers split an input string according to a set of rules, and this is the stage where we apply \texttt{SentencePiece}, \texttt{Jieba}, and \texttt{Janome}. Models are responsible for converting text into ids by using the rules learned in the corpus (e.g., WordPiece, BPE, Unigram). Post-processors help us to insert special tokens into the sentence, such as the start token \textit{[BOS]} and the end token \textit{[EOS]} in NMT tasks. Lastly, the job of Decoders is to reverse the ids to the original sentence.
 
 \subsection{Byte-Pair Encoding (BPE)} \label{sec:bpe}
 
@@ -67,7 +67,7 @@ The merge begins with 区 and \UL, which appear most frequently in the vocabular
 
 \texttt{SentencePiece} treats all text in the same Unicode format. It will escape the white space with a meta symbol `\UL' (U+2581). Therefore, the sentences in Chinese, Japanese, and English are considered to be in the same format, which achieving language independence. 
 
-\texttt{SentencePiece} is a purely data-driven method, which means it relies on the corpus to learn the tokenization. It is simple to implement \texttt{SentencePiece} in HuggingFace Tokenizers. First, Normalization Form Compatibility Composition (NFKC) normalizes the sentence, for example, by converting a symbol or text in the full-width form to a normalized form. Second, Metaspace pre-tokenizer splits the sentence by white space and converts the white space into the `\UL' symbol. Last, BPE with dropout is applied to train with the corpus file. The dropout method will improve the robustness and accuracy.
+\texttt{SentencePiece} is a purely data-driven method, which means it relies on the corpus to learn the tokenization. It is simple to implement \texttt{SentencePiece} in HuggingFace Tokenizers. First, Normalization Form Compatibility Composition (NFKC) normalizes the sentence, for example, by converting a symbol or text in the full-width form to a normalized form. Second, the Metaspace pre-tokenizer splits the sentence by white space and converts the white space into the `\UL' symbol. Last, BPE with dropout is applied to train with the corpus file. The dropout method will improve the robustness and accuracy.
 
 \vspace{0.5cm}
 
@@ -263,7 +263,7 @@ Skip-gram uses the softmax model to output a $V$-dimensional probability distrib
     p\left(w_{\text {context}} \mid w_{\text {center}}; \theta \right)=\frac{\exp \left(W_{\text {output}_{{(c)}}} \cdot h\right)}{\sum_{i=1}^{V} \exp \left(W_{\text {output}_{(i)}} \cdot h\right)} \in \mathbb{R}^{1} \label{eq:softmax1}
 \end{equation}
 
-This probability is computed $V$ times given a central word to obtain its conditional probability distribution for each unique word in the corpus. $W_\text{output}$ is the denominator in eq. \ref{eq:softmax1}.
+The following equation shows that given a center word, the probability is computed $V$ times to obtain its conditional probability distribution for each unique word in the corpus. $W_\text{output}$ is the denominator in eq. \ref{eq:softmax1}.
 
 \begin{equation}
     \frac{\exp \left(W_{\text {output}} \cdot h\right)}{\sum_{i=1}^{V} \exp \left(W_{\text {output}_{(i)}} \cdot h\right)} \in \mathbb{R}^{V}=\left[\begin{array}{c}
@@ -466,7 +466,7 @@ The structure of the encoder (Figure~\ref{fig:seq2seq_encoder}) can be represent
 The output $H$ (in eq. \ref{eq:eq2}) represents the combination of hidden states in the last layer of the model and will be used to calculate the attention. 
 
 \begin{equation}
-    \text{outputs} (H) = \left\{h_1, h_2, \cdots, h_T\right\}, h_i = [h_{\overrightarrow{i}}; h_{\overleftarrow{i}}] \text{ for } i \in \{1,\cdots T\}
+    \text{output  } H = \left\{h_1, h_2, \cdots, h_T\right\}, h_i = [h_{\overrightarrow{i}}; h_{\overleftarrow{i}}] \text{ for } i \in \{1,\cdots T\}
     \label{eq:eq2}
 \end{equation}
 
@@ -506,7 +506,7 @@ Because the shape of the energy value $E_t$ is (\textit{src\_len} \footnote{The 
      \hat{a}_t = v(E_t) \label{eq:eq6}
 \end{equation}
 
-The attention sequence $\hat{a}_t$ will be passed to the softmax layer (in eq. \ref{eq:eq7}) so that all the attention values add up to 1. The process combines with the mask to zero out the attention of the [PAD] tokens. 
+The attention sequence $\hat{a}_t$ will be passed to the softmax layer (in eq. \ref{eq:eq7}) so that all the attention values add up to 1. The process combines with the mask to zero out the attention of the \textit{[PAD]} tokens. 
 
 \begin{equation}
 a_t = \text{softmax}(\hat{a}_t) \label{eq:eq7}
@@ -533,7 +533,7 @@ The decoder then takes the embedded target token $d(y_t)$, the weighted source v
     s_t = \text{DecoderGRU}(d(y_t), w_t, s_{t-1}) \label{eq:eq9}
 \end{equation}
 
-Finally, the decoder uses $d(y_t)$, $w_t$, $s_t$ and a linear layer $f$ to predict the next token $\hat{y}_{t+1}$ (in eq. \ref{eq:eq10}). We will apply the teacher forcing technique, which has a 0.5\% chance of using the predicted token and a 0.5\% chance of using the ground truth token as the next target input token.
+Finally, the decoder uses $d(y_t)$, $w_t$, $s_t$ and a linear layer $f$ to predict the next token $\hat{y}_{t+1}$ (in eq. \ref{eq:eq10}). We will apply the teacher forcing technique, which has a 50\% chance of using the predicted token and a 50\% chance of using the ground truth token as the next target input token.
 
 \begin{equation}
     \hat{y}_{t+1} = f(d(y_t), w_t, s_t) \label{eq:eq10}

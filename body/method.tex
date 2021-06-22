@@ -571,7 +571,7 @@ In the Transformer, the attention layer requires three elements, namely query ($
 \text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V \label{eq:eq11}
 \end{equation}
 
-The Transformer model splits query $Q$, key $K$, and value $V$ into multiple heads with smaller dimensions and trains them separately (Figure~\ref{fig:transformer_attention2}). They are divided into heads by the linear layers ($W_i^Q, W_i^K, W_i^V$). Each with size equal to the dimension of the hidden state divided by the number of heads. 
+The Transformer model splits query $Q$, key $K$, and value $V$ into multiple heads with smaller dimensions and trains them separately (Figure~\ref{fig:transformer_attention2}). They are divided into heads by the linear layers ($W_i^Q, W_i^K, W_i^V$). Each with a size equal to the dimension of the hidden state divided by the number of heads. 
 
 \begin{equation}
 \text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V) \label{eq:eq12}

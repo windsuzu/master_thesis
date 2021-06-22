@@ -61,7 +61,7 @@ Some parameters are identical in all experiments. The dataset has 50,000 sentenc
     \label{tab:hyperparameters}
 \end{table}
 
-Catastrophic forgetting \cite{kirkpatrick2017overcoming} may occur during training with pre-trained embedding. In other words, the gradients in the first few batches will drastically change the embeddings and lose the initial meaning from vectors completely. We overcome the problem by freezing the weights of embeddings in the first $n$ epochs, and fine-tuning the embeddings in the subsequent epochs. Therefore, $n$ is also a hyperparameter of attention-based Bi-GRU Model and Transformer. We apply $n=3$ to RNN and $n=1$ to Transformer to achieve the best results.
+Catastrophic forgetting \cite{kirkpatrick2017overcoming} may occur during training with pre-trained embedding. In other words, the gradients in the first few batches will drastically change the embeddings and lose the initial meaning from vectors completely. We overcome the problem by freezing the weights of embeddings in the first $n$ epochs, and fine-tuning the embeddings in the subsequent epochs. Therefore, $n$ is also a hyperparameter of the attention-based Bi-GRU Model and Transformer. We apply $n=3$ to RNN and $n=1$ to Transformer to achieve the best results.
 
 \section{Metric} \label{sec:metric}
 
@@ -100,7 +100,7 @@ Here are several considerations for evaluating translation models using the BLEU
 
 \section{Result} \label{sec:result}
 
-All NMT models are trained based with a dictionary size of 32,000, 300-dimensional embedding, and sampled dataset that has 50,000 sentence pairs. We first examine the losses and BLEU scores produced by different tokenization methods and embeddings on the two models. Although there is no exact correspondence between the loss and the BLEU score, the loss is still a useful metric for evaluating the performance of models such as detecting overfitting. Finally, we look into the result using the best model and the complete, filtered dataset (462,582 sentence pairs) and compare it with other studies.
+All NMT models are trained with a dictionary size of 32,000, 300-dimensional embedding, and sampled dataset that has 50,000 sentence pairs. We first examine the losses and BLEU scores produced by different tokenization methods and embeddings on the two models. Although there is no exact correspondence between the loss and the BLEU score, the loss is still a useful metric for evaluating the performance of models such as detecting overfitting. Finally, we look into the result using the best model and the complete, filtered dataset (462,582 sentence pairs) and compare it with other studies.
 
 \subsection{Attention-based Bi-GRU Model}
 

@@ -11,43 +11,43 @@ We compare the translation results using joint embedding with those using semant
     \centering
     \begin{CJK}{UTF8}{gbsn}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}\toprule
-            Source & 使用有机溶剂的溶剂提取法作为物质的分离手段被广泛利用。 \\
+            Source & 使用有机溶剂的溶剂提取法作为物质的分离手段被广泛利用 \\
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Target & 有機溶媒を用いた溶媒抽出法は物質の分離手段として広く利用されている。 \\
-            Semantic & 有機溶媒を用いた溶媒抽出法は物質の分離手段として広く\underline{用いされ}ている。 \\
-            Joint & 有機溶媒を用いた溶媒抽出法は物質の分離手段として広く\underline{利用され}ている。 \\\midrule
+            Target & 有機溶媒を用いた溶媒抽出法は物質の分離手段として広く利用されている \\
+            Semantic & 有機溶媒を用いた溶媒抽出法は物質の分離手段として広く\underline{用いされ}ている \\
+            Joint & 有機溶媒を用いた溶媒抽出法は物質の分離手段として広く\underline{利用され}ている \\\midrule
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{gbsn}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Source & 在本章中,将分布式组件间进行通信的中间件与Dragon进行比较。 \\
+            Source & 在本章中,将分布式组件间进行通信的中间件与Dragon进行比较 \\
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Target & 本章では,分散コンポーネント間通信を行うミドルウェアとDragonを比較する. \\
-            Semantic & 本章では,\underline{分散コンポーネント間}でを行うミドルウェアとDragonを比較する. \\
-            Joint & 本章では,\underline{分散コンポーネント間通信}を行うミドルウェアとDragonを比較する. \\\midrule
+            Target & 本章では,分散コンポーネント間通信を行うミドルウェアとDragonを比較する \\
+            Semantic & 本章では,\underline{分散コンポーネント間}でを行うミドルウェアとDragonを比較する \\
+            Joint & 本章では,\underline{分散コンポーネント間通信}を行うミドルウェアとDragonを比較する \\\midrule
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{gbsn}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Source & LearnAR从背景知识B和观测结果O中获得行动规则的集合γ的集合H。 \\
+            Source & LearnAR从背景知识B和观测结果O中获得行动规则的集合γ的集合H \\
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Target & LearnARは,背景知識Bと観測結果Oより行動規則の集合γ\underline{の集合を}獲得する. \\
-            Semantic & LearnARは\underline{背景背景知識}Bと観測結果Oから\underline{行動ルール}の集合γの集合H獲得する. \\
-            Joint & LearnARは,\underline{背景知識}Bと観測結果Oから\underline{行動規則}の集合γ\underline{の集合H}獲得する. \\\midrule
+            Target & LearnARは,背景知識Bと観測結果Oより行動規則の集合γ\underline{の集合を}獲得する \\
+            Semantic & LearnARは\underline{背景背景知識}Bと観測結果Oから\underline{行動ルール}の集合γの集合H獲得する \\
+            Joint & LearnARは,\underline{背景知識}Bと観測結果Oから\underline{行動規則}の集合γ\underline{の集合H}獲得する \\\midrule
         \end{tabularx}
     \end{CJK}
 
@@ -56,7 +56,7 @@ We compare the translation results using joint embedding with those using semant
 \end{table}
 
 \begin{CJK}{UTF8}{ipxm}
-    Table~\ref{tab:case_study1} compares the results of the two translations in terms of their ability to preserve correct words. In the first example, ``利用され'' (be used) is correctly translated by the joint embedding, while semantic embedding produces the ungrammatical string ``用いされ'', which is perhaps an unfortunate combination of ``利用され'' and an alternative translation ``用いられ''. In the second example, ``分散コンポーネント間通信'' (communication between distributed components) is correctly translated by the joint embedding, and the semantic embedding omits ``通信'' (communication).  The third example demonstrates that both the semantic and joint embedding can correctly retain the symbol $H$ even though it is missing from the target sentence. However, the joint embedding translation is overall closer to the target. At least for these three examples, the joint embedding translation is consistently more fluent than those of the semantic embedding.
+    Table~\ref{tab:case_study1} compares the results of the two translations in terms of their ability to preserve correct words. In the first example, ``利用され'' (be used) is correctly translated by the joint embedding, while semantic embedding produces the ungrammatical string ``用いされ'', which is perhaps an unfortunate combination of ``利用され'' and an alternative translation ``用いられ''. In the second example, ``分散コンポーネント間通信'' (communication between distributed components) is correctly translated by the joint embedding, and the semantic embedding omits ``通信'' (communication).  The third example demonstrates that both the semantic and joint embedding can correctly retain the symbol $H$ even though it is missing from the target sentence. Overall, the joint embedding translation is overall closer to the target. At least for these three examples, the joint embedding translation is consistently more fluent than those of the semantic embedding.
 \end{CJK}
 
 \vspace{0.15cm}
@@ -65,15 +65,15 @@ We compare the translation results using joint embedding with those using semant
 
     \begin{CJK}{UTF8}{gbsn}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}\toprule
-            Source & 构成这些乐曲时在可能范围里保证变化丰富。 \\
+            Source & 构成这些乐曲时在可能范围里保证变化丰富 \\
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Target & これらの楽曲は,可能な範囲でバリエーションが豊かになるように構成されている. \\
-            Semantic & これらの楽曲を,豊かな範囲で\underline{変化}が豊かになる.にしされている. \\
-            Joint & これらの楽曲を,可能な範囲で\underline{バリエーション}が豊かになるように構成されている. \\\midrule
+            Target & これらの楽曲は,可能な範囲でバリエーションが豊かになるように構成されている \\
+            Semantic & これらの楽曲を,豊かな範囲で\underline{変化}が豊かになる.にしされている \\
+            Joint & これらの楽曲を,可能な範囲で\underline{バリエーション}が豊かになるように構成されている \\\midrule
         \end{tabularx}
     \end{CJK}
 
@@ -95,7 +95,7 @@ We compare the translation results using joint embedding with those using semant
 \end{table}
 
 \begin{CJK}{UTF8}{ipxm}
-    Table~\ref{tab:case_study2} demonstrates the ability of joint embedding to utilize English loanwords. Loanwords from English and occasionally German or other western languages play an important role in modern Japanese and occur with significant frequency in scientific-technical writing. Thus a natural translation of Chinese into Japanese is likely to include some of these loanwords, easily spotted due to the convention of using katakana to write them. Here we show a couple of examples in which the joint embedding uses such a loanword while the semantic embedding does not. In the first example, we focus on the translation of \end{CJK}\begin{CJK}{UTF8}{gbsn}the ``变化'' in the Chinese \mbox{``变化丰富''}. Which is translated as ``\variation'' by the target and joint embedding,
+    Table~\ref{tab:case_study2} demonstrates the ability of joint embedding to utilize English loanwords. Loanwords from English and occasionally German or other Western languages play an important role in modern Japanese and occur with significant frequency in scientific-technical writing. Thus a natural translation of Chinese into Japanese is likely to include some of these loanwords, easily spotted due to the convention of using katakana to write them. Here we show a couple of examples in which the joint embedding uses such a loanword while the semantic embedding does not. In the first example, we focus on the translation of \end{CJK}\begin{CJK}{UTF8}{gbsn}the ``变化'' in the Chinese \mbox{``变化丰富''};\end{CJK}\begin{CJK}{UTF8}{ipxm} which is translated as ``\variation''\ by the target and joint embedding,
     \end{CJK}\begin{CJK}{UTF8}{ipxm} but as ``変化'' by the semantic embedding. ``変化'' is a common word shared by Chinese and Japanese, which depending on context might be translated into English as: ``change'', ``alteration'', ``inflection'', or ``variation''. ``variation'' happens to be a word which has been borrowed into the Japanese language using the katakana spelling \end{CJK}\begin{CJK}{UTF8}{ipxm}``\variation''. Although partially overlapping in meaning with ``変化'',\enspace``\variation''\ is more specific and in particular tends to have a positive meaning in Japanese, which matches the positive connotation of \end{CJK}\begin{CJK}{UTF8}{gbsn}``丰富'' (abundant) in the source. \end{CJK}\begin{CJK}{UTF8}{ipxm}These factors explain why ``\variation''\ was selected in the target, instead of directly copying ``変化'' from the source. The second example involves the translation of
     \end{CJK}\begin{CJK}{UTF8}{gbsn}``烟气'' to either
     \end{CJK}\begin{CJK}{UTF8}{ipxm}``ヒューム'' or ``煙''. ``ヒューム'' is the loanword ``fume'' borrowed from English, while ``煙'' is the general Japanese word for ``smoke''. In an informal speech, a Japanese speaker might use ``煙'' to describe any smoke-like phenomenon (even steam), but the target sentence selects ``ヒューム'', as a more specific and technically correct word in the source sentence context of welding. The joint embedding also selects ``ヒューム'', but the semantic embedding selects ``煙''. Interestingly, in both of these examples the semantic translation more or less directly copies the Chinese word to produce a Japanese translation which is arguably not far off the mark semantically, but the word choice of the joint embedding is much preferred.
@@ -107,29 +107,29 @@ We compare the translation results using joint embedding with those using semant
 
     \begin{CJK}{UTF8}{gbsn}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}\toprule
-            Source & RMCPRGIGCenter和RMCPRGIGTransceiver使用C语言安装,在二者间的通信中和RemoteGIG同样使用TCP/IP上的RMCP。 \\
+            Source & RMCPRGIGCenter和RMCPRGIGTransceiver使用C语言安装,在二者间的通信中和RemoteGIG同样使用TCP/IP上的RMCP \\
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Target & RMCPRGIGCenterとRMCPRGIGTransceiverはC言語で実装し,両者間の通信にはRemoteGIGと同様にTCP/IP上のRMCPを用いた. \\
-            Semantic & RMCPRGIGCenterと\underline{RMCPRGIGTranscei}はC言語を実装し,両者間通信通信で\underline{TCPTCP}と同様にTCP/IPででRMCPを用いるて. \\
-            Joint & RMCPRGIGCenterと\underline{RMCPRGIGTransceiver}をC言語を実装し,両者間の通信においては\underline{RemoteGIG}と同様にTCP/IP上でRMCPを用いた. \\\midrule
+            Target & RMCPRGIGCenterとRMCPRGIGTransceiverはC言語で実装し,両者間の通信にはRemoteGIGと同様にTCP/IP上のRMCPを用いた \\
+            Semantic & RMCPRGIGCenterと\underline{RMCPRGIGTranscei}はC言語を実装し,両者間通信通信で\underline{TCPTCP}と同様にTCP/IPででRMCPを用いるて \\
+            Joint & RMCPRGIGCenterと\underline{RMCPRGIGTransceiver}をC言語を実装し,両者間の通信においては\underline{RemoteGIG}と同様にTCP/IP上でRMCPを用いた \\\midrule
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{gbsn}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Source & 另一方面,GUIServer和GUIClient是用Java语言进行安装。 \\
+            Source & 另一方面,GUIServer和GUIClient是用Java语言进行安装 \\
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Target & 一方,GUIServerとGUIClientはJava言語で実装した. \\
-            Semantic & 一方,\underline{GUISverver}や\underline{GUIIClient}はJava言語で実装した. \\
-            Joint & 一方,\underline{GUIServer}と\underline{GUIClient}はJava言語で実装した. \\\midrule
+            Target & 一方,GUIServerとGUIClientはJava言語で実装した \\
+            Semantic & 一方,\underline{GUISverver}や\underline{GUIIClient}はJava言語で実装した \\
+            Joint & 一方,\underline{GUIServer}と\underline{GUIClient}はJava言語で実装した \\\midrule
         \end{tabularx}
     \end{CJK}
 
@@ -176,15 +176,15 @@ It will lose English words, generate the wrong English words and grammar.  Fortu
 
     \begin{CJK}{UTF8}{gbsn}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Source & 此外,用100对属性数进行了均等化。 \\
+            Source & 此外,用100对属性数进行了均等化 \\
         \end{tabularx}
     \end{CJK}
 
     \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{p{1.2cm}b}
-            Target & また,属性数を100で均一化した. \\
-            Semantic & また,属性数を100で\underline{均等化}した. \\
-            Joint & また,属性数を100で\underline{均一化}した. \\\midrule
+            Target & また,属性数を100で均一化した \\
+            Semantic & また,属性数を100で\underline{均等化}した \\
+            Joint & また,属性数を100で\underline{均一化}した \\\midrule
         \end{tabularx}
     \end{CJK}
 
@@ -193,22 +193,22 @@ It will lose English words, generate the wrong English words and grammar.  Fortu
 \end{table}
 
 \begin{CJK}{UTF8}{ipxm}
-Table~\ref{tab:case_study4} shows that joint embedding will select more precise words for translation. In the first example, ``測定装置'' is commonly used to indicate the ``measuring instrument'' meaning of the source \end{CJK}\begin{CJK}{UTF8}{gbsn}''测量装置'', \end{CJK}\begin{CJK}{UTF8}{ipxm} while ``計測'' is more often used independently to indicate ``measurement'', that is, using instruments to measure. In addition, joint embedding also correctly maps the Chinese word \end{CJK}\begin{CJK}{UTF8}{gbsn}``试验'' (test) to its Japanese counterpart \end{CJK}\begin{CJK}{UTF8}{ipxm}``試驗'' (test) rather than ``実験'' (experiment). The second example involves whether to translate the Chinese word \end{CJK}\begin{CJK}{UTF8}{gbsn}``讨论'', \end{CJK}\begin{CJK}{UTF8}{ipxm} to the Japanese word ``検討'' or ``議論''. \end{CJK}\begin{CJK}{UTF8}{gbsn} Depending on context, ``讨论'' can mean ``discussion'' and in those case might be translated as \end{CJK}\begin{CJK}{UTF8}{ipxm}``議論'' which in Japanese means `'`discussion'' or ``debate''. However, in the source sentence \end{CJK}\begin{CJK}{UTF8}{gbsn} ``讨论'', is used in the sense of ``thoughtful consideration'', which is more appropriately translated as \end{CJK}\begin{CJK}{UTF8}{ipxm} ``検討'', found in the target and joint embedding translation, but not the semantic embedding. The third example involves whether to directly copy the Chinese word \end{CJK}\begin{CJK}{UTF8}{gbsn}``均等化''
+Table~\ref{tab:case_study4} shows that joint embedding will select more precise words for translation. In the first example, ``測定装置'' is commonly used to indicate the ``measuring instrument'' meaning of the source \end{CJK}\begin{CJK}{UTF8}{gbsn}``测量装置'', \end{CJK}\begin{CJK}{UTF8}{ipxm} while ``計測'' is more often used independently to indicate ``measurement'', that is, using instruments to measure. In addition, joint embedding also correctly maps the Chinese word \end{CJK}\begin{CJK}{UTF8}{gbsn}``试验'' (test) to its Japanese counterpart \end{CJK}\begin{CJK}{UTF8}{ipxm}``試驗'' (test) rather than ``実験'' (experiment). The second example involves whether to translate the Chinese word \end{CJK}\begin{CJK}{UTF8}{gbsn}``讨论'', \end{CJK}\begin{CJK}{UTF8}{ipxm} to the Japanese word ``検討'' or ``議論''. \end{CJK}\begin{CJK}{UTF8}{gbsn} Depending on context, ``讨论'' can mean ``discussion'' and in those case might be translated as \end{CJK}\begin{CJK}{UTF8}{ipxm}``議論'' which in Japanese means ``discussion'' or ``debate''. However, in the source sentence, \end{CJK}\begin{CJK}{UTF8}{gbsn}``讨论'' is used in the sense of ``thoughtful consideration'', which is more appropriately translated as \end{CJK}\begin{CJK}{UTF8}{ipxm} ``検討'', found in the target and joint embedding translation, but not the semantic embedding. The third example involves whether to directly copy the Chinese word \end{CJK}\begin{CJK}{UTF8}{gbsn}``均等化''
 as is in the Japanese translation, since \end{CJK}\begin{CJK}{UTF8}{ipxm}``均等化'' is a valid Japanese word with similar meaning, or to instead use an alternative Japanese word \mbox{``均一化''}. Both words are technical in nature, but joint embedding selection ``均一化'' concurs with the target sentence, so it may be considered preferable to simply copying \mbox{``均等化''} as done by the semantic embedding.
 \end{CJK}
 
 \section{Embedding Analysis} \label{sec:analysis}
 
-We applied four analysis methods to compare joint embedding and semantic embedding. In all four analyses, joint embedding preserves the properties that semantic embedding should have and even outperforms semantic embedding.
+We applied four analysis methods to compare joint embedding and semantic embedding. In all four analyses, joint embedding preserves the properties that semantic embedding should have and even outperforms it.
 
 \subsection{Analogical Reasoning} \label{sec:analysis_analogy}
 
-The joint embedding can also produce correct answers in the analogical reasoning task.  We found that the answers obtained from joint embedding received higher confidence values on average in both Chinese (Table~\ref{tab:analysis_analogy1}) and Japanese (Table~\ref{tab:analysis_analogy2}). 
+The joint embedding can produce correct answers as the semantic embedding in the task of analogical reasoning. Moreover, we found that the answers obtained from joint embedding also yielded higher cosine similarities on average in both Chinese (Table~\ref{tab:analysis_analogy1}) and Japanese (Table~\ref{tab:analysis_analogy2}). The higher cosine similarity indicates higher confidence in the answers given by the joint embedding.
 
 \subsection{Outlier Detection} \label{sec:analysis_outlier}
 
 \begin{CJK}{UTF8}{gbsn}    
-    Joint embedding can answer outlier detection problems as well as semantic embedding, and sometimes gives better answers. For example, in the second case of Table~\ref{tab:analysis_outlier1}, the joint embedding answers correctly, while semantic embedding answers incorrectly.
+The joint embedding can answer outlier detection problems as well as semantic embedding, and sometimes gives better answers. For example, in the second case of Table~\ref{tab:analysis_outlier1}, the joint embedding answers correctly, while semantic embedding answers incorrectly.
 \end{CJK}
 
 \begin{table}[h!]
@@ -218,12 +218,12 @@ The joint embedding can also produce correct answers in the analogical reasoning
             \toprule
             \multicolumn{3}{c}{Input} & \multicolumn{2}{c}{Output ($b*$)} \\
             \cmidrule(lr){1-3} \cmidrule(lr){4-5} $a$ & $a*$ & $b$ & Semantic & Joint \\\midrule
-            \vspace{0.2cm} 东京 (Tokyo) & 日本 (Japan) & 北京 (Beijing) & 中国 (China) \newline ($p=0.492$) & 中国 (China) \newline ($\bm{p=0.531}$) \\
-            \vspace{0.2cm} 长期 (long-term) & 三年 (3 years) & 短期 (short-term) & 一年 (1 year) \newline ($p=0.379$) & \mbox{两周} (\mbox{2 weeks}) \newline ($\bm{p=0.387}$) \\
-            进口 (import) & 买入 (buy) & 出口 (export) & 卖出 (sell) \newline ($p=0.364$) & 卖出 (sell) \newline ($\bm{p=0.442}$)\\\bottomrule
+            \vspace{0.2cm} 东京 (Tokyo) & 日本 (Japan) & 北京 (Beijing) & 中国 (China) \newline ($cs=0.492$) & 中国 (China) \newline ($\bm{cs=0.531}$) \\
+            \vspace{0.2cm} 长期 (long-term) & 三年 (3 years) & 短期 (short-term) & 一年 (1 year) \newline ($cs=0.379$) & \mbox{两周} (\mbox{2 weeks}) \newline ($\bm{cs=0.387}$) \\
+            进口 (import) & 买入 (buy) & 出口 (export) & 卖出 (sell) \newline ($cs=0.364$) & 卖出 (sell) \newline ($\bm{cs=0.442}$)\\\bottomrule
         \end{tabularx}
     \end{CJK}
-    \caption{Analogical Reasoning in Chinese}
+    \caption[Analogical Reasoning in Chinese]{Analogical Reasoning in Chinese. The higher cosine similarities ($cs$) are yielded by the joint embedding.}
     \label{tab:analysis_analogy1}
 \end{table}
 
@@ -234,9 +234,9 @@ The joint embedding can also produce correct answers in the analogical reasoning
             \toprule
             \multicolumn{3}{c}{Input} & \multicolumn{2}{c}{Output ($b*$)} \\
             \cmidrule(lr){1-3} \cmidrule(lr){4-5} $a$ & $a*$ & $b$ & Semantic & Joint \\\midrule
-            \vspace{0.2cm} 男性(male) & 女性 (female) & 父親 (father) & \mbox{母親} (mother) \newline ($p=0.487$) & \mbox{母親} (mother) \newline ($\bm{p=0.508}$) \\
-            \vspace{0.2cm} 長期 (long-term) & 年 (year) & 短期 (short-term) & 月 (month) \newline ($p=0.550$) & 月 (month) \newline ($\bm{p=0.570}$) \\
-            左右(left-right) & 前後 (front-rear) & 水平 (horizontal) & \mbox{垂直} (\mbox{vertical}) \newline ($\bm{p=0.432}$) & \mbox{垂直} (\mbox{vertical}) \newline ($p=0.402$) \\\bottomrule
+            \vspace{0.2cm} 男性(male) & 女性 (female) & 父親 (father) & \mbox{母親} (mother) \newline ($cs=0.487$) & \mbox{母親} (mother) \newline ($\bm{cs=0.508}$) \\
+            \vspace{0.2cm} 長期 (long-term) & 年 (year) & 短期 (short-term) & 月 (month) \newline ($cs=0.550$) & 月 (month) \newline ($\bm{cs=0.570}$) \\
+            左右(left-right) & 前後 (front-rear) & 水平 (horizontal) & \mbox{垂直} (\mbox{vertical}) \newline ($\bm{cs=0.432}$) & \mbox{垂直} (\mbox{vertical}) \newline ($cs=0.402$) \\\bottomrule
         \end{tabularx}
     \end{CJK}
     \caption{Analogical Reasoning in Japanese}
@@ -284,42 +284,42 @@ The joint embedding can also produce correct answers in the analogical reasoning
     \begin{subfigure}[b]{0.44\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../images/similarity_zh1.png}
-        \caption{Similarity distances between ``理解'' (comprehend) and its synonyms.}
+        \caption{Cosine distances between ``理解'' (comprehend) and its synonyms.}
         \label{fig:similarity_zh1}
     \end{subfigure}
     \hspace{2em}
     \begin{subfigure}[b]{0.44\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../images/similarity_zh2.png}
-        \caption{Similarity distances between ``危害'' (jeopardize) and its synonyms.}
+        \caption{Cosine distances between ``危害'' (jeopardize) and its synonyms.}
         \label{fig:similarity_zh2}
     \end{subfigure}
     %%
     \begin{subfigure}[b]{0.44\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../images/similarity_zh3.png}
-        \caption{Similarity distances between ``虛弱'' (weak) and its synonyms.}
+        \caption{Cosine distances between ``虛弱'' (weak) and its synonyms.}
         \label{fig:similarity_zh3}
     \end{subfigure}
     \hspace{2em}
     \begin{subfigure}[b]{0.44\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../images/similarity_zh4.png}
-        \caption{Similarity distances between ``本质'' (essence) and its synonyms.}
+        \caption{Cosine distances between ``本质'' (essence) and its synonyms.}
         \label{fig:similarity_zh4}
     \end{subfigure}
-    \caption[Similarity distances between synonyms in Chinese]{Similarity distances between synonyms in Chinese. In any cases joint embedding assigns shorter distances.}
+    \caption[Cosine distances between synonyms in Chinese]{Cosine distances between synonyms in Chinese. In any cases joint embedding assigns shorter distances.}
 	\label{fig:similarity_zh}
 \end{CJK}
 \end{figure}
 
 \subsection{Word Similarity} \label{sec:analysis_similarity}
 \begin{CJK}{UTF8}{gbsn}
-    The similarity distance between synonyms is not only preserved but also shortened. This finding indicates the joint embedding not only protects but also enhances the semantics by adding phonetic information. Figure~\ref{fig:similarity_zh} shows that the similarity distances of Chinese synonyms are shortened in the joint embedding. For example, Figure~\ref{fig:similarity_zh1} shows that the distance between ``了解 (understand), 认识 (recognize), 明白 (realize), 知道 (know), 明了 (clearly understand)'' and ``理解 (comprehend)'' are reduced in the joint embedding.
+    The cosine distance between synonyms is not only preserved but also shortened. This finding indicates the joint embedding not only protects but also enhances the semantics by adding phonetic information. Figure~\ref{fig:similarity_zh} shows that the cosine distances of Chinese synonyms are shortened in the joint embedding. For example, Figure~\ref{fig:similarity_zh1} shows that the distance between ``了解 (understand), 认识 (recognize), 明白 (realize), 知道 (know), 明了 (clearly understand)'' and ``理解 (comprehend)'' are reduced in the joint embedding.
 \end{CJK}
 
 \begin{CJK}{UTF8}{ipxm}
-    Similarly, the similarity distances of Japanese synonyms are also shortened with the use of joint embedding. Especially in Japanese, sometimes hiragana and kanji are used interchangeably. For example, in Figure~\ref{fig:similarity_ja4}, ``また'' and ``又 (また)'' have the pronunciation and meaning (``again''). The joint embedding can find the relationship between them and reduce their distance significantly.
+    Similarly, the cosine distances of Japanese synonyms are also shortened with the use of joint embedding. Especially in Japanese, sometimes hiragana and kanji are used interchangeably. For example, in Figure~\ref{fig:similarity_ja4}, ``また'' and ``又 (また)'' have the pronunciation and meaning (``again''). The joint embedding can find the relationship between them and reduce their distance significantly.
 \end{CJK}
 
 \begin{CJK}{UTF8}{ipxm}
@@ -328,46 +328,44 @@ The joint embedding can also produce correct answers in the analogical reasoning
         \begin{subfigure}[b]{0.45\textwidth}
             \centering
             \includegraphics[width=\textwidth]{../images/similarity_ja1.png}
-            \caption{Similarity distances between ``理解'' (comprehend) and its synonyms.}
+            \caption{Cosine distances between ``理解'' (comprehend) and its synonyms.}
             \label{fig:similarity_ja1}
         \end{subfigure}
         \hspace{2em}
         \begin{subfigure}[b]{0.45\textwidth}
             \centering
             \includegraphics[width=\textwidth]{../images/similarity_ja2.png}
-            \caption{Similarity distances between ``重要''' (important) and its synonyms.}
+            \caption{Cosine distances between ``重要''' (important) and its synonyms.}
             \label{fig:similarity_ja2}
         \end{subfigure}
         
         \begin{subfigure}[b]{0.45\textwidth}
             \centering
             \includegraphics[width=\textwidth]{../images/similarity_ja3.png}
-            \caption{Similarity distances between ``探す'' (seek) and its synonyms.}
+            \caption{Cosine distances between ``探す'' (seek) and its synonyms.}
             \label{fig:similarity_ja3}
         \end{subfigure}
         \hspace{2em}
         \begin{subfigure}[b]{0.45\textwidth}
             \centering
             \includegraphics[width=\textwidth]{../images/similarity_ja4.png}
-            \caption{Similarity distances between ``\mbox{また}'' (again) and its synonyms.}
+            \caption{Cosine distances between ``\mbox{また}'' (again) and its synonyms.}
             \label{fig:similarity_ja4}
         \end{subfigure}
-        \caption[Similarity distances between synonyms in Japanese]{Similarity distances between synonyms in Japanese. In any cases joint embedding assigns shorter distances.}
+        \caption[Cosine distances between synonyms in Japanese]{Cosine distances between synonyms in Japanese. In any cases joint embedding assigns shorter distances.}
         \label{fig:similarity_ja}
     \end{figure}
     \end{CJK}
 
 \subsection{Homonym and Heteronym} \label{sec:analysis_homonym_heteronym}
 
-We also found encouraging results from tests on homonyms and heteronyms. The higher correlation between the homonym vectors indicates that the joint embedding can help the model be robust against noise (typographical errors). The increase in the similarity distance between heteronyms implies that the phonetic information effectively separates them, which is a sign of semantic enhancement.
+We also found encouraging results from tests on homonyms and heteronyms. The higher correlation between the homonym vectors indicates that the joint embedding can help the model resist the noise (typographical errors). On the other hand, the increase of the cosine distance between heteronyms implies that the phonetic information effectively separates them, which is also a sign of semantic enhancement.
 
 \subsubsection{Homonym}
 
-In Figure~\ref{fig:corr_zh}, we examine the correlations between Chinese homonyms in three scenarios:
-the correlation of homophonic characters (Figure~\ref{fig:corr_zh1}), the correlation of homophonic words (Figure~\ref{fig:corr_zh2}), and the correlation of words with the same pronunciation except for having different tones (Figure~\ref{fig:corr_zh3}).
-The results show that the correlation of these homonyms and near homonyms is greater under the joint embedding.
+In Figure~\ref{fig:corr_zh}, we examine the correlations between Chinese homonyms in three scenarios: the correlation of homophonic characters (Figure~\ref{fig:corr_zh1}), the correlation of homophonic words (Figure~\ref{fig:corr_zh2}), and the correlation of words with the same pronunciation but different tones (Figure~\ref{fig:corr_zh3}). The results show that the correlation of homonyms and near homonyms is greater under the joint embedding.
 
-In Figure~\ref{fig:corr_ja}, we also examine the correlations between Japanese homonyms in three scenarios. Since there are no tones in Japanese, we tested the homonyms with single syllable (Figure~\ref{fig:corr_ja1}), homonyms with two syllables (Figure~\ref{fig:corr_ja2}), and homophonic words (Figure~\ref{fig:corr_ja3}). All the results have shown that joint embedding can effectively improve the correlation between Japanese homonyms.
+In Figure~\ref{fig:corr_ja}, we also examine the correlations between Japanese homonyms in three scenarios. Since there are no tones in Japanese, we tested the homonyms with single syllable (Figure~\ref{fig:corr_ja1}), the homonyms with two syllables (Figure~\ref{fig:corr_ja2}), and homophonic words (Figure~\ref{fig:corr_ja3}). All the results have shown that joint embedding can effectively improve the correlation between Japanese homonyms.
 
 \vspace{-1em}
 \begin{figure}[h]
@@ -423,29 +421,27 @@ In Figure~\ref{fig:corr_ja}, we also examine the correlations between Japanese h
 \end{figure}
 \end{CJK}
 
-\newpage
-
 \subsubsection{Heteronym}
 
-In Table~\ref{tab:analysis_heteronym1}, we compare the similarity distance between Chinese heteronyms.  The first example is ``長'' meaning ``length'' when pronounced one way (ㄔㄤˊ) and growth when pronounced another way (ㄓㄤˇ).  The second example is ``樂'', meaning joyful (ㄌㄜˋ) or musical sound (ㄩㄝˋ).  The third example ``中'' stands for middle (ㄓㄨㄥ) or hitting a target (ㄓㄨㄥˋ) respectively. In all three examples, the similarity distances are greater in the joint embedding, which implies that the phonetic information can help distinguish between heteronyms.
+In Table~\ref{tab:analysis_heteronym1}, we compare the cosine distance between Chinese heteronyms.  The first example is ``長'' meaning ``length'' when pronounced one way (ㄔㄤˊ) and ``growth'' when pronounced another way (ㄓㄤˇ).  The second example is ``樂'', meaning ``joyful'' (ㄌㄜˋ) or ``musical sound'' (ㄩㄝˋ).  The third example ``中'' stands for ``middle'' (ㄓㄨㄥ) or ``hitting a target'' (ㄓㄨㄥˋ) respectively. In all three examples, the cosine distances are greater in the joint embedding, which implies that the phonetic information can help distinguish between heteronyms.
 
 \vspace{0.1cm}
 \begin{table}[h]
     \centering
         \begin{tabularx}{\textwidth}{bbbb}
             \toprule
-            \multirow{2.5}{*}{A} & \multirow{2.5}{*}{B} & \multicolumn{2}{c}{Similarity Distance} \\
+            \multirow{2.5}{*}{A} & \multirow{2.5}{*}{B} & \multicolumn{2}{c}{Cosine Distance} \\
             \cmidrule(lr){3-4} {} & {} & Semantic & Joint \\\midrule
             長 (ㄔㄤˊ) 度 & 長 (ㄓㄤˇ) 大 & 0.826 & \textbf{0.853} \\
             樂 (ㄌㄜˋ) 趣 & 音樂 (ㄩㄝˋ) & 0.636 & \textbf{0.682} \\
             中 (ㄓㄨㄥ) 午 & 中 (ㄓㄨㄥˋ) 毒 & 0.842 & \textbf{0.866} \\\bottomrule
         \end{tabularx}
-    \caption{Similarity distance between heteronyms in Chinese}
+    \caption{Cosine distances between heteronyms in Chinese}
     \label{tab:analysis_heteronym1}
 \end{table}
 
 \begin{CJK}{UTF8}{ipxm}
-    In Table~\ref{tab:analysis_heteronym2}, the same advantage also appears in Japanese. We have compared the different pronunciations and meanings of ``生'', a character notorious for having so many distinct readings.  We compared the readings (なま) ``raw'' , (しょう) ``life'' , (う) ``birth'' , and (き) ``unprocessed''. All the results show that joint embedding can increase the similarity distance between them.
+    In Table~\ref{tab:analysis_heteronym2}, the same advantage also appears in Japanese. We have compared the different pronunciations and meanings of ``生'', a character notorious for having so many distinct readings.  We compared the readings (なま) ``raw'' , (しょう) ``life'' , (う) ``birth'' , and (き) ``unprocessed''. All the results show that joint embedding can increase the cosine distance between them.
 \end{CJK}
 
 \vspace{0.1cm}    
@@ -454,21 +450,21 @@ In Table~\ref{tab:analysis_heteronym1}, we compare the similarity distance betwe
     \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{bbbb}
             \toprule
-            \multirow{2.5}{*}{A} & \multirow{2.5}{*}{B} & \multicolumn{2}{c}{Similarity Distance} \\
+            \multirow{2.5}{*}{A} & \multirow{2.5}{*}{B} & \multicolumn{2}{c}{Cosine Distance} \\
             \cmidrule(lr){3-4} {} & {} & Semantic & Joint \\\midrule
             生 (なま) & 一生 (しょう) & 0.879 & \textbf{0.889} \\
             生 (なま) & 生 (う) む & 0.830 & \textbf{0.839} \\
             生 (なま) & 生 (き) 地 & 0.769 & \textbf{0.867} \\\bottomrule
         \end{tabularx}
     \end{CJK}
-    \caption{Similarity distance between heteronyms in Japanese}
+    \caption{Cosine distance between heteronyms in Japanese}
     \label{tab:analysis_heteronym2}
 \end{table}
 
 \begin{CJK}{UTF8}{ipxm}
-    There is a special feature in Japanese where many kanji are assigned a pair of readings; one originally derived from Chinese called on-yomi (音読み) and another of more purely Japanese origin (i.e.\ not from Chinese) called kun-yomi (訓読み).  In general, the on-yomi and kun-yomi pronunciations of characters are entirely unrelated, but the meaning is usually very close. In many cases, the kun-yomi pronunciation is used when the word is used along, while the on-yomi is used as an element to form compound words.  A situation is roughly analogous to what English might look like if we used a special water symbol to write both ``water'' and ``hydro''.  
+    There is a special feature in Japanese where many kanji are assigned a pair of readings; one originally derived from Chinese called on-yomi (音読み) and another of more purely Japanese origin (i.e.,\ not from Chinese) called kun-yomi (訓読み).  In general, the on-yomi and kun-yomi pronunciations of characters are entirely unrelated, but the meaning is usually very close. In many cases, the kun-yomi pronunciation is used when the word is used along, while the on-yomi is used as an element to form compound words.  A situation is roughly analogous to what English might look like if we used a special water symbol to write both ``water'' and ``hydro''.  
 
-We examined the (on-yomi, kun-yomi) pairs in Table~\ref{tab:analysis_heteronym3}. For example, when ``土'' is pronounced as ``つち'' or ``と'', it means soil; when ``海'' is pronounced as ``うみ'' or ``かい'', it means sea; when ``時'' is pronounced as ``とき'' or ``じ'', it means time.  Despite having completely different pronunciations, these semantically close (on-yomi,kun-yomi) pairs are closer to each other under the joint embedding.
+    We examined the (on-yomi, kun-yomi) pairs in Table~\ref{tab:analysis_heteronym3}. For example, when ``土'' is pronounced as ``つち'' or ``と'', it means soil; when ``海'' is pronounced as ``うみ'' or ``かい'', it means sea; when ``時'' is pronounced as ``とき'' or ``じ'', it means time.  Despite having completely different pronunciations, these semantically close (on-yomi,kun-yomi) pairs are closer to each other under the joint embedding.
 \end{CJK}
 
 \vspace{0.1cm}    
@@ -477,13 +473,13 @@ We examined the (on-yomi, kun-yomi) pairs in Table~\ref{tab:analysis_heteronym3}
     \begin{CJK}{UTF8}{ipxm}
         \begin{tabularx}{\textwidth}{bbbb}
             \toprule
-            \multirow{2.5}{*}{A} & \multirow{2.5}{*}{B} & \multicolumn{2}{c}{Similarity Distance} \\
+            \multirow{2.5}{*}{A} & \multirow{2.5}{*}{B} & \multicolumn{2}{c}{Cosine Distance} \\
             \cmidrule(lr){3-4} {} & {} & Semantic & Joint \\\midrule
             土 (つち) & 土 (と) 地 & 0.719 & \textbf{0.672} \\
             海 (うみ) & 深海 (かい) & 0.707 & \textbf{0.637} \\
             時 (とき) & 時 (じ) 間 & 0.578 & \textbf{0.498} \\\bottomrule
         \end{tabularx}
     \end{CJK}
-    \caption{Similarity distance between kun-yomi and on-yomi in Japanese}
+    \caption{Cosine distance between kun-yomi and on-yomi in Japanese}
     \label{tab:analysis_heteronym3}
 \end{table}

@@ -49,43 +49,37 @@ The core technique in this paper is to enhance the ability of word embeddings by
 
 We review some studies which suggested that the rich, decomposed information of Chinese characters can be exploited to train the word embeddings with words or characters jointly. Some of the most popular studies in this field are: \textit{CWE} \cite{chen2015joint}, \textit{MGE} \cite{yin2016multi}, \textit{JWE} \cite{yu2017joint}, and \textit{cw2vec} \cite{cao2018cw2vec}. The following sections review the approaches from JWE and cw2vec because their concepts are relatively new and their performance is better.
 
-\subsubsection{Joint Learning Word Embedding Model (JWE)}
-
-The authors of JWE \cite{yu2017joint} proposed a model that combines word, character, and sub-character components to learn embeddings. They implemented the model (Figure \ref{fig:jwe}) based on the Continuous Bag of Words (CBOW) proposed in Word2Vec \cite{mikolov2013efficient}, and changed the default input words in CBOW by further adding the characters and sub-character components of input words.
-
+\vspace{0.3cm}
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.7]{../images/jwe_illustration.png}
+	\includegraphics[scale=0.55]{../images/jwe_illustration.png}
 	\caption[An illustration of the JWE model (reproduced from \cite{yu2017joint})]{An illustration of the JWE model (reproduced from \cite{yu2017joint}). The symbol $w$ represents words, $w_i$ is the current word, $w_{i-1}$ and $w_{i+1}$ are the context words. The symbol $c$ represents the characters of context words, $c_{i-1}$ is the characters of $w_{i-1}$, and $c_{i+1}$ is the characters of $w_{i+1}$. The symbol $s$ represents the sub-characters of context words. $s_i$ is the sub-character components of $w_i$, and $s_{i-1}, s_{i+1}$ are the components of $w_{i-1}$ and $w_{i+1}$.}
 	\label{fig:jwe}
 \end{figure}
 
+\subsubsection{Joint Learning Word Embedding Model (JWE)}
+
+The authors of JWE \cite{yu2017joint} proposed a model that combines word, character, and sub-character components to learn embeddings. They implemented the model (Figure \ref{fig:jwe}) based on the Continuous Bag of Words (CBOW) proposed in Word2Vec \cite{mikolov2013efficient}, and changed the default input words in CBOW by further adding the characters and sub-character components of input words.
+
 As shown in Figure \ref{fig:jwe}, The JWE model is trained to predict the present word from the context words in the same way as CBOW. For example, the Chinese word 智能 (intelligence) has two characters 智 (wisdom) and 能 (able), decomposable into sub-character components: \{知,日\} and \{ㄙ,月,匕x2\}. The JWE model aims to maximize:
-%%
+
 \begin{equation*}
 L(w_i) = \sum_{k=1}^3\log P(w_i\mid h_{ik})
 \end{equation*}
-%%
+
 the sum of 3 conditional probabilities from the context words ($h_{i1}$), characters ($h_{i2}$), and sub-characters ($h_{i3}$) respectively.
 
 \subsubsection{cw2vec Model}
 
-Inspired by fastText \cite{bojanowski2017enriching}, the authors of cw2vec \cite{cao2018cw2vec} proposed an n-gram feature based on the strokes of Chinese characters. They first split and transform the text into stroke information, then map the strokes into 5 corresponding stroke ids, and finally merge the ids and generate n-gram features from these stroke ids. The diagram in their paper (Figure \ref{fig:cw2vec1}) shows the complete process.
+Inspired by fastText \cite{bojanowski2017enriching}, the authors of cw2vec \cite{cao2018cw2vec} proposed an n-gram feature based on the strokes of Chinese characters. They first split and transform the text into stroke information, then map the strokes into 5 corresponding stroke ids, and finally merge the ids and generate n-gram features from the stroke ids. The authors used the Skip-Gram model, a second method other than CBOW proposed by Word2Vec \cite{mikolov2013efficient}, as the base model, and replaced word inputs with stroke n-grams (Figure \ref{fig:cw2vec}). It is mentioned in the paper that the final embeddings come from the contextual word vectors.
+
+\vspace{0.3cm}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.6]{../images/cw2vec_illustration1.png}
-	\caption{The Process of generating stroke n-grams in cw2vec (reproduced from \cite{cao2018cw2vec})}
-	\label{fig:cw2vec1}
-\end{figure}
-
-The authors used Skip-Gram, a second method other than CBOW proposed by Word2Vec \cite{mikolov2013efficient}, as the base model, and replaced word inputs with stroke n-grams (Figure \ref{fig:cw2vec2}). It is mentioned in the paper that the final embeddings come from the contextual word vectors.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.6]{../images/cw2vec_illustration2.png}
+	\includegraphics[scale=0.55]{../images/cw2vec_illustration2.png}
 	\caption{An illustration of the cw2vec model (reproduced from \cite{cao2018cw2vec})}
-	\label{fig:cw2vec2}
+	\label{fig:cw2vec}
 \end{figure}
 
 These word embeddings designed for Chinese all utilized the radicals or strokes in Chinese characters. No research in Chinese word embeddings has so far used phonetic information extracted from Chinese or Japanese as features.

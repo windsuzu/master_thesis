@@ -157,11 +157,11 @@ A sample of tokenized sentences using three tokenizers is listed in Table~\ref{t
 
 \section{Phonetic Data Extraction} \label{sec:phonetic_data}
 
-\texttt{Dragonmapper} \footnote{https://github.com/tsroten/dragonmapper} is used to extract information from Chinese sentences. \texttt{Pykakasi} \footnote{https://github.com/miurahr/pykakasi} is used to extract information from Japanese sentences.
+\texttt{Dragon Mapper} \footnote{https://github.com/tsroten/dragonmapper} is used to extract information from Chinese sentences. \texttt{Pykakasi} \footnote{https://github.com/miurahr/pykakasi} is used to extract information from Japanese sentences.
 
-\subsection{Dragonmapper} \label{sec:dragonmapper}
+\subsection{Dragon Mapper} \label{sec:dragonmapper}
 
-\texttt{Dragonmapper} is a Python library that can convert between Chinese characters, bopomofo, pinyin, and International Phonetic Alphabet (IPA). When we call \pythoninline{dragonmapper.hanzi.to_pinyin(chinese_str)}, it will convert the Chinese sentence to bopomofo tokens based on \textit{CC-CEDICT} \footnote{https://cc-cedict.org/wiki/} and \textit{Unihan} \footnote{http://www.unicode.org/charts/unihan.html} database. Table \ref{tab:dragonmapper} shows the result of phonetic extraction in Chinese sentences. The extraction will be applied to the tokenized sentences to achieve better accuracy.
+\texttt{Dragon Mapper} is a Python library that can convert between Chinese characters, bopomofo, pinyin, and International Phonetic Alphabet (IPA). When we call \pythoninline{dragonmapper.hanzi.to_pinyin(chinese_str)}, it will convert the Chinese sentence to bopomofo tokens based on \textit{CC-CEDICT} \footnote{https://cc-cedict.org/wiki/} and \textit{Unihan} \footnote{http://www.unicode.org/charts/unihan.html} database. Table \ref{tab:dragonmapper} shows the result of phonetic extraction in Chinese sentences. The extraction will be applied to the tokenized sentences to achieve better accuracy.
 
 \vspace{0.2cm}
 
@@ -208,7 +208,7 @@ A sample of tokenized sentences using three tokenizers is listed in Table~\ref{t
         \end{tabular}
         \end{CJK}
 
-        \caption{Chinese Phonetic Extraction using Dragonmapper library}
+        \caption{Chinese Phonetic Extraction using Dragon Mapper library}
         \label{tab:dragonmapper}
     \end{table}
 
@@ -249,15 +249,15 @@ First, We will explore the details of Word2Vec. Second, we explain how to train 
 
 \subsection{Word2Vec} \label{sec:word2vec}
 
-Word2Vec has two classic papers. The first one \cite{mikolov2013efficient} contributes two approaches to constructing an embedding, namely CBOW and Skip-gram. The second one \cite{mikolov2013distributed} contributes improved methods of embedding construction, such as Hierarchical Softmax and Negative Sampling. We will use Skip-gram and Negative Sampling to generate word embeddings in this paper.
+Word2Vec has two classic papers. The first one \cite{mikolov2013efficient} contributes two approaches to constructing an embedding, namely CBOW and Skip-Gram. The second one \cite{mikolov2013distributed} contributes improved methods of embedding construction, such as Hierarchical Softmax and Negative Sampling. We will use Skip-Gram and Negative Sampling to generate word embeddings in this paper.
 
-Skip-gram model uses a neural network with hidden layers to predict the likelihood of context words $w_{t-2}, w_{t-1}, w_{t+1}, w_{t+2}$ of an input word $w_t$. The input word and context words will be paired, such as $(w_t, w_{t-2}), (w_t, w_{t-1})$ to perform supervised training. The model can be expressed as the following equation (Eq. \ref{eq:skip-gram}), where $\theta$ represents the hidden states of the input word $w_\text{center}$, and $w_1, w_2, \cdots, w_C$ represents the context words of $w_\text{center}$ within the window size $C$. The goal is to maximize the likelihood of the occurrence of context words for each word $w$ in the corpus by updating $\theta$ iteratively.
+Skip-Gram model uses a neural network with hidden layers to predict the likelihood of context words $w_{t-2}, w_{t-1}, w_{t+1}, w_{t+2}$ of an input word $w_t$. The input word and context words will be paired, such as $(w_t, w_{t-2}), (w_t, w_{t-1})$ to perform supervised training. The model can be expressed as the following equation (Eq. \ref{eq:skip-gram}), where $\theta$ represents the hidden states of the input word $w_\text{center}$, and $w_1, w_2, \cdots, w_C$ represents the context words of $w_\text{center}$ within the window size $C$. The goal is to maximize the likelihood of the occurrence of context words for each word $w$ in the corpus by updating $\theta$ iteratively.
 
 \begin{equation}
 \underset{\theta}{\operatorname{argmax}} \, p\left(w_{1}, w_{2}, \ldots, w_{C} \mid w_{\text {center}} ; \theta\right) \label{eq:skip-gram}
 \end{equation}
 
-Skip-gram uses the softmax model to output a $V$-dimensional probability distribution for context word classification. We use the notation $p\left(w_{\text {context}} \mid w_{\text {center}}; \theta \right)$ in Eq. \ref{eq:softmax1} to denote the probability (a scalar value of range $\left[0, 1\right)$) of observing a context word given a center word. $h$ is the hidden layer word vector for the input word $w_\text{center}$ from the input embedding matrix, and $W_{\text {output}}$ is a row vector for a context word from the output embedding matrix. $W_{\text {output}_{(c)}}$ corresponds to the row vector of the context word in (input, context) pair, while $W_{\text {output}_{(i)}}$ corresponds to the row vector of each word in the corpus of size $V$.
+Skip-Gram uses the softmax model to output a $V$-dimensional probability distribution for context word classification. We use the notation $p\left(w_{\text {context}} \mid w_{\text {center}}; \theta \right)$ in Eq. \ref{eq:softmax1} to denote the probability (a scalar value of range $\left[0, 1\right)$) of observing a context word given a center word. $h$ is the hidden layer word vector for the input word $w_\text{center}$ from the input embedding matrix, and $W_{\text {output}}$ is a row vector for a context word from the output embedding matrix. $W_{\text {output}_{(c)}}$ corresponds to the row vector of the context word in (input, context) pair, while $W_{\text {output}_{(i)}}$ corresponds to the row vector of each word in the corpus of size $V$.
 
 \begin{equation}
     p\left(w_{\text {context}} \mid w_{\text {center}}; \theta \right)=\frac{\exp \left(W_{\text {output}_{{(c)}}} \cdot h\right)}{\sum_{i=1}^{V} \exp \left(W_{\text {output}_{(i)}} \cdot h\right)} \in \mathbb{R}^{1} \label{eq:softmax1}
@@ -282,18 +282,18 @@ J\left(\theta ; w^{(t)}\right)&=-\log \prod_{c=1}^{C} \frac{\exp \left(W_{\text 
 &=-\sum_{c=1}^{C}\left(W_{\text {output }_{(c)}} \cdot h\right)+C \cdot \log \sum_{i=1}^{V} \exp \left(W_{\text {output }_{(i)}} \cdot h\right)
 \end{align}
 
-Figure~\ref{fig:skip-gram} shows the Skip-gram model. We will learn word embedding vectors of size $N$ given the vocabulary size $V$. The model uses one input word at a time for learning to predict one context word (output).
+Figure~\ref{fig:skip-gram} shows the Skip-Gram model. We will learn word embedding vectors of size $N$ given the vocabulary size $V$. The model uses one input word at a time for learning to predict one context word (output).
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.4]{../images/skip-gram.png}
-    \caption[The Skip-gram Model]{The Skip-gram Model\protect\footnotemark}
+    \caption[The Skip-Gram Model]{The Skip-Gram Model\protect\footnotemark}
 	\label{fig:skip-gram}
 \end{figure}
 
 \footnotetext{Source: https://lilianweng.github.io/lil-log/2017/10/15/learning-word-embedding.html}
 
-Since the softmax model requires a lot of computational space and time, we also use negative sampling with the Skip-gram model. Negative sampling will convert the multi-classification problem that the model is designed to solve into a binary-classification problem. First, the method will randomly select $k$ negative samples from the corpus that are irrelevant to the input word. $k$ is a hyper-parameter, usually between 5 and 20. The model will update $(k+1)\times n$ parameters using the sigmoid function, where $n$ is the dimension of the hidden layer $h$, and $+1$ accounts for the positive sample.
+Since the softmax model requires a lot of computational space and time, we also use negative sampling with the Skip-Gram model. Negative sampling will convert the multi-classification problem that the model is designed to solve into a binary-classification problem. First, the method will randomly select $k$ negative samples from the corpus that are irrelevant to the input word. $k$ is a hyper-parameter, usually between 5 and 20. The model will update $(k+1)\times n$ parameters using the sigmoid function, where $n$ is the dimension of the hidden layer $h$, and $+1$ accounts for the positive sample.
 
 The probability that a word ($c$) appears within the context of the input word ($w$) can be defined as Eq. \ref{eq:negative_sampling}; the goal is to determine whether $c$ is in the context window of $w$ ($D=1$) or not ($D=0$) based on the input-context pairs $(w, c)$.
 
@@ -303,7 +303,7 @@ p(D=1 \mid w, c ; \theta)=\frac{1}{1+\exp \left(-\bar{c}_{\text {output }_{(j)}}
 
 \subsection{Semantic Embedding}
 
-We use \texttt{Gensim} to implement Skip-gram with negative sampling from Word2Vec. We put the tokenized sentences generated by different tokenizers into \texttt{Gensim} to train the general word embedding with semantics. The following are the main settings of the parameters: \textit{max\_vocab\_size} is 32000, \textit{vector\_size} is 300, \textit{epoch\_number} is 13, \textit{window\_size} is 5, the number of negative samples is 5, ignoring the words with total frequency lower than 5.
+We use \texttt{Gensim} to implement Skip-Gram with negative sampling from Word2Vec. We put the tokenized sentences generated by different tokenizers into \texttt{Gensim} to train the general word embedding with semantics. The following are the main settings of the parameters: \textit{max\_vocab\_size} is 32000, \textit{vector\_size} is 300, \textit{epoch\_number} is 13, \textit{window\_size} is 5, the number of negative samples is 5, ignoring the words with total frequency lower than 5.
 
 Some words may not be trained in the model, such as special tokens and low-frequency words. Therefore, the size of the trained embedding matrix and the tokenizer vocabulary is not identical, resulting in different coverage (Table~\ref{tab:semantic_coverage}). We calculate the mean and standard deviation of the whole embedding and randomly assign the empty word vectors using the normal distribution.
 
@@ -345,7 +345,7 @@ Several ways have been proposed to combine multiple embeddings, such as concaten
 
 We define custom rules and apply alignment scores from \texttt{fast\_align} \cite{dyer2013simple} to perform corpus filtering to reduce noise, dataset size, and resource burden during training in the NMT system. The original dataset had 672,315 sentence pairs, which were reduced to 557,685 using rules and 462,582 using alignment scores.
 
-\subsection{Pre-filtering rules}
+\subsection{Pre-Filtering Rule}
 
 We apply the following rules to exclude the pairs of sentences:
 
@@ -358,7 +358,7 @@ We apply the following rules to exclude the pairs of sentences:
     \item Sentences that have more than one counterpart.
 \end{enumerate}
 
-\subsection{Scoring functions}
+\subsection{Scoring Function}
 
 \texttt{fast\_align} is a tool based on \textit{IBM alignment model 2} for training statistical machine translation and alignment model. The score is the probability of the source sentence given the target sentence and its alignment. The algorithm iteratively estimates the probability of being each other translation for source-target pairs and optimal alignment given the word-to-word translation probabilities. 
 
@@ -442,7 +442,7 @@ We will train and evaluate the NMT tasks in two classical models, the attention-
 
 The two models and the following illustrative diagrams are derived from \textit{bentrevett/pytorch-seq2seq} \footnote{https://github.com/bentrevett/pytorch-seq2seq}. We utilized their source code, but optimized some details, such as accelerating the decoding efficiency of the decoder.
 
-\subsection{Attention-based Bi-GRU encoder-decoder Model} \label{sec:rnn}
+\subsection{Attention-based Bi-GRU Model} \label{sec:rnn}
 
 This model has three main components, namely Encoder, Attention, and Decoder. We used the \pythoninline{nn.Module} provided by PyTorch to implement three components and PyTorchLightning to combine and train the entire model.
 
